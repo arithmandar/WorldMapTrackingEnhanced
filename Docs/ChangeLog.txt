@@ -3,6 +3,14 @@ $Id$
 Revision History:
 =================
 
+* v1.01 (May 02, 2017)
+-----------------------
+- Set libs to be external links
+- Localization update:
+  - German (pas06)
+  - Russian (Blizzatron)
+  - Traditional Chinese
+
 * v1.00 (Apr. 27, 2017)
 -----------------------
 - Initial version which support WoW 7.2.0

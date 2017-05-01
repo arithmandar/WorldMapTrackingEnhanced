@@ -215,9 +215,16 @@ function addon.WorldMapTrackingOptionsDropDown_Initialize()
 		info.func = addon.HandyNotes.ToggleHandyNotes
 		Lib_UIDropDownMenu_AddButton(info)
 		
+		-- Now create HandyNotes' plugins dropdown
 		info = Lib_UIDropDownMenu_CreateInfo()
 		info.isNotRadio = true
 		info.keepShownOnClick = true
+--[[	-- better to find a way to refresh dropdown and then set the disabled status
+		if (addon.HandyNotes.CheckHandyNotesStatus()) then
+			info.disabled = nil
+		else
+			info.disabled = true
+		end]]
 		local plugins = addon.HandyNotes.GetPlugins()
 		for k, v in pairs(plugins) do
 			info.text = k
