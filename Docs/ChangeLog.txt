@@ -3,6 +3,12 @@ $Id$
 Revision History:
 =================
 
+* v1.02 (May 05, 2017)
+-----------------------
+- Added Korean translation (yuk6196)
+- Localization update:
+  - Simplified Chinese
+
 * v1.01 (May 02, 2017)
 -----------------------
 - Set libs to be external links

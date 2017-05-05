@@ -25,7 +25,7 @@
 #@end-non-debug@
 #@debug@
 ## Title: World Map Tracking Enhanced
-## Title-zhTW: 增強的世界地圖追蹤
+## Title-zhTW: 增強的世界地圖追蹤選項
 ## Notes: Enhanced World Map's Tracking Options with the support to most popular addons
 ## Notes-zhTW: 增強的世界地圖追蹤選項，支援最熱門的遊戲插件
 #@end-debug@
