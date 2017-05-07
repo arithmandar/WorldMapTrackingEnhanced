@@ -43,4 +43,5 @@ Locale\Locales.xml
 Core\Constants.lua
 Core\HandyNotes.lua
 Core\GatherMate2.lua
+Core\PetTracker.lua
 Core\Core.lua

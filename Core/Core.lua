@@ -18,6 +18,7 @@ local addon = LibStub("AceAddon-3.0"):NewAddon(private.addon_name)
 addon.constants = private.constants
 addon.HandyNotes = private.HandyNotes
 addon.GatherMate2 = private.GatherMate2
+addon.PT = private.PT
 addon.constants.addon_name = private.addon_name
 addon.Name = FOLDER_NAME
 _G.WorldMapTrackingEnhanced = addon
@@ -25,6 +26,7 @@ local db
 
 local iHandyNotes = select(4, GetAddOnInfo("HandyNotes"));
 local iGatherMate2 = select(4, GetAddOnInfo("GatherMate2"));
+local iPetTracker = select(4, GetAddOnInfo("PetTracker"));
 
 -- //////////////////////////////////////////////////////////////////////////
 function addon:OnInitialize()
@@ -122,7 +124,6 @@ function addon.WorldMapTrackingOptionsDropDown_Initialize()
 		info.checked = GetCVarBool("digSites")
 		Lib_UIDropDownMenu_AddButton(info)
 	end
-
 	if CanTrackBattlePets() then
 		info.text = SHOW_PET_BATTLES_ON_MAP_TEXT
 		info.value = "tamers"
@@ -189,7 +190,7 @@ function addon.WorldMapTrackingOptionsDropDown_Initialize()
 		info.checked = GetCVarBool("worldQuestFilterEquipment")
 		Lib_UIDropDownMenu_AddButton(info)
 	end
-	
+
 	-- ////////////////////////
 	if (iHandyNotes) then
 		local LH = LibStub("AceLocale-3.0"):GetLocale("HandyNotes", false)
@@ -235,7 +236,7 @@ function addon.WorldMapTrackingOptionsDropDown_Initialize()
 			Lib_UIDropDownMenu_AddButton(info)
 		end
 	end
-	if (iGatherMate2) then
+	if (iGatherMate2 or iPetTracker) then
 		Lib_UIDropDownMenu_AddSeparator(info)
 		-- Clear out the info from the separator wholesale.
 		info = Lib_UIDropDownMenu_CreateInfo()
@@ -245,8 +246,9 @@ function addon.WorldMapTrackingOptionsDropDown_Initialize()
 		info.text = L["Others"]
 		Lib_UIDropDownMenu_AddButton(info)
 
-		info = Lib_UIDropDownMenu_CreateInfo()
 		if (iGatherMate2) then
+			info = Lib_UIDropDownMenu_CreateInfo()
+
 			local LGM = LibStub("AceLocale-3.0"):GetLocale("GatherMate2", false)
 			info.isNotRadio = true
 			info.keepShownOnClick = true
@@ -256,6 +258,21 @@ function addon.WorldMapTrackingOptionsDropDown_Initialize()
 			info.tooltipOnButton = true
 			info.func = addon.GatherMate2.ToggleGatherMate2
 			info.checked = addon.GatherMate2.CheckWorldMapStatus
+			Lib_UIDropDownMenu_AddButton(info)
+		end
+		if (iPetTracker) then
+			info = Lib_UIDropDownMenu_CreateInfo()
+
+			info.isNotRadio = true
+			info.keepShownOnClick = true
+			info.text = PETS
+			info.func = addon.PT.ToggleSpecies
+			info.checked = addon.PT.CheckActiveSpecies
+			Lib_UIDropDownMenu_AddButton(info)
+
+			info.text = STABLES
+			info.func = addon.PT.ToggleStables
+			info.checked = addon.PT.CheckActiveStables
 			Lib_UIDropDownMenu_AddButton(info)
 		end
 	end

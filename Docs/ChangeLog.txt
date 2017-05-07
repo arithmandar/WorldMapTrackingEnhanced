@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v1.03 (May xx, 2017)
+-----------------------
+- Added support to PetTracker
+
 * v1.02 (May 05, 2017)
 -----------------------
 - Added Korean translation (yuk6196)
