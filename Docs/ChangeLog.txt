@@ -8,6 +8,8 @@ Revision History:
 - Added support to PetTracker
 - Added options' toggling
 - Added support to show HandyNotes' plugins in 2nd level of menu
+- Localization update:
+  - Korean (yuk6196)
 
 * v1.02 (May 05, 2017)
 -----------------------
