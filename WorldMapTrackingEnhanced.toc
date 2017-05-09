@@ -25,15 +25,15 @@
 #@end-non-debug@
 #@debug@
 ## Title: World Map Tracking Enhanced
-## Title-zhTW: 增強的世界地圖追蹤選項
+## Title-zhTW: 強化的世界地圖追蹤
 ## Notes: Enhanced World Map's Tracking Options with the support to most popular addons
-## Notes-zhTW: 增強的世界地圖追蹤選項，支援最熱門的遊戲插件
+## Notes-zhTW: 強化的世界地圖追蹤選項，支援最熱門的遊戲插件
 #@end-debug@
 ## Author: arith
 ## Version: @project-version@
 # # RequiredDeps: 
 ## DefaultState: enabled
-# # SavedVariables: WorldMapTrackingEnhancedDB
+## SavedVariables: WorldMapTrackingEnhancedDB
 ## X-Date: @project-date-iso@
 ## X-License: GPLv2
 ## X-Category: Map
@@ -41,7 +41,9 @@
 Libs\Libs.xml
 Locale\Locales.xml
 Core\Constants.lua
-Core\HandyNotes.lua
-Core\GatherMate2.lua
-Core\PetTracker.lua
 Core\Core.lua
+Core\Config.lua
+
+Modules\HandyNotes.lua
+Modules\GatherMate2.lua
+Modules\PetTracker.lua

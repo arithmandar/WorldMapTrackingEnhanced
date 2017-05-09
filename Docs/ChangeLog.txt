@@ -3,9 +3,11 @@ $Id$
 Revision History:
 =================
 
-* v1.03 (May xx, 2017)
+* v2.00 (May 09, 2017)
 -----------------------
 - Added support to PetTracker
+- Added options' toggling
+- Added support to show HandyNotes' plugins in 2nd level of menu
 
 * v1.02 (May 05, 2017)
 -----------------------
