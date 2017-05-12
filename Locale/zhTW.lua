@@ -33,5 +33,5 @@ L[" (Core}"] = " (核心主程式}"
 L["Others"] = "其他"
 
 --@end-do-not-package@
---@localization(locale="zhTW", format="lua_additive_table")@
+--@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", handle-unlocalized="ignore")@
 end

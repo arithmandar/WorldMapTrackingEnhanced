@@ -3,6 +3,12 @@ $Id$
 Revision History:
 =================
 
+* v2.02 (May 12, 2017)
+-----------------------
+- Fixed issue in localization files
+- Localization update:
+  - German (pas06)
+
 * v2.01 (May 12, 2017)
 -----------------------
 - Lib update:
