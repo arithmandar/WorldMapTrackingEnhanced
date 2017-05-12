@@ -25,9 +25,9 @@ _G.WorldMapTrackingEnhanced = addon
 local profile
 local FilterButton
 
-local iHandyNotes = select(4, GetAddOnInfo("HandyNotes"));
-local iGatherMate2 = select(4, GetAddOnInfo("GatherMate2"));
-local iPetTracker = select(4, GetAddOnInfo("PetTracker"));
+local iHandyNotes = select(4, GetAddOnInfo("HandyNotes"))
+local iGatherMate2 = select(4, GetAddOnInfo("GatherMate2"))
+local iPetTracker = select(4, GetAddOnInfo("PetTracker"))
 
 -- //////////////////////////////////////////////////////////////////////////
 function addon:OnInitialize()
