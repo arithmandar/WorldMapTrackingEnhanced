@@ -10,6 +10,8 @@ Revision History:
 - Added support to show HandyNotes' plugins in 2nd level of menu
 - Localization update:
   - Korean (yuk6196)
+  - German (pas06)
+  - Russian (Blizzatron)
 
 * v1.02 (May 05, 2017)
 -----------------------
