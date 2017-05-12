@@ -5,5 +5,5 @@ local L = LibStub("AceLocale-3.0"):NewLocale("WorldMapTrackingEnhanced", "ruRU",
 if not L then return end
 
 if L then
---@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", handle-unlocalized="ignore")@
+--@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="none", handle-unlocalized="ignore", namespace="")@
 end

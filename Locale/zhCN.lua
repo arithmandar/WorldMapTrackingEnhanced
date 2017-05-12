@@ -25,5 +25,5 @@ L[" (Core}"] = " (核心主程序}"
 L["Others"] = "其他"
 
 --@end-do-not-package@
---@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", handle-unlocalized="ignore")@
+--@localization(locale="zhCN", format="lua_additive_table", handle-subnamespaces="none", handle-unlocalized="ignore", namespace="")@
 end

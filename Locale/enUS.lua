@@ -32,5 +32,5 @@ L[" (Core}"] = " (Core}"
 L["Others"] = "Others"
 
 --@end-do-not-package@
---@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", handle-unlocalized="ignore")@
+--@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", handle-unlocalized="ignore", namespace="")@
 end
