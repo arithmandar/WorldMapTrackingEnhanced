@@ -3,6 +3,11 @@ $Id$
 Revision History:
 =================
 
+* v2.03 (May 20, 2017)
+-----------------------
+- Lib update:
+  - NoTaint_UIDropDownMenu
+
 * v2.02 (May 12, 2017)
 -----------------------
 - Fixed issue in localization files
