@@ -26,3 +26,5 @@ externals:
     Libs/LibUIDropDownMenu: 
         url: https://repos.wowace.com/wow/libuidropdownmenu/trunk/LibUIDropDownMenu
 
+ignore:
+    - Libs/NoTaint_UIDropDownMenu
