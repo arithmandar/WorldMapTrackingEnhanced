@@ -36,7 +36,7 @@ end
 
 function GatherMate2:DropDownMenus()
 	if (iGatherMate2) then
-		local info = Lib_UIDropDownMenu_CreateInfo()
+		local info = {}
 		local LGM = LibStub("AceLocale-3.0"):GetLocale("GatherMate2", false)
 		info.isNotRadio = true
 		info.keepShownOnClick = true

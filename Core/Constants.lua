@@ -26,4 +26,5 @@ constants.defaults = {
 }
 
 constants.events = {
-};
+	"CLOSE_WORLD_MAP",
+}

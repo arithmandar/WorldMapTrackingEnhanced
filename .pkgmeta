@@ -11,6 +11,8 @@ externals:
         url: https://repos.wowace.com/wow/libstub/trunk
     Libs/AceAddon-3.0: 
         url: https://repos.wowace.com/wow/ace3/trunk/AceAddon-3.0
+    Libs/AceEvent-3.0: 
+        url: https://repos.wowace.com/wow/ace3/trunk/AceEvent-3.0
     Libs/AceLocale-3.0: 
         url: https://repos.wowace.com/wow/ace3/trunk/AceLocale-3.0
     Libs/AceDB-3.0: 
@@ -21,4 +23,6 @@ externals:
         url: https://repos.wowace.com/wow/ace3/trunk/AceConfig-3.0
     Libs/AceDBOptions-3.0: 
         url: https://repos.wowace.com/wow/ace3/trunk/AceDBOptions-3.0
+    Libs/LibUIDropDownMenu: 
+        url: https://repos.wowace.com/wow/libuidropdownmenu/trunk/LibUIDropDownMenu
 
