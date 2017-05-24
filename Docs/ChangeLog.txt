@@ -7,7 +7,7 @@ Revision History:
 -----------------------
 - Added AceEvent-3.0
 - Lib update:
-  - LibUIDropDownMenu
+  - Replace NoTaint_UIDropDownMenu with LibUIDropDownMenu
 - Enhanced dropdown menu's behavior when world map get closed
 
 * v2.03 (May 20, 2017)
