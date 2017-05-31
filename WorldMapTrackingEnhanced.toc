@@ -32,6 +32,7 @@
 ## Author: arith
 ## Version: @project-version@
 # # RequiredDeps: 
+## OptionalDeps: Ace3, LibStub, LibUIDropDownMenu
 ## DefaultState: enabled
 ## SavedVariables: WorldMapTrackingEnhancedDB
 ## X-Date: @project-date-iso@

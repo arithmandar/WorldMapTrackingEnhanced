@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v2.05 (May 31, 2017)
+-----------------------
+- ToC update to add OptionalDeps
+
 * v2.04 (May 24, 2017)
 -----------------------
 - Added AceEvent-3.0
