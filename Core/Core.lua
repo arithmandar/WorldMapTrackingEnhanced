@@ -4,8 +4,10 @@
 -----------------------------------------------------------------------
 -- Functions
 local _G = getfenv(0)
+local select = _G.select
+local pairs = _G.pairs
 -- Libraries
-local GameTooltip = GameTooltip
+local GameTooltip = _G.GameTooltip
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
@@ -30,83 +32,7 @@ local iGatherMate2 = select(4, GetAddOnInfo("GatherMate2"))
 local iPetTracker = select(4, GetAddOnInfo("PetTracker"))
 
 -- //////////////////////////////////////////////////////////////////////////
-function addon:OnInitialize()
-	self.db = AceDB:New(addon.Name.."DB", addon.constants.defaults, true)
-	profile = self.db.profile;
-
-	self:SetupOptions();
-	FilterButton = WorldMapFrame.UIElementsFrame.TrackingOptionsButton.Button
-end
-
-function addon:OnEnable()
-	for key, value in pairs( addon.constants.events ) do
-		self:RegisterEvent( value );
-	end
-	self:CreateTrackingButton()
-	FilterButton:Hide()
-end
-
-function addon:Refresh()
-end
-
-function addon:CLOSE_WORLD_MAP()
-	L_CloseDropDownMenus()
-end
-
-function addon:CreateTrackingButton()
-	addon.dropDown = CreateFrame("Frame", addon.Name.."DropDown", WorldMapFrame.UIElementsFrame.TrackingOptionsButton, "L_UIDropDownMenuTemplate");
-	addon.dropDown:SetScript("OnShow", function(self) 
-		L_UIDropDownMenu_Initialize(self, addon.WorldMapTrackingOptionsDropDown_Initialize, "MENU") 
-	end);
-	
-	addon.button = CreateFrame("Button", addon.Name.."Button", WorldMapFrame.UIElementsFrame.TrackingOptionsButton)
-	addon.button:SetWidth(32)
-	addon.button:SetHeight(32)
-		
-	addon.button:SetPoint("TOPLEFT", WorldMapFrame.UIElementsFrame.TrackingOptionsButton, 0, 0, "TOPLEFT");
-		
-	addon.button.border = addon.button:CreateTexture(addon.Name.."ButtonBorder","BORDER")
-	addon.button.border:SetPoint("TOPLEFT", addon.button, "TOPLEFT")
-	addon.button.border:SetWidth(54)
-	addon.button.border:SetHeight(54)
-	addon.button.border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
-	--[[
-	addon.button.overlay = addon.button:CreateTexture(addon.Name.."ButtonOverlay","OVERLAY")
-	addon.button.overlay:SetWidth(27)
-	addon.button.overlay:SetHeight(27)
-	addon.button.overlay:SetPoint("TOPLEFT", addon.button, "TOPLEFT", 2, -2)
-	addon.button.overlay:SetTexture("Interface\\ComboFrame\\ComboPoint")
-	addon.button.overlay:SetTexCoord(0.5625, 1, 0, 1)
-	]]
-	addon.button:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight", "ADD")
-
-	addon.button:SetScript("OnEnter", function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
-		GameTooltip:SetText(TRACKING, 1, 1, 1)
-		GameTooltip:AddLine(MINIMAP_TRACKING_TOOLTIP_NONE, nil, nil, nil, true)
-		GameTooltip:Show()
-	end)
-	addon.button:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-	end)
-	addon.button:SetScript("OnClick", function(self)
-		local parent = self:GetParent()
-		L_ToggleDropDownMenu(1, nil, addon.dropDown, parent, 0, -5)
-		PlaySound("igMainMenuOptionCheckBoxOn")
-	end)
-	addon.button:SetScript("OnMouseDown", function(self)
-		local parent = self:GetParent();
-		parent.Icon:SetPoint("TOPLEFT", parent, "TOPLEFT", 8, -8);
-		parent.IconOverlay:Show();
-	end)
-	addon.button:SetScript("OnMouseUp", function(self)
-		local parent = self:GetParent();
-		parent.Icon:SetPoint("TOPLEFT", parent, "TOPLEFT", 6, -6);
-		parent.IconOverlay:Hide();
-	end)
-end
-
-addon.WorldMapTrackingOptionsDropDown_Initialize = function(self, level)
+local function dropDown_Initialize(self, level)
 	if not level then level = 1 end
 	local info = L_UIDropDownMenu_CreateInfo()
 
@@ -254,5 +180,81 @@ addon.WorldMapTrackingOptionsDropDown_Initialize = function(self, level)
 			end
 		end
 	end
+end
+
+local function createTrackingButton()
+	addon.dropDown = CreateFrame("Frame", addon.Name.."DropDown", WorldMapFrame.UIElementsFrame.TrackingOptionsButton, "L_UIDropDownMenuTemplate");
+	addon.dropDown:SetScript("OnShow", function(self) 
+		L_UIDropDownMenu_Initialize(self, dropDown_Initialize, "MENU") 
+	end);
+	
+	addon.button = CreateFrame("Button", addon.Name.."Button", WorldMapFrame.UIElementsFrame.TrackingOptionsButton)
+	addon.button:SetWidth(32)
+	addon.button:SetHeight(32)
+		
+	addon.button:SetPoint("TOPLEFT", WorldMapFrame.UIElementsFrame.TrackingOptionsButton, 0, 0, "TOPLEFT");
+		
+	addon.button.border = addon.button:CreateTexture(addon.Name.."ButtonBorder","BORDER")
+	addon.button.border:SetPoint("TOPLEFT", addon.button, "TOPLEFT")
+	addon.button.border:SetWidth(54)
+	addon.button.border:SetHeight(54)
+	addon.button.border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+	--[[
+	addon.button.overlay = addon.button:CreateTexture(addon.Name.."ButtonOverlay","OVERLAY")
+	addon.button.overlay:SetWidth(27)
+	addon.button.overlay:SetHeight(27)
+	addon.button.overlay:SetPoint("TOPLEFT", addon.button, "TOPLEFT", 2, -2)
+	addon.button.overlay:SetTexture("Interface\\ComboFrame\\ComboPoint")
+	addon.button.overlay:SetTexCoord(0.5625, 1, 0, 1)
+	]]
+	addon.button:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight", "ADD")
+
+	addon.button:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
+		GameTooltip:SetText(TRACKING, 1, 1, 1)
+		GameTooltip:AddLine(MINIMAP_TRACKING_TOOLTIP_NONE, nil, nil, nil, true)
+		GameTooltip:Show()
+	end)
+	addon.button:SetScript("OnLeave", function(self)
+		GameTooltip:Hide()
+	end)
+	addon.button:SetScript("OnClick", function(self)
+		local parent = self:GetParent()
+		L_ToggleDropDownMenu(1, nil, addon.dropDown, parent, 0, -5)
+		PlaySound("igMainMenuOptionCheckBoxOn")
+	end)
+	addon.button:SetScript("OnMouseDown", function(self)
+		local parent = self:GetParent();
+		parent.Icon:SetPoint("TOPLEFT", parent, "TOPLEFT", 8, -8);
+		parent.IconOverlay:Show();
+	end)
+	addon.button:SetScript("OnMouseUp", function(self)
+		local parent = self:GetParent();
+		parent.Icon:SetPoint("TOPLEFT", parent, "TOPLEFT", 6, -6);
+		parent.IconOverlay:Hide();
+	end)
+end
+
+function addon:OnInitialize()
+	self.db = AceDB:New(addon.Name.."DB", addon.constants.defaults, true)
+	profile = self.db.profile;
+
+	self:SetupOptions();
+	FilterButton = WorldMapFrame.UIElementsFrame.TrackingOptionsButton.Button
+end
+
+function addon:OnEnable()
+	for key, value in pairs( addon.constants.events ) do
+		self:RegisterEvent( value );
+	end
+	createTrackingButton()
+	FilterButton:Hide()
+end
+
+function addon:Refresh()
+end
+
+function addon:CLOSE_WORLD_MAP()
+	L_CloseDropDownMenus()
 end
 
