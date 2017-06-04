@@ -18,9 +18,10 @@ local GatherMate2 = addon:NewModule(MODNAME)
 
 local GM
 local iGatherMate2 = select(4, GetAddOnInfo("GatherMate2"))
+local enabled = GetAddOnEnableState(UnitName("player"), "GatherMate2")
 
 function GatherMate2:OnEnable()
-	if (iGatherMate2) then 
+	if (enabled > 0 and iGatherMate2) then 
 		GM = LibStub("AceAddon-3.0"):GetAddon("GatherMate2") 
 	end
 end
@@ -35,7 +36,7 @@ local function CheckWorldMapStatus()
 end
 
 function GatherMate2:DropDownMenus()
-	if (iGatherMate2) then
+	if (enabled > 0 and iGatherMate2) then
 		local info = {}
 		local LGM = LibStub("AceLocale-3.0"):GetLocale("GatherMate2", false)
 		info.isNotRadio = true

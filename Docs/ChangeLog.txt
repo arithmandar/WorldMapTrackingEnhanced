@@ -3,6 +3,12 @@ $Id$
 Revision History:
 =================
 
+* v2.07 (Jun. 04, 2017)
+-----------------------
+- Fixed the issue when modules like GatherMate2 was not fully enabled (enabled
+  for some other characters but disabled for current character) and errors 
+  will pop-up during module loading.
+
 * v2.06 (Jun. 03, 2017)
 -----------------------
 - Added missing library: CallbackHandler-1.0

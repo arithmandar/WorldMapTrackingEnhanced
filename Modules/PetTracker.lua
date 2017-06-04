@@ -16,9 +16,12 @@ local LibStub = _G.LibStub
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 local PT = addon:NewModule(MODNAME)
 
-local iPetTracker = select(4, GetAddOnInfo("PetTracker"));
+local iPetTracker = select(4, GetAddOnInfo("PetTracker"))
+local enabled = GetAddOnEnableState(UnitName("player"), "PetTracker")
+
 function PT:OnEnable()
-	if (not iPetTracker) then 
+	if (enabled > 0 and iPetTracker) then 
+	else
 		return false
 	end
 end
@@ -42,7 +45,7 @@ local function ToggleStables()
 end
 
 function PT:DropDownMenus()
-	if (iPetTracker) then
+	if (enabled > 0 and iPetTracker) then
 		local menu = {}
 		
 		menu[1] = {}

@@ -27,9 +27,17 @@ _G.WorldMapTrackingEnhanced = addon
 local profile
 local FilterButton
 
-local iHandyNotes = select(4, GetAddOnInfo("HandyNotes"))
-local iGatherMate2 = select(4, GetAddOnInfo("GatherMate2"))
-local iPetTracker = select(4, GetAddOnInfo("PetTracker"))
+local function checkAddonStatus(addonName)
+	if not addonName then return nil end
+	local loadable = select(4, GetAddOnInfo(addonName))
+	local enabled = GetAddOnEnableState(UnitName("player"), addonName)
+	
+	if (enabled > 0 and loadable) then
+		return true
+	else
+		return false
+	end
+end
 
 -- //////////////////////////////////////////////////////////////////////////
 local function dropDown_Initialize(self, level)
@@ -67,7 +75,7 @@ local function dropDown_Initialize(self, level)
 			info.checked = GetCVarBool("showTamers")
 			L_UIDropDownMenu_AddButton(info)
 		end
-		if (iPetTracker) then
+		if (checkAddonStatus("PetTracker")) then
 			local PT = addon:GetModule("PT", true)
 			local menu = PT:DropDownMenus()
 
@@ -137,7 +145,7 @@ local function dropDown_Initialize(self, level)
 		end
 
 		-- ////////////////////////
-		if (iHandyNotes) then
+		if (checkAddonStatus("HandyNotes")) then
 			local HandyNotes = addon:GetModule("HandyNotes", true)
 			local menu = HandyNotes:DropDownMenus()
 
@@ -153,7 +161,7 @@ local function dropDown_Initialize(self, level)
 			end
 
 		end
-		if (iGatherMate2) then
+		if (checkAddonStatus("GatherMate2")) then
 			L_UIDropDownMenu_AddSeparator(info)
 
 			info = L_UIDropDownMenu_CreateInfo()
@@ -162,7 +170,7 @@ local function dropDown_Initialize(self, level)
 			info.text = L["Others"]
 			L_UIDropDownMenu_AddButton(info)
 
-			if (iGatherMate2) then
+			if (checkAddonStatus("GatherMate2")) then
 				local GatherMate2 = addon:GetModule("GatherMate2", true)
 				info = L_UIDropDownMenu_CreateInfo()
 				info = GatherMate2:DropDownMenus()

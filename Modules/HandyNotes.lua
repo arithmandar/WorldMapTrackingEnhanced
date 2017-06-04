@@ -18,9 +18,10 @@ local HandyNotes = addon:NewModule(MODNAME)
 
 local HN
 local iHandyNotes = select(4, GetAddOnInfo("HandyNotes"))
+local enabled = GetAddOnEnableState(UnitName("player"), "HandyNotes")
 
 function HandyNotes:OnEnable()
-	if (iHandyNotes) then 
+	if (enabled > 0 and iHandyNotes) then 
 		HN = LibStub("AceAddon-3.0"):GetAddon("HandyNotes") 
 	end
 end
@@ -52,7 +53,7 @@ local function TogglePlugin(pluginName)
 end
 
 function HandyNotes:DropDownMenus()
-	if (iHandyNotes) then
+	if (enabled > 0 and iHandyNotes) then
 		local menu = {}
 		local i = 1
 		local LH = LibStub("AceLocale-3.0"):GetLocale("HandyNotes", false)
