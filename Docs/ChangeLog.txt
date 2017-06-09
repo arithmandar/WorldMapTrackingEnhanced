@@ -3,6 +3,11 @@ $Id$
 Revision History:
 =================
 
+* v2.09 (Jun. xx, 2017)
+-----------------------
+- Fixed HandyNotes' context menu won't show while user configure to have 
+  context menu and did not have GatherMate2 enabled
+
 * v2.08 (Jun. 04, 2017)
 -----------------------
 - Fixed HandyNotes' 2nd level menu won't show the plugins

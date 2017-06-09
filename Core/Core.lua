@@ -178,7 +178,7 @@ local function dropDown_Initialize(self, level)
 			end
 		end
 	elseif (level == 2) then
-		if (checkAddonStatus("GatherMate2") and profile.handynotes_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "HandyNotes") then
+		if (checkAddonStatus("HandyNotes") and profile.handynotes_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "HandyNotes") then
 			local HandyNotes = addon:GetModule("HandyNotes", true)
 			local menu = HandyNotes:DropDownMenus()
 
