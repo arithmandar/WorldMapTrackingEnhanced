@@ -3,7 +3,7 @@ $Id$
 Revision History:
 =================
 
-* v2.09 (Jun. xx, 2017)
+* v2.09 (Jun. 10, 2017)
 -----------------------
 - Fixed HandyNotes' context menu won't show while user configure to have 
   context menu and did not have GatherMate2 enabled
