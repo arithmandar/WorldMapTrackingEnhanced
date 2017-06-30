@@ -228,7 +228,7 @@ local function createTrackingButton()
 	addon.button:SetScript("OnClick", function(self)
 		local parent = self:GetParent()
 		L_ToggleDropDownMenu(1, nil, addon.dropDown, parent, 0, -5)
-		PlaySound("igMainMenuOptionCheckBoxOn")
+		PlaySound(PlaySoundKitID and "igMainMenuOptionCheckBoxOn" or 856)
 	end)
 	addon.button:SetScript("OnMouseDown", function(self)
 		local parent = self:GetParent();
