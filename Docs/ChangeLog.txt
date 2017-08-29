@@ -3,10 +3,13 @@ $Id$
 Revision History:
 =================
 
-* v2.10 (Jul. xx, 2017)
+* v2.10 (Aug. 29, 2017)
 -----------------------
-- Lib Update: LibUIDropDownMenu
-- Updated PlaySound API's usage method to support both 7.2.5 and 7.3.0 of WoW clients
+- ToC update to support WoW 7.3.0
+- Lib Update: LibUIDropDownMenu, Ace3
+- Updated PlaySound API's usage method to support WoW 7.3.0
+- Localization update:
+  - German (pas06)
 
 * v2.09 (Jun. 10, 2017)
 -----------------------
