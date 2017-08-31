@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v2.11 (Aug. 31, 2017)
+-----------------------
+- Lib Update: LibUIDropDownMenu
+
 * v2.10 (Aug. 29, 2017)
 -----------------------
 - ToC update to support WoW 7.3.0
