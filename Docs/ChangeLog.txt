@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v2.12 (Nov. 09, 2017)
+-----------------------
+- Lib update: AceConfigDialog
+
 * v2.11 (Aug. 31, 2017)
 -----------------------
 - Lib Update: LibUIDropDownMenu
