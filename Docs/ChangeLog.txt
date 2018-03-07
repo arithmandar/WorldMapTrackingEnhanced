@@ -3,6 +3,13 @@ $Id$
 Revision History:
 =================
 
+* v2.13 (Mar. 07, 2018)
+-----------------------
+- Lib update: 
+  - AceConfig
+- Localization update:
+  - German (imna1975)
+
 * v2.12 (Nov. 09, 2017)
 -----------------------
 - Lib update: AceConfigDialog
