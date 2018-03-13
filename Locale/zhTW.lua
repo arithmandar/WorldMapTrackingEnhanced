@@ -31,6 +31,7 @@ L["Click to open HandyNotes' config panel"] = "點擊以開啟 HandyNotes 的選
 -- //////////////////////////
 L[" (Core}"] = " (核心主程式}"
 L["Others"] = "其他"
+L["Disable Icons on World Map"] = "在世界地圖上不顯示圖示" -- from World Quest Tracker
 
 --@end-do-not-package@
 --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", handle-unlocalized="ignore", namespace="")@

@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v2.14 (Mar. xx, 2018)
+-----------------------
+- Added World Quest Tracker's support
+
 * v2.13 (Mar. 07, 2018)
 -----------------------
 - Lib update: 

@@ -58,9 +58,9 @@ function HandyNotes:DropDownMenus()
 		local i = 1
 		local LH = LibStub("AceLocale-3.0"):GetLocale("HandyNotes", false)
 		local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
+
 		-- Clear out the info from the separator wholesale.
 		menu[i] = {}
-
 		menu[i].isTitle = true
 		menu[i].notCheckable = true
 		menu[i].text = LH["HandyNotes"]

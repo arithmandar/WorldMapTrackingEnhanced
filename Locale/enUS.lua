@@ -30,6 +30,7 @@ L["Click to open HandyNotes' config panel"] = "Click to open HandyNotes' config 
 -- //////////////////////////
 L[" (Core}"] = " (Core}"
 L["Others"] = "Others"
+L["Disable Icons on World Map"] = "Disable Icons on World Map" -- from World Quest Tracker
 
 --@end-do-not-package@
 --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", handle-unlocalized="ignore", namespace="")@

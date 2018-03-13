@@ -45,6 +45,4 @@ Core\Constants.lua
 Core\Core.lua
 Core\Config.lua
 
-Modules\HandyNotes.lua
-Modules\GatherMate2.lua
-Modules\PetTracker.lua
+Modules.xml

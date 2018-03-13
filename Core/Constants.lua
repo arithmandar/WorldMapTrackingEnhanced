@@ -22,6 +22,7 @@ constants.defaults = {
 		enable_HandyNotes = true,
 		enable_GatherMate2 = true,
 		enable_PetTracker = true,
+		enable_WorldQuestTracker = true,
 	},
 }
 

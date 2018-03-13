@@ -141,6 +141,13 @@ local function dropDown_Initialize(self, level)
 			info.value = "worldQuestFilterEquipment"
 			info.checked = GetCVarBool("worldQuestFilterEquipment")
 			L_UIDropDownMenu_AddButton(info)
+			
+			if (checkAddonStatus("WorldQuestTracker")) then
+				local WQT = addon:GetModule("WorldQuestTracker", true)
+				local menu = WQT:DropDownMenus()
+
+				L_UIDropDownMenu_AddButton(menu[1])
+			end
 		end
 
 		-- ////////////////////////
@@ -178,6 +185,14 @@ local function dropDown_Initialize(self, level)
 			end
 		end
 	elseif (level == 2) then
+		if (checkAddonStatus("WorldQuestTracker") and L_UIDROPDOWNMENU_MENU_VALUE == "WorldQuestTracker") then
+			local WQT = addon:GetModule("WorldQuestTracker", true)
+			local menu = WQT:DropDownMenus()
+
+			for i = 2, #menu do
+				L_UIDropDownMenu_AddButton(menu[i], 2)
+			end
+		end
 		if (checkAddonStatus("HandyNotes") and profile.handynotes_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "HandyNotes") then
 			local HandyNotes = addon:GetModule("HandyNotes", true)
 			local menu = HandyNotes:DropDownMenus()

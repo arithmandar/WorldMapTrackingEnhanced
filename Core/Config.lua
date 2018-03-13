@@ -92,6 +92,16 @@ local function getOptions()
 								return not iPetTracker
 							end,
 						},
+						enable_WorldQuestTracker = {
+							order = 14,
+							type = "toggle",
+							name = select(2, GetAddOnInfo("WorldQuestTracker")) or L["WorldQuestTracker"],
+							desc = select(3, GetAddOnInfo("WorldQuestTracker")) or nil,
+							disabled = function() 
+								local iPetTracker = select(4, GetAddOnInfo("WorldQuestTracker"))
+								return not iWorldQuestTracker
+							end,
+						},
 						header2 = {
 							order = 20,
 							type = "header",
