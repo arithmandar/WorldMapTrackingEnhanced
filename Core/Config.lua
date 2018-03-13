@@ -98,7 +98,7 @@ local function getOptions()
 							name = select(2, GetAddOnInfo("WorldQuestTracker")) or L["WorldQuestTracker"],
 							desc = select(3, GetAddOnInfo("WorldQuestTracker")) or nil,
 							disabled = function() 
-								local iPetTracker = select(4, GetAddOnInfo("WorldQuestTracker"))
+								local iWorldQuestTracker = select(4, GetAddOnInfo("WorldQuestTracker"))
 								return not iWorldQuestTracker
 							end,
 						},

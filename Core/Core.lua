@@ -74,7 +74,8 @@ local function dropDown_Initialize(self, level)
 			info.checked = GetCVarBool("showTamers")
 			L_UIDropDownMenu_AddButton(info)
 		end
-		if (checkAddonStatus("PetTracker")) then
+		-- Adding PetTracker menus
+		if (checkAddonStatus("PetTracker") and profile.enable_PetTracker) then
 			local PT = addon:GetModule("PT", true)
 			local menu = PT:DropDownMenus()
 
@@ -84,74 +85,76 @@ local function dropDown_Initialize(self, level)
 		end
 
 		-- If we aren't on a map with world quests don't show the world quest reward filter options.
-		if (WorldMapFrame.UIElementsFrame.BountyBoard and WorldMapFrame.UIElementsFrame.BountyBoard:AreBountiesAvailable()) then
-
-			if prof1 or prof2 then
-				info.text = SHOW_PRIMARY_PROFESSION_ON_MAP_TEXT
-				info.value = "primaryProfessionsFilter"
-				info.checked = GetCVarBool("primaryProfessionsFilter")
-				L_UIDropDownMenu_AddButton(info)
-			end
-
-			if fish or cook or firstAid then
-				info.text = SHOW_SECONDARY_PROFESSION_ON_MAP_TEXT
-				info.value = "secondaryProfessionsFilter"
-				info.checked = GetCVarBool("secondaryProfessionsFilter")
-				L_UIDropDownMenu_AddButton(info)
-			end
-
-			L_UIDropDownMenu_AddSeparator(info)
-			-- Clear out the info from the separator wholesale.
-			info = L_UIDropDownMenu_CreateInfo()
-
-			info.isTitle = true
-			info.notCheckable = true
-			info.text = WORLD_QUEST_REWARD_FILTERS_TITLE
-			L_UIDropDownMenu_AddButton(info)
-			info.text = nil
-
-			info.isTitle = nil
-			info.disabled = nil
-			info.notCheckable = nil
-			info.isNotRadio = true
-			info.keepShownOnClick = true
-			info.func = WorldMapTrackingOptionsDropDown_OnClick
-
-			info.text = WORLD_QUEST_REWARD_FILTERS_ORDER_RESOURCES
-			info.value = "worldQuestFilterOrderResources"
-			info.checked = GetCVarBool("worldQuestFilterOrderResources")
-			L_UIDropDownMenu_AddButton(info)
-
-			info.text = WORLD_QUEST_REWARD_FILTERS_ARTIFACT_POWER
-			info.value = "worldQuestFilterArtifactPower"
-			info.checked = GetCVarBool("worldQuestFilterArtifactPower")
-			L_UIDropDownMenu_AddButton(info)
-
-			info.text = WORLD_QUEST_REWARD_FILTERS_PROFESSION_MATERIALS
-			info.value = "worldQuestFilterProfessionMaterials"
-			info.checked = GetCVarBool("worldQuestFilterProfessionMaterials")
-			L_UIDropDownMenu_AddButton(info)
-
-			info.text = WORLD_QUEST_REWARD_FILTERS_GOLD
-			info.value = "worldQuestFilterGold"
-			info.checked = GetCVarBool("worldQuestFilterGold")
-			L_UIDropDownMenu_AddButton(info)
-			
-			info.text = WORLD_QUEST_REWARD_FILTERS_EQUIPMENT
-			info.value = "worldQuestFilterEquipment"
-			info.checked = GetCVarBool("worldQuestFilterEquipment")
-			L_UIDropDownMenu_AddButton(info)
-			
-			if (checkAddonStatus("WorldQuestTracker")) then
-				local WQT = addon:GetModule("WorldQuestTracker", true)
-				local menu = WQT:DropDownMenus()
-
-				L_UIDropDownMenu_AddButton(menu[1])
-			end
+		if (not WorldMapFrame.UIElementsFrame.BountyBoard or not WorldMapFrame.UIElementsFrame.BountyBoard:AreBountiesAvailable()) then
+			return
 		end
 
-		-- ////////////////////////
-		if (checkAddonStatus("HandyNotes")) then
+		if prof1 or prof2 then
+			info.text = SHOW_PRIMARY_PROFESSION_ON_MAP_TEXT
+			info.value = "primaryProfessionsFilter"
+			info.checked = GetCVarBool("primaryProfessionsFilter")
+			L_UIDropDownMenu_AddButton(info)
+		end
+
+		if fish or cook or firstAid then
+			info.text = SHOW_SECONDARY_PROFESSION_ON_MAP_TEXT
+			info.value = "secondaryProfessionsFilter"
+			info.checked = GetCVarBool("secondaryProfessionsFilter")
+			L_UIDropDownMenu_AddButton(info)
+		end
+
+		L_UIDropDownMenu_AddSeparator(info)
+		-- Clear out the info from the separator wholesale.
+		info = L_UIDropDownMenu_CreateInfo()
+
+		info.isTitle = true
+		info.notCheckable = true
+		info.text = WORLD_QUEST_REWARD_FILTERS_TITLE
+		L_UIDropDownMenu_AddButton(info)
+		info.text = nil
+
+		info.isTitle = nil
+		info.disabled = nil
+		info.notCheckable = nil
+		info.isNotRadio = true
+		info.keepShownOnClick = true
+		info.func = WorldMapTrackingOptionsDropDown_OnClick
+
+		info.text = WORLD_QUEST_REWARD_FILTERS_ORDER_RESOURCES
+		info.value = "worldQuestFilterOrderResources"
+		info.checked = GetCVarBool("worldQuestFilterOrderResources")
+		L_UIDropDownMenu_AddButton(info)
+
+		info.text = WORLD_QUEST_REWARD_FILTERS_ARTIFACT_POWER
+		info.value = "worldQuestFilterArtifactPower"
+		info.checked = GetCVarBool("worldQuestFilterArtifactPower")
+		L_UIDropDownMenu_AddButton(info)
+
+		info.text = WORLD_QUEST_REWARD_FILTERS_PROFESSION_MATERIALS
+		info.value = "worldQuestFilterProfessionMaterials"
+		info.checked = GetCVarBool("worldQuestFilterProfessionMaterials")
+		L_UIDropDownMenu_AddButton(info)
+
+		info.text = WORLD_QUEST_REWARD_FILTERS_GOLD
+		info.value = "worldQuestFilterGold"
+		info.checked = GetCVarBool("worldQuestFilterGold")
+		L_UIDropDownMenu_AddButton(info)
+		
+		info.text = WORLD_QUEST_REWARD_FILTERS_EQUIPMENT
+		info.value = "worldQuestFilterEquipment"
+		info.checked = GetCVarBool("worldQuestFilterEquipment")
+		L_UIDropDownMenu_AddButton(info)
+		
+		-- Adding World Quest Tracker menus
+		if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker) then
+			local WQT = addon:GetModule("WorldQuestTracker", true)
+			local menu = WQT:DropDownMenus()
+
+			L_UIDropDownMenu_AddButton(menu[1])
+		end
+
+		-- Adding HandyNotes menus
+		if (checkAddonStatus("HandyNotes") and profile.enable_GatherMate2) then
 			local HandyNotes = addon:GetModule("HandyNotes", true)
 			local menu = HandyNotes:DropDownMenus()
 
@@ -167,7 +170,8 @@ local function dropDown_Initialize(self, level)
 			end
 
 		end
-		if (checkAddonStatus("GatherMate2")) then
+		-- Adding GatherMate2 menus
+		if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2) then
 			L_UIDropDownMenu_AddSeparator(info)
 
 			info = L_UIDropDownMenu_CreateInfo()
@@ -184,8 +188,10 @@ local function dropDown_Initialize(self, level)
 				L_UIDropDownMenu_AddButton(info)
 			end
 		end
+	-- Handling level 2 menus
 	elseif (level == 2) then
-		if (checkAddonStatus("WorldQuestTracker") and L_UIDROPDOWNMENU_MENU_VALUE == "WorldQuestTracker") then
+		-- handling World Quest Tracker's level 2 menus
+		if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker and L_UIDROPDOWNMENU_MENU_VALUE == "WorldQuestTracker") then
 			local WQT = addon:GetModule("WorldQuestTracker", true)
 			local menu = WQT:DropDownMenus()
 
@@ -193,7 +199,8 @@ local function dropDown_Initialize(self, level)
 				L_UIDropDownMenu_AddButton(menu[i], 2)
 			end
 		end
-		if (checkAddonStatus("HandyNotes") and profile.handynotes_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "HandyNotes") then
+		-- handling HandyNotes' level 2 menus
+		if (checkAddonStatus("HandyNotes") and profile.enable_GatherMate2 and profile.handynotes_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "HandyNotes") then
 			local HandyNotes = addon:GetModule("HandyNotes", true)
 			local menu = HandyNotes:DropDownMenus()
 
