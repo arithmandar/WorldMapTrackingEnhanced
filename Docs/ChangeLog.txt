@@ -3,7 +3,7 @@ $Id$
 Revision History:
 =================
 
-* v2.14 (Mar. xx, 2018)
+* v2.14 (Mar. 20, 2018)
 -----------------------
 - Added World Quest Tracker's support
 - Fixed option toggling not working to enable / disable modules showing in menus
