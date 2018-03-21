@@ -3,6 +3,11 @@ $Id$
 Revision History:
 =================
 
+* v2.15 (Mar. 22, 2018)
+-----------------------
+- Fixed the issue that HandyNotes' toggling will disappear in non Legion maps
+- Fixed the issue to wwrongly detect HandyNotes' enabling status
+
 * v2.14 (Mar. 20, 2018)
 -----------------------
 - Added World Quest Tracker's support
