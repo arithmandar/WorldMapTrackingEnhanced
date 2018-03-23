@@ -33,12 +33,12 @@ L["Click to open HandyNotes' config panel"] = "Click to open HandyNotes' config 
 -- GatherMate2
 -- //////////////////////////
 L["GatherMate2 Config"] = "GatherMate2 Config"
-L["Click to open GatherMate2' config panel"] = "Click to open GatherMate2' config panel"
+L["Click to open GatherMate2's config panel"] = "Click to open GatherMate2's config panel"
 
 -- //////////////////////////
 -- Others
 -- //////////////////////////
-L[" (Core}"] = " (Core}"
+L[" (Core)"] = " (Core)"
 L["Others"] = "Others"
 L["Disable Icons on World Map"] = "Disable Icons on World Map" -- from World Quest Tracker
 

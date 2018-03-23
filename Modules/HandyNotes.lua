@@ -76,7 +76,7 @@ function HandyNotes:DropDownMenus()
 			menu[i].hasArrow = nil
 		end
 		menu[i].value = "HandyNotes"
-		menu[i].text = LH["HandyNotes"]..L[" (Core}"]
+		menu[i].text = LH["HandyNotes"]..L[" (Core)"]
 		menu[i].colorCode = "|cFFB5E61D"
 		menu[i].tooltipTitle = LH["HandyNotes"]
 		menu[i].tooltipText = LH["Enable or disable HandyNotes"]

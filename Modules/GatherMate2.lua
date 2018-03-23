@@ -63,7 +63,7 @@ function GatherMate2:DropDownMenus()
 		menu[i].text = L["GatherMate2 Config"]
 		menu[i].colorCode = "|cFFFFC90E"
 		menu[i].tooltipTitle = mode_name
-		menu[i].tooltipText = L["Click to open GatherMate2' config panel"]
+		menu[i].tooltipText = L["Click to open GatherMate2's config panel"]
 		menu[i].tooltipOnButton = true
 		menu[i].func = (function(self)
 			ToggleFrame(WorldMapFrame)

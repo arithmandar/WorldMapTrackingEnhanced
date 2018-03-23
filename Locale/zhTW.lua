@@ -33,7 +33,7 @@ L["Click to open HandyNotes' config panel"] = "點擊以開啟 HandyNotes 的選
 -- //////////////////////////
 -- Others
 -- //////////////////////////
-L[" (Core}"] = " (核心主程式}"
+L[" (Core)"] = " (核心主程式)"
 L["Others"] = "其他"
 L["Disable Icons on World Map"] = "在世界地圖上不顯示圖示" -- from World Quest Tracker
 
