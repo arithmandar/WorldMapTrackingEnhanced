@@ -32,7 +32,7 @@ function WorldQuestTracker:OnEnable()
 end
 
 local function CheckWorldMapWidget()
-	return WQT.db.profile.disable_world_map_widgets
+	return profile.disable_world_map_widgets
 end
 	
 local function ToggleWorldMapWidget()
@@ -41,16 +41,7 @@ local function ToggleWorldMapWidget()
 		WQT.UpdateWorldQuestsOnWorldMap()
 	end
 end
---[[
-local function CheckActiveStables()
-	return not WorldQuestTracker.Sets["HideStables"]
-end
-	
-local function ToggleStables()
-	WorldQuestTracker.Sets["HideStables"] = not WorldQuestTracker.Sets["HideStables"]
-	WorldQuestTracker.WorldMap:UpdateBlips()
-end
-]]
+
 function WorldQuestTracker:DropDownMenus()
 	if (enabled > 0 and iWorldQuestTracker) then
 		local menu = {}

@@ -37,18 +37,41 @@ end
 
 function GatherMate2:DropDownMenus()
 	if (enabled > 0 and iGatherMate2) then
-		local info = {}
+		local menu = {}
+		local i = 1
+		local mode_name = select(2, GetAddOnInfo("GatherMate2")) or MODNAME
 		local LGM = LibStub("AceLocale-3.0"):GetLocale("GatherMate2", false)
-		info.isNotRadio = true
-		info.keepShownOnClick = true
-		info.text = select(2, GetAddOnInfo("GatherMate2"))
-		info.tooltipTitle = LGM["Show World Map Icons"]
-		info.tooltipText = LGM["Toggle showing World Map icons."]
-		info.tooltipOnButton = true
-		info.func = ToggleGatherMate2
-		info.checked = CheckWorldMapStatus
+		local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 		
-		return info
+		menu[i] = {}
+		menu[i].isNotRadio = true
+		menu[i].keepShownOnClick = true
+		menu[i].hasArrow = true
+		menu[i].value = "GatherMate2"
+		menu[i].colorCode = "|cFFB5E61D"
+		menu[i].text = mode_name
+		menu[i].tooltipTitle = LGM["Show World Map Icons"]
+		menu[i].tooltipText = LGM["Toggle showing World Map icons."]
+		menu[i].tooltipOnButton = true
+		menu[i].func = ToggleGatherMate2
+		menu[i].checked = CheckWorldMapStatus
+		i = i + 1
+
+		menu[i] = {}
+		menu[i].isNotRadio = true
+		menu[i].notCheckable = true
+		menu[i].text = L["GatherMate2 Config"]
+		menu[i].colorCode = "|cFFFFC90E"
+		menu[i].tooltipTitle = mode_name
+		menu[i].tooltipText = L["Click to open GatherMate2' config panel"]
+		menu[i].tooltipOnButton = true
+		menu[i].func = (function(self)
+			ToggleFrame(WorldMapFrame)
+			InterfaceOptionsFrame_OpenToCategory("GatherMate 2")
+			InterfaceOptionsFrame_OpenToCategory("GatherMate 2")
+		end)
+		
+		return menu
 	else
 		return nil
 	end

@@ -30,6 +30,12 @@ L["HandyNotes Config"] = "HandyNotes Config"
 L["Click to open HandyNotes' config panel"] = "Click to open HandyNotes' config panel"
 
 -- //////////////////////////
+-- GatherMate2
+-- //////////////////////////
+L["GatherMate2 Config"] = "GatherMate2 Config"
+L["Click to open GatherMate2' config panel"] = "Click to open GatherMate2' config panel"
+
+-- //////////////////////////
 -- Others
 -- //////////////////////////
 L[" (Core}"] = " (Core}"

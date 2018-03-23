@@ -117,6 +117,9 @@ function HandyNotes:DropDownMenus()
 		menu[i].notCheckable = true
 		menu[i].text = L["HandyNotes Config"]
 		menu[i].colorCode = "|cFFFFC90E"
+		menu[i].tooltipTitle = LH["HandyNotes"]
+		menu[i].tooltipText = L["Click to open HandyNotes' config panel"]
+		menu[i].tooltipOnButton = true
 		menu[i].func = (function(self)
 			ToggleFrame(WorldMapFrame)
 			InterfaceOptionsFrame_OpenToCategory("HandyNotes")

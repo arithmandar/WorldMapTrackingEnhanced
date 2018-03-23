@@ -177,16 +177,22 @@ local function dropDown_Initialize(self, level)
 			info.text = L["Others"]
 			L_UIDropDownMenu_AddButton(info)
 
-			if (checkAddonStatus("GatherMate2")) then
+			if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2) then
 				local GatherMate2 = addon:GetModule("GatherMate2", true)
-				info = L_UIDropDownMenu_CreateInfo()
-				info = GatherMate2:DropDownMenus()
+				local menu = GatherMate2:DropDownMenus()
 
-				L_UIDropDownMenu_AddButton(info)
+				L_UIDropDownMenu_AddButton(menu[1])
 			end
 		end
 	-- Handling level 2 menus
 	elseif (level == 2) then
+		-- handling GatherMate2's level 2 menus
+		if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2 and L_UIDROPDOWNMENU_MENU_VALUE == "GatherMate2") then
+			local GatherMate2 = addon:GetModule("GatherMate2", true)
+			local menu = GatherMate2:DropDownMenus()
+
+			L_UIDropDownMenu_AddButton(menu[2], 2)
+		end
 		-- handling World Quest Tracker's level 2 menus
 		if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker and L_UIDROPDOWNMENU_MENU_VALUE == "WorldQuestTracker") then
 			local WQT = addon:GetModule("WorldQuestTracker", true)
