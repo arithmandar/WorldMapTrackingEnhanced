@@ -36,6 +36,12 @@ L["GatherMate2 Config"] = "GatherMate2 Config"
 L["Click to open GatherMate2's config panel"] = "Click to open GatherMate2's config panel"
 
 -- //////////////////////////
+-- PetTracker
+-- //////////////////////////
+L["PetTracker Config"] = "PetTracker Config"
+L["Click to open PetTracker's config panel"] = "Click to open PetTracker's config panel"
+
+-- //////////////////////////
 -- Others
 -- //////////////////////////
 L[" (Core)"] = " (Core)"

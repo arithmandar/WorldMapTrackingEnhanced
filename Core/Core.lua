@@ -46,7 +46,7 @@ local function dropDown_Initialize(self, level)
 	if (level == 1) then
 		info.isTitle = true
 		info.notCheckable = true
-		info.text = WORLD_MAP_FILTER_TITLE
+		info.text = WORLD_MAP_FILTER_TITLE -- which is "Show:"
 		L_UIDropDownMenu_AddButton(info)
 
 		info.isTitle = nil
@@ -61,13 +61,6 @@ local function dropDown_Initialize(self, level)
 		info.checked = GetCVarBool("questPOI")
 		L_UIDropDownMenu_AddButton(info)
 
-		local prof1, prof2, arch, fish, cook, firstAid = GetProfessions()
-		if arch then
-			info.text = ARCHAEOLOGY_SHOW_DIG_SITES
-			info.value = "digsites"
-			info.checked = GetCVarBool("digSites")
-			L_UIDropDownMenu_AddButton(info)
-		end
 		if CanTrackBattlePets() then
 			info.text = SHOW_PET_BATTLES_ON_MAP_TEXT
 			info.value = "tamers"
@@ -76,12 +69,17 @@ local function dropDown_Initialize(self, level)
 		end
 		-- Adding PetTracker menus
 		if (checkAddonStatus("PetTracker") and profile.enable_PetTracker) then
-			local PT = addon:GetModule("PT", true)
+			local PT = addon:GetModule("PetTracker", true)
 			local menu = PT:DropDownMenus()
 
-			for i = 1, #menu do
-				L_UIDropDownMenu_AddButton(menu[i])
-			end
+			L_UIDropDownMenu_AddButton(menu[1])
+		end
+		local prof1, prof2, arch, fish, cook, firstAid = GetProfessions()
+		if arch then
+			info.text = ARCHAEOLOGY_SHOW_DIG_SITES -- "Show Digsites"
+			info.value = "digsites"
+			info.checked = GetCVarBool("digSites")
+			L_UIDropDownMenu_AddButton(info)
 		end
 
 		-- If we aren't on a map with world quests don't show the world quest reward filter options.
@@ -186,12 +184,23 @@ local function dropDown_Initialize(self, level)
 		end
 	-- Handling level 2 menus
 	elseif (level == 2) then
+		-- handling PetTracker's level 2 menus
+		if (checkAddonStatus("PetTracker") and profile.enable_PetTracker and L_UIDROPDOWNMENU_MENU_VALUE == "PetTracker") then
+			local PetTracker = addon:GetModule("PetTracker", true)
+			local menu = PetTracker:DropDownMenus()
+
+			for i = 2, #menu do
+				L_UIDropDownMenu_AddButton(menu[i], 2)
+			end
+		end
 		-- handling GatherMate2's level 2 menus
 		if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2 and L_UIDROPDOWNMENU_MENU_VALUE == "GatherMate2") then
 			local GatherMate2 = addon:GetModule("GatherMate2", true)
 			local menu = GatherMate2:DropDownMenus()
 
-			L_UIDropDownMenu_AddButton(menu[2], 2)
+			for i = 2, #menu do
+				L_UIDropDownMenu_AddButton(menu[i], 2)
+			end
 		end
 		-- handling World Quest Tracker's level 2 menus
 		if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker and L_UIDROPDOWNMENU_MENU_VALUE == "WorldQuestTracker") then

@@ -10,7 +10,7 @@ local _G = getfenv(0)
 -- ----------------------------------------------------------------------------
 local FOLDER_NAME, private = ...
 
-local MODNAME = "PT"
+local MODNAME = "PetTracker"
 
 local LibStub = _G.LibStub
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
@@ -47,20 +47,49 @@ end
 function PT:DropDownMenus()
 	if (enabled > 0 and iPetTracker) then
 		local menu = {}
+		local i = 1
+		local mode_name = select(2, GetAddOnInfo("PetTracker")) or MODNAME
+		local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 		
-		menu[1] = {}
-		menu[1].isNotRadio = true
-		menu[1].keepShownOnClick = true
-		menu[1].text = PETS
-		menu[1].func = ToggleSpecies
-		menu[1].checked = CheckActiveSpecies
+		menu[i] = {}
+		menu[i].notCheckable = true
+		menu[i].isNotRadio = true
+		menu[i].keepShownOnClick = true
+		menu[i].hasArrow = true
+		menu[i].value = MODNAME
+		menu[i].colorCode = "|cFFB5E61D"
+		menu[i].text = mode_name or MODNAME or PETS
+		i = i + 1
 
-		menu[2] = {}
-		menu[2].isNotRadio = true
-		menu[2].keepShownOnClick = true
-		menu[2].text = MINIMAP_TRACKING_STABLEMASTER
-		menu[2].func = ToggleStables
-		menu[2].checked = CheckActiveStables
+		menu[i] = {}
+		menu[i].isNotRadio = true
+		menu[i].keepShownOnClick = true
+		menu[i].text = PetTracker.Locals.Species or L["Species"]
+		menu[i].func = ToggleSpecies
+		menu[i].checked = CheckActiveSpecies
+		i = i + 1
+
+		menu[i] = {}
+		menu[i].isNotRadio = true
+		menu[i].keepShownOnClick = true
+		menu[i].text = MINIMAP_TRACKING_STABLEMASTER
+		menu[i].func = ToggleStables
+		menu[i].checked = CheckActiveStables
+		i = i + 1
+
+		menu[i] = {}
+		menu[i].isNotRadio = true
+		menu[i].notCheckable = true
+		menu[i].text = L["PetTracker Config"]
+		menu[i].colorCode = "|cFFFFC90E"
+		menu[i].tooltipTitle = mode_name
+		menu[i].tooltipText = L["Click to open PetTracker's config panel"]
+		menu[i].tooltipOnButton = true
+		menu[i].func = (function(self)
+			ToggleFrame(WorldMapFrame)
+			InterfaceOptionsFrame_OpenToCategory("PetTracker")
+			InterfaceOptionsFrame_OpenToCategory("PetTracker")
+		end)
 		
 		return menu
 	else

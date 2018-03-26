@@ -31,6 +31,18 @@ L["HandyNotes Config"] = "HandyNotes 設定"
 L["Click to open HandyNotes' config panel"] = "點擊以開啟 HandyNotes 的選項設定視窗"
 
 -- //////////////////////////
+-- GatherMate2
+-- //////////////////////////
+L["GatherMate2 Config"] = "GatherMate2 設定"
+L["Click to open GatherMate2's config panel"] = "點擊以開啟 GatherMate2 的選項設定視窗"
+
+-- //////////////////////////
+-- PetTracker
+-- //////////////////////////
+L["PetTracker Config"] = "PetTracker 設定"
+L["Click to open PetTracker's config panel"] = "點擊以開啟 PetTracker 的選項設定視窗"
+
+-- //////////////////////////
 -- Others
 -- //////////////////////////
 L[" (Core)"] = " (核心主程式)"

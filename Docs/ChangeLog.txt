@@ -7,6 +7,7 @@ Revision History:
 -----------------------
 - Added menu item to toggle GatherMate2's config panel
 - Added HandyNotes config menu item's tooltip
+- Enhanced PetTracker's menu displaying
 
 * v2.15 (Mar. 22, 2018)
 -----------------------
