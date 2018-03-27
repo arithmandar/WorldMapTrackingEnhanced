@@ -7,7 +7,7 @@ local _G = getfenv(0)
 local select = _G.select
 local pairs = _G.pairs
 -- Libraries
-local GameTooltip = _G.GameTooltip
+local GameTooltip, GetAddOnInfo, GetAddOnEnableState, UnitName, PlaySound = _G.GameTooltip, _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.PlaySound
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------

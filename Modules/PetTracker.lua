@@ -4,7 +4,9 @@
 -----------------------------------------------------------------------
 -- Functions
 local _G = getfenv(0)
+local select = _G.select
 -- Libraries
+local GetAddOnInfo, GetAddOnEnableState, UnitName, ToggleFrame, InterfaceOptionsFrame_OpenToCategory = _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.ToggleFrame, _G.InterfaceOptionsFrame_OpenToCategory
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
@@ -14,10 +16,11 @@ local MODNAME = "PetTracker"
 
 local LibStub = _G.LibStub
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
+local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local PT = addon:NewModule(MODNAME)
 
-local iPetTracker = select(4, GetAddOnInfo("PetTracker"))
-local enabled = GetAddOnEnableState(UnitName("player"), "PetTracker")
+local iPetTracker = select(4, GetAddOnInfo(MODNAME))
+local enabled = GetAddOnEnableState(UnitName("player"), MODNAME)
 
 function PT:OnEnable()
 	if (enabled > 0 and iPetTracker) then 
@@ -26,20 +29,20 @@ function PT:OnEnable()
 	end
 end
 
-local function CheckActiveSpecies()
+local function checkActiveSpecies()
 	return not PetTracker.Sets["HideSpecies"]
 end
 	
-local function ToggleSpecies()
+local function toggleSpecies()
 	PetTracker.Sets["HideSpecies"] = not PetTracker.Sets["HideSpecies"]
 	PetTracker.WorldMap:UpdateBlips()
 end
 
-local function CheckActiveStables()
+local function checkActiveStables()
 	return not PetTracker.Sets["HideStables"]
 end
 	
-local function ToggleStables()
+local function toggleStables()
 	PetTracker.Sets["HideStables"] = not PetTracker.Sets["HideStables"]
 	PetTracker.WorldMap:UpdateBlips()
 end
@@ -49,7 +52,6 @@ function PT:DropDownMenus()
 		local menu = {}
 		local i = 1
 		local mode_name = select(2, GetAddOnInfo("PetTracker")) or MODNAME
-		local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 		
 		menu[i] = {}
 		menu[i].notCheckable = true
@@ -65,16 +67,16 @@ function PT:DropDownMenus()
 		menu[i].isNotRadio = true
 		menu[i].keepShownOnClick = true
 		menu[i].text = PetTracker.Locals.Species or L["Species"]
-		menu[i].func = ToggleSpecies
-		menu[i].checked = CheckActiveSpecies
+		menu[i].func = toggleSpecies
+		menu[i].checked = checkActiveSpecies
 		i = i + 1
 
 		menu[i] = {}
 		menu[i].isNotRadio = true
 		menu[i].keepShownOnClick = true
 		menu[i].text = MINIMAP_TRACKING_STABLEMASTER
-		menu[i].func = ToggleStables
-		menu[i].checked = CheckActiveStables
+		menu[i].func = toggleStables
+		menu[i].checked = checkActiveStables
 		i = i + 1
 
 		menu[i] = {}

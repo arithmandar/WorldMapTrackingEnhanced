@@ -24,6 +24,7 @@ L["Profile Options"] = "Profile Options"
 -- //////////////////////////
 -- HandyNotes
 -- //////////////////////////
+L[" (Core)"] = " (Core)" -- HandyNotes (Core)
 L["Second Level Menu"] = "Second Level Menu"
 L["Show HandyNotes plugins in second level menu."] = "Show HandyNotes plugins in second level menu."
 L["HandyNotes Config"] = "HandyNotes Config"
@@ -44,7 +45,6 @@ L["Click to open PetTracker's config panel"] = "Click to open PetTracker's confi
 -- //////////////////////////
 -- Others
 -- //////////////////////////
-L[" (Core)"] = " (Core)"
 L["Others"] = "Others"
 L["Disable Icons on World Map"] = "Disable Icons on World Map" -- from World Quest Tracker
 

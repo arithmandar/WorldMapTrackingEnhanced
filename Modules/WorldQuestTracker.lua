@@ -4,7 +4,9 @@
 -----------------------------------------------------------------------
 -- Functions
 local _G = getfenv(0)
+local select = _G.select
 -- Libraries
+local GetAddOnInfo, GetAddOnEnableState, UnitName, ToggleFrame, InterfaceOptionsFrame_OpenToCategory = _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.ToggleFrame, _G.InterfaceOptionsFrame_OpenToCategory
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
@@ -31,11 +33,11 @@ function WorldQuestTracker:OnEnable()
 	end
 end
 
-local function CheckWorldMapWidget()
+local function checkWorldMapWidget()
 	return profile.disable_world_map_widgets
 end
 	
-local function ToggleWorldMapWidget()
+local function toggleWorldMapWidget()
 	profile.disable_world_map_widgets = not profile.disable_world_map_widgets
 	if (WQT.GetCurrentZoneType() == "world") then
 		WQT.UpdateWorldQuestsOnWorldMap()
@@ -62,8 +64,8 @@ function WorldQuestTracker:DropDownMenus()
 		menu[i].isNotRadio = true
 		menu[i].keepShownOnClick = true
 		menu[i].text = L["Disable Icons on World Map"]
-		menu[i].func = ToggleWorldMapWidget
-		menu[i].checked = CheckWorldMapWidget
+		menu[i].func = toggleWorldMapWidget
+		menu[i].checked = checkWorldMapWidget
 		menu[i].num = i
 		i = i + 1
 

@@ -4,7 +4,9 @@
 -----------------------------------------------------------------------
 -- Functions
 local _G = getfenv(0)
+local select = _G.select
 -- Libraries
+local GetAddOnInfo, GetAddOnEnableState, UnitName, ToggleFrame, InterfaceOptionsFrame_OpenToCategory = _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.ToggleFrame, _G.InterfaceOptionsFrame_OpenToCategory
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
@@ -14,25 +16,28 @@ local MODNAME = "GatherMate2"
 
 local LibStub = _G.LibStub
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
+local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local GatherMate2 = addon:NewModule(MODNAME)
 
-local GM
-local iGatherMate2 = select(4, GetAddOnInfo("GatherMate2"))
-local enabled = GetAddOnEnableState(UnitName("player"), "GatherMate2")
+local GM, profile, LGM
+local iGatherMate2 = select(4, GetAddOnInfo(MODNAME))
+local enabled = GetAddOnEnableState(UnitName("player"), MODNAME)
 
 function GatherMate2:OnEnable()
 	if (enabled > 0 and iGatherMate2) then 
-		GM = LibStub("AceAddon-3.0"):GetAddon("GatherMate2") 
+		GM = LibStub("AceAddon-3.0"):GetAddon(MODNAME) 
+		profile = GM.db.profile
+		LGM = LibStub("AceLocale-3.0"):GetLocale("GatherMate2", false)
 	end
 end
 	
-local function ToggleGatherMate2()
-	GM.db.profile.showWorldMap = not GM.db.profile.showWorldMap
+local function toggleGatherMate2()
+	profile.showWorldMap = not profile.showWorldMap
 	GM:OnProfileChanged()
 end
 
-local function CheckWorldMapStatus()
-	return GM.db.profile.showWorldMap or nil
+local function checkWorldMapStatus()
+	return profile.showWorldMap or nil
 end
 
 function GatherMate2:DropDownMenus()
@@ -40,21 +45,19 @@ function GatherMate2:DropDownMenus()
 		local menu = {}
 		local i = 1
 		local mode_name = select(2, GetAddOnInfo("GatherMate2")) or MODNAME
-		local LGM = LibStub("AceLocale-3.0"):GetLocale("GatherMate2", false)
-		local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 		
 		menu[i] = {}
 		menu[i].isNotRadio = true
 		menu[i].keepShownOnClick = true
 		menu[i].hasArrow = true
-		menu[i].value = "GatherMate2"
+		menu[i].value = MODNAME
 		menu[i].colorCode = "|cFFB5E61D"
 		menu[i].text = mode_name
 		menu[i].tooltipTitle = LGM["Show World Map Icons"]
 		menu[i].tooltipText = LGM["Toggle showing World Map icons."]
 		menu[i].tooltipOnButton = true
-		menu[i].func = ToggleGatherMate2
-		menu[i].checked = CheckWorldMapStatus
+		menu[i].func = toggleGatherMate2
+		menu[i].checked = checkWorldMapStatus
 		i = i + 1
 
 		menu[i] = {}

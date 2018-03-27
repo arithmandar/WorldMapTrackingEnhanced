@@ -4,7 +4,9 @@
 -----------------------------------------------------------------------
 -- Functions
 local _G = getfenv(0)
+local select = _G.select
 -- Libraries
+local GetAddOnInfo, GetAddOnEnableState, UnitName, ToggleFrame, InterfaceOptionsFrame_OpenToCategory = _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.ToggleFrame, _G.InterfaceOptionsFrame_OpenToCategory
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
@@ -14,41 +16,44 @@ local MODNAME = "HandyNotes"
 
 local LibStub = _G.LibStub
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
+local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local HandyNotes = addon:NewModule(MODNAME)
 
-local HN
-local iHandyNotes = select(4, GetAddOnInfo("HandyNotes"))
-local enabled = GetAddOnEnableState(UnitName("player"), "HandyNotes")
+local HN, profile, LH
+local iHandyNotes = select(4, GetAddOnInfo(MODNAME))
+local enabled = GetAddOnEnableState(UnitName("player"), MODNAME)
 
 function HandyNotes:OnEnable()
 	if (enabled > 0 and iHandyNotes) then 
 		HN = LibStub("AceAddon-3.0"):GetAddon("HandyNotes") 
+		profile = HN.db.profile
+		LH = LibStub("AceLocale-3.0"):GetLocale("HandyNotes", false)
 	end
 end
 	
-local function ToggleHandyNotes()
-	HN.db.profile.enabled = not HN.db.profile.enabled
-	if (HN.db.profile.enabled) then
+local function toggleHandyNotes()
+	profile.enabled = not profile.enabled
+	if (profile.enabled) then
 		HN:Enable()
 	else
 		HN:Disable()
 	end
 end
 
-local function CheckHandyNotesStatus()
-	return HN.db.profile.enabled or nil
+local function checkHandyNotesStatus()
+	return profile.enabled or nil
 end
 
-local function GetPlugins()
+local function getPlugins()
 	return HN.plugins
 end
 
-local function CheckPluginStatus(pluginName)
-	return HN.db.profile.enabledPlugins[pluginName] and true or false
+local function checkPluginStatus(pluginName)
+	return profile.enabledPlugins[pluginName] and true or false
 end
 
-local function TogglePlugin(pluginName)
-	HN.db.profile.enabledPlugins[pluginName] = not HN.db.profile.enabledPlugins[pluginName]
+local function togglePlugin(pluginName)
+	profile.enabledPlugins[pluginName] = not profile.enabledPlugins[pluginName]
 	HN:UpdatePluginMap(nil, pluginName)
 end
 
@@ -56,8 +61,6 @@ function HandyNotes:DropDownMenus()
 	if (enabled > 0 and iHandyNotes) then
 		local menu = {}
 		local i = 1
-		local LH = LibStub("AceLocale-3.0"):GetLocale("HandyNotes", false)
-		local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 
 		-- Clear out the info from the separator wholesale.
 		menu[i] = {}
@@ -81,32 +84,32 @@ function HandyNotes:DropDownMenus()
 		menu[i].tooltipTitle = LH["HandyNotes"]
 		menu[i].tooltipText = LH["Enable or disable HandyNotes"]
 		menu[i].tooltipOnButton = true
-		menu[i].checked = CheckHandyNotesStatus
-		menu[i].func = ToggleHandyNotes
+		menu[i].checked = checkHandyNotesStatus
+		menu[i].func = toggleHandyNotes
 		menu[i].num = i
 		i = i + 1
 		
 		-- Now create HandyNotes' plugins dropdown
 		-- better to find a way to refresh dropdown and then set the disabled status
-		--if (addon.HandyNotes.CheckHandyNotesStatus()) then
+		--if (addon.HandyNotes.checkHandyNotesStatus()) then
 		--	info.disabled = nil
 		--else
 		--	info.disabled = true
 		--end
-		local plugins = GetPlugins()
+		local plugins = getPlugins()
 		for k, v in pairs(plugins) do
 			menu[i] = {}
 			menu[i].isNotRadio = true
 			menu[i].keepShownOnClick = true
 			menu[i].text = k
-			if (not CheckHandyNotesStatus()) then
+			if (not checkHandyNotesStatus()) then
 				menu[i].disabled = true
 			else
 				menu[i].disabled = nil
 			end
-			menu[i].checked = CheckPluginStatus(k)
+			menu[i].checked = checkPluginStatus(k)
 			menu[i].func = (function(self)
-				TogglePlugin(k)
+				togglePlugin(k)
 			end)
 			menu[i].num = i
 			i = i + 1
