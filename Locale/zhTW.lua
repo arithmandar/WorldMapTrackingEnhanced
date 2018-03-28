@@ -43,6 +43,11 @@ L["PetTracker Config"] = "PetTracker 設定"
 L["Click to open PetTracker's config panel"] = "點擊以開啟 PetTracker 的選項設定視窗"
 
 -- //////////////////////////
+-- WorldQuestTracker
+-- //////////////////////////
+L["Show WorldQuestTracker's filter selections in second level menu."] = "將 World Quest Tracker 的過濾清單顯示在第二層選單。"
+
+-- //////////////////////////
 -- Others
 -- //////////////////////////
 L[" (Core)"] = " (核心主程式)"
