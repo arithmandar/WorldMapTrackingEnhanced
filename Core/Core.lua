@@ -166,9 +166,7 @@ local function dropDown_Initialize(self, level)
 
 			L_UIDropDownMenu_AddSeparator(info)
 			if (profile.handynotes_contextMenu) then
-				for i = 1, 2 do
-					L_UIDropDownMenu_AddButton(menu[i])
-				end
+				L_UIDropDownMenu_AddButton(menu[1])
 			else
 				for i = 1, #menu do
 					L_UIDropDownMenu_AddButton(menu[i])
@@ -178,21 +176,28 @@ local function dropDown_Initialize(self, level)
 		end
 		-- Adding GatherMate2 menus
 		if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2) then
+			local GatherMate2 = addon:GetModule("GatherMate2", true)
+			local menu = GatherMate2:DropDownMenus()
+
 			L_UIDropDownMenu_AddSeparator(info)
-
-			info = L_UIDropDownMenu_CreateInfo()
-			info.isTitle = true
-			info.notCheckable = true
-			info.text = L["Others"]
-			L_UIDropDownMenu_AddButton(info)
-
-			if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2) then
-				local GatherMate2 = addon:GetModule("GatherMate2", true)
-				local menu = GatherMate2:DropDownMenus()
-
-				L_UIDropDownMenu_AddButton(menu[1])
-			end
+			L_UIDropDownMenu_AddButton(menu[1])
 		end
+		-- Adding WorldMapTrackingEnhanced's Config link
+		L_UIDropDownMenu_AddSeparator(info)
+		info = L_UIDropDownMenu_CreateInfo()
+		info.isNotRadio = true
+		info.notCheckable = true
+		info.text = L["World Map Tracking Enhanced Config"]
+		info.colorCode = "|cFFB5E61D"
+		info.tooltipTitle = addon.LocName
+		info.tooltipText = L["Click to open World Map Tracking Enhanced's config panel"]
+		info.tooltipOnButton = true
+		info.func = (function(self)
+			ToggleFrame(WorldMapFrame)
+			InterfaceOptionsFrame_OpenToCategory(addon.LocName)
+			InterfaceOptionsFrame_OpenToCategory(addon.LocName)
+		end)
+		L_UIDropDownMenu_AddButton(info)
 	-- Handling level 2 menus
 	elseif (level == 2) then
 		-- handling PetTracker's level 2 menus
@@ -227,7 +232,7 @@ local function dropDown_Initialize(self, level)
 			local HandyNotes = addon:GetModule("HandyNotes", true)
 			local menu = HandyNotes:DropDownMenus()
 
-			for i = 3, #menu do
+			for i = 2, #menu do
 				L_UIDropDownMenu_AddButton(menu[i], 2)
 			end
 		end

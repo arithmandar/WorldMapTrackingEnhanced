@@ -17,6 +17,8 @@ L["Options"] = "選項"
 L["Support"] = "支援"
 L["Toggle which map enhancement addon to be included in the enhanced tracking option menu."] = "選擇要將哪些地圖增強的插件加入強化的地圖追蹤選項清單裡。"
 L["Profile Options"] = "設定檔選項"
+L["World Map Tracking Enhanced Config"] = "強化的世界地圖追蹤設定"
+L["Click to open World Map Tracking Enhanced's config panel"] = "點擊以開啟強化的世界地圖追蹤的選項設定視窗"
 
 -- //////////////////////////
 -- Common

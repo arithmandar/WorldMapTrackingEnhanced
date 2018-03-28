@@ -3,7 +3,7 @@ $Id$
 Revision History:
 =================
 
-* v2.17 (Mar. xx, 2018)
+* v2.17 (Mar. 28, 2018)
 -----------------------
 - Further integrate World Quest Tracker's filter feature
   - Sync the filter status between WoW's built-in pet battle status and the one from World Quest Tracker

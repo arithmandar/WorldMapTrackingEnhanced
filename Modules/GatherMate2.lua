@@ -51,7 +51,7 @@ function GatherMate2:DropDownMenus()
 		menu[i].keepShownOnClick = true
 		menu[i].hasArrow = true
 		menu[i].value = MODNAME
-		menu[i].colorCode = "|cFFB5E61D"
+		menu[i].colorCode = "|cFFFFC90E"
 		menu[i].text = mode_name
 		menu[i].tooltipTitle = LGM["Show World Map Icons"]
 		menu[i].tooltipText = LGM["Toggle showing World Map icons."]
@@ -64,7 +64,7 @@ function GatherMate2:DropDownMenus()
 		menu[i].isNotRadio = true
 		menu[i].notCheckable = true
 		menu[i].text = L["GatherMate2 Config"]
-		menu[i].colorCode = "|cFFFFC90E"
+		menu[i].colorCode = "|cFFB5E61D"
 		menu[i].tooltipTitle = mode_name
 		menu[i].tooltipText = L["Click to open GatherMate2's config panel"]
 		menu[i].tooltipOnButton = true

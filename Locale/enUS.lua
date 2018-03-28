@@ -16,6 +16,8 @@ L["Options"] = "Options"
 L["Support"] = "Support"
 L["Toggle which map enhancement addon to be included in the enhanced tracking option menu."] = "Toggle which map enhancement addon to be included in the enhanced tracking option menu."
 L["Profile Options"] = "Profile Options"
+L["World Map Tracking Enhanced Config"] = "World Map Tracking Enhanced Config"
+L["Click to open World Map Tracking Enhanced's config panel"] = "Click to open World Map Tracking Enhanced's config panel"
 
 -- //////////////////////////
 -- Common

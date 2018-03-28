@@ -59,7 +59,7 @@ function PT:DropDownMenus()
 		menu[i].keepShownOnClick = true
 		menu[i].hasArrow = true
 		menu[i].value = MODNAME
-		menu[i].colorCode = "|cFFB5E61D"
+		menu[i].colorCode = "|cFFFFC90E"
 		menu[i].text = mode_name or MODNAME or PETS
 		i = i + 1
 
@@ -83,7 +83,7 @@ function PT:DropDownMenus()
 		menu[i].isNotRadio = true
 		menu[i].notCheckable = true
 		menu[i].text = L["PetTracker Config"]
-		menu[i].colorCode = "|cFFFFC90E"
+		menu[i].colorCode = "|cFFB5E61D"
 		menu[i].tooltipTitle = mode_name
 		menu[i].tooltipText = L["Click to open PetTracker's config panel"]
 		menu[i].tooltipOnButton = true

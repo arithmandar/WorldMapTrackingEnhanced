@@ -46,16 +46,17 @@ function WorldQuestTracker:OnEnable()
 			{ 
 				key = "gold",
 				name = LW["S_QUESTTYPE_GOLD"],
-				icon = "Interface\\MoneyFrame\\UI-GoldIcon" },
+				icon = "Interface\\GossipFrame\\auctioneerGossipIcon" },
 			{ 
 				key = "pet_battles",
 				name = LW["S_QUESTTYPE_PETBATTLE"],
-				icon = "Interface\\Calendar\\Holidays\\Calendar_WeekendPetBattlesStart" },
+				icon = "Interface\\MINIMAP\\OBJECTICONS",
+				coords = {3/8, 4/8, 4/8, 5/8} },
 			{ 
 				key = "profession",
 				name = LW["S_QUESTTYPE_PROFESSION"],
 				icon = "Interface\\MINIMAP\\TRACKING\\Profession",
-				coords = {2/32, 30/32, 2/32, 30/32}	},
+				coords = {2/32, 30/32, 2/32, 30/32} },
 			{ 
 				key = "pvp",
 				name = LW["S_QUESTTYPE_PVP"],
@@ -106,7 +107,7 @@ function WorldQuestTracker:DropDownMenus()
 		local i = 1
 
 		menu[i] = {}
-		menu[i].isTitle = true
+--		menu[i].isTitle = true
 		menu[i].notCheckable = true
 		menu[i].isNotRadio = true
 		menu[i].keepShownOnClick = true
@@ -117,7 +118,7 @@ function WorldQuestTracker:DropDownMenus()
 		end
 		menu[i].value = MODNAME
 		menu[i].text = select(2, GetAddOnInfo("WorldQuestTracker"))
-		menu[i].colorCode = "|cFFB5E61D"
+		menu[i].colorCode = "|cFFFFC90E"
 		menu[i].num = i
 		i = i + 1
 		
