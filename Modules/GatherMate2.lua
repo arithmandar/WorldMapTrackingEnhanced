@@ -20,6 +20,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local GatherMate2 = addon:NewModule(MODNAME)
 
 local GM, profile, LGM
+local prof_options, prof_options2, prof_options3, prof_options4
 local iGatherMate2 = select(4, GetAddOnInfo(MODNAME))
 local enabled = GetAddOnEnableState(UnitName("player"), MODNAME)
 
@@ -28,6 +29,30 @@ function GatherMate2:OnEnable()
 		GM = LibStub("AceAddon-3.0"):GetAddon(MODNAME) 
 		profile = GM.db.profile
 		LGM = LibStub("AceLocale-3.0"):GetLocale("GatherMate2", false)
+
+		prof_options = {
+			always          = LGM["Always show"],
+			with_profession = LGM["Only with profession"],
+			active          = LGM["Only while tracking"],
+			never           = LGM["Never show"],
+		}
+		prof_options2 = { -- For Gas, which doesn't have tracking as a skill
+			always           = LGM["Always show"],
+			with_profession  = LGM["Only with profession"],
+			never            = LGM["Never show"],
+		}
+		prof_options3 = {
+			always          = LGM["Always show"],
+			active          = LGM["Only while tracking"],
+			never           = LGM["Never show"],
+		}
+		prof_options4 = { -- For Archaeology, which doesn't have tracking as a skill
+			always           = LGM["Always show"],
+			active		 = LGM["Only with digsite"],
+			with_profession  = LGM["Only with profession"],
+			never            = LGM["Never show"],
+		}
+
 	end
 end
 	
