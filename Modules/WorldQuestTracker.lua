@@ -30,15 +30,46 @@ function WorldQuestTracker:OnEnable()
 		profile = WQT.db.profile
 		LW = LibStub("AceLocale-3.0"):GetLocale("WorldQuestTrackerAddon")
 		filters = {
-			{ "artifact_power",			LW["S_QUESTTYPE_ARTIFACTPOWER"] },
-			{ "dungeon",				LW["S_QUESTTYPE_DUNGEON"] },
-			{ "equipment",				LW["S_QUESTTYPE_EQUIPMENT"] },
-			{ "gold",					LW["S_QUESTTYPE_GOLD"] },
-			{ "pet_battles",			LW["S_QUESTTYPE_PETBATTLE"] },
-			{ "profession",				LW["S_QUESTTYPE_PROFESSION"] },
-			{ "pvp",					LW["S_QUESTTYPE_PVP"] },
-			{ "garrison_resource",		LW["S_QUESTTYPE_RESOURCE"] },
-			{ "trade_skill",			LW["S_QUESTTYPE_TRADESKILL"] },
+			{ 
+				key = "artifact_power",	
+				name = LW["S_QUESTTYPE_ARTIFACTPOWER"],
+				icon = "Interface\\AddOns\\WorldQuestTracker\\media\\icon_artifactpower_red_roundT" },
+			{ 
+				key = "dungeon",
+				name = LW["S_QUESTTYPE_DUNGEON"],
+				icon = "Interface\\TARGETINGFRAME\\Nameplates" ,
+				coords = {41/256, 0/256, 42/128, 80/128} },
+			{ 
+				key = "equipment",
+				name = LW["S_QUESTTYPE_EQUIPMENT"],
+				icon = "Interface\\PaperDollInfoFrame\\UI-EquipmentManager-Toggle" },
+			{ 
+				key = "gold",
+				name = LW["S_QUESTTYPE_GOLD"],
+				icon = "Interface\\MoneyFrame\\UI-GoldIcon" },
+			{ 
+				key = "pet_battles",
+				name = LW["S_QUESTTYPE_PETBATTLE"],
+				icon = "Interface\\Calendar\\Holidays\\Calendar_WeekendPetBattlesStart" },
+			{ 
+				key = "profession",
+				name = LW["S_QUESTTYPE_PROFESSION"],
+				icon = "Interface\\MINIMAP\\TRACKING\\Profession",
+				coords = {2/32, 30/32, 2/32, 30/32}	},
+			{ 
+				key = "pvp",
+				name = LW["S_QUESTTYPE_PVP"],
+				icon = "Interface\\QUESTFRAME\\QuestTypeIcons",
+				coords = {37/128, 53/128, 19/64, 36/64} },
+			{ 
+				key = "garrison_resource",
+				name = LW["S_QUESTTYPE_RESOURCE"],
+				icon = "Interface\\AddOns\\WorldQuestTracker\\media\\resource_iconT" },
+			{ 
+				key = "trade_skill",
+				name = LW["S_QUESTTYPE_TRADESKILL"],
+				icon = "Interface\\ICONS\\INV_Blood of Sargeras",
+				coords = {5/64, 59/64, 5/64, 59/64} },
 		}
 	else
 		return false
@@ -62,6 +93,10 @@ end
 	
 local function toggleFilterStatus(filterType)
 	profile.filters[filterType] = not profile.filters[filterType]
+	if (filterType == "pet_battles") then
+		SetCVar("showTamers", profile.filters[filterType] and "1" or "0");
+		WorldMapFrame_Update()
+	end
 	WQT.UpdateZoneWidgets()
 end
 
@@ -90,11 +125,20 @@ function WorldQuestTracker:DropDownMenus()
 			menu[i] = {}
 			menu[i].isNotRadio = true
 			menu[i].keepShownOnClick = true
-			menu[i].text = filters[j][2]
-			menu[i].checked = checkFilterStatus(filters[j][1])
+			menu[i].text = filters[j].name
+			menu[i].checked = checkFilterStatus(filters[j].key)
 			menu[i].func = (function(self)
-				toggleFilterStatus(filters[j][1])
+				toggleFilterStatus(filters[j].key)
 			end)
+			if filters[j].icon then
+				menu[i].icon = filters[j].icon
+			end
+			if filters[j].coords then
+				menu[i].tCoordLeft = filters[j].coords[1] or 0
+				menu[i].tCoordRight = filters[j].coords[2] or 1
+				menu[i].tCoordTop = filters[j].coords[3] or 0
+				menu[i].tCoordBottom = filters[j].coords[4] or 1
+			end
 			menu[i].num = i
 			i = i + 1
 		end

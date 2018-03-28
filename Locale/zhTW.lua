@@ -21,11 +21,12 @@ L["Profile Options"] = "設定檔選項"
 -- //////////////////////////
 -- Common
 -- //////////////////////////
+L["Second Level Menu"] = "第二層選單"
 
 -- //////////////////////////
 -- HandyNotes
 -- //////////////////////////
-L["Second Level Menu"] = "第二層選單"
+L[" (Core)"] = " (核心主程式)"
 L["Show HandyNotes plugins in second level menu."] = "將 HandyNotes 的套件清單顯示在第二層選單。"
 L["HandyNotes Config"] = "HandyNotes 設定"
 L["Click to open HandyNotes' config panel"] = "點擊以開啟 HandyNotes 的選項設定視窗"
@@ -46,13 +47,12 @@ L["Click to open PetTracker's config panel"] = "點擊以開啟 PetTracker 的�
 -- WorldQuestTracker
 -- //////////////////////////
 L["Show WorldQuestTracker's filter selections in second level menu."] = "將 World Quest Tracker 的過濾清單顯示在第二層選單。"
+L["Disable Icons on World Map"] = "在世界地圖上不顯示圖示" -- from World Quest Tracker
 
 -- //////////////////////////
 -- Others
 -- //////////////////////////
-L[" (Core)"] = " (核心主程式)"
 L["Others"] = "其他"
-L["Disable Icons on World Map"] = "在世界地圖上不顯示圖示" -- from World Quest Tracker
 
 --@end-do-not-package@
 --@localization(locale="zhTW", format="lua_additive_table", handle-subnamespaces="none", handle-unlocalized="ignore", namespace="")@

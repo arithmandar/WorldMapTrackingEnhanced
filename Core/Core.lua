@@ -26,7 +26,7 @@ addon.LocName = select(2, GetAddOnInfo(addon.Name))
 addon.Notes = select(3, GetAddOnInfo(addon.Name))
 _G.WorldMapTrackingEnhanced = addon
 local profile
-local FilterButton
+local FilterButton -- WorldMapFrame.UIElementsFrame.TrackingOptionsButton.Button
 
 local function checkAddonStatus(addonName)
 	if not addonName then return nil end
@@ -39,6 +39,8 @@ local function checkAddonStatus(addonName)
 	end
 end
 
+-- //////////////////////////////////////////////////////////////////////////
+-- Main function to replace World Map Tracking Option's dropdown menu
 -- //////////////////////////////////////////////////////////////////////////
 local function dropDown_Initialize(self, level)
 	if not level then level = 1 end
@@ -62,6 +64,15 @@ local function dropDown_Initialize(self, level)
 		info.checked = GetCVarBool("questPOI")
 		L_UIDropDownMenu_AddButton(info)
 
+		local prof1, prof2, arch, fish, cook, firstAid = GetProfessions()
+		if arch then
+			info.text = ARCHAEOLOGY_SHOW_DIG_SITES -- "Show Digsites"
+			info.value = "digsites"
+			info.checked = GetCVarBool("digSites")
+			L_UIDropDownMenu_AddButton(info)
+		end
+
+		-- Pet Battle
 		if CanTrackBattlePets() then
 			info.text = SHOW_PET_BATTLES_ON_MAP_TEXT
 			info.value = "tamers"
@@ -75,14 +86,6 @@ local function dropDown_Initialize(self, level)
 
 			L_UIDropDownMenu_AddButton(menu[1])
 		end
-		local prof1, prof2, arch, fish, cook, firstAid = GetProfessions()
-		if arch then
-			info.text = ARCHAEOLOGY_SHOW_DIG_SITES -- "Show Digsites"
-			info.value = "digsites"
-			info.checked = GetCVarBool("digSites")
-			L_UIDropDownMenu_AddButton(info)
-		end
-
 		-- If we aren't on a map with world quests don't show the world quest reward filter options.
 		if (WorldMapFrame.UIElementsFrame.BountyBoard and WorldMapFrame.UIElementsFrame.BountyBoard:AreBountiesAvailable()) then
 			L_UIDropDownMenu_AddSeparator(info)
@@ -235,7 +238,7 @@ local function createTrackingButton()
 	addon.dropDown = CreateFrame("Frame", addon.Name.."DropDown", WorldMapFrame.UIElementsFrame.TrackingOptionsButton, "L_UIDropDownMenuTemplate");
 	addon.dropDown:SetScript("OnShow", function(self) 
 		L_UIDropDownMenu_Initialize(self, dropDown_Initialize, "MENU") 
-	end);
+	end)
 	
 	addon.button = CreateFrame("Button", addon.Name.."Button", WorldMapFrame.UIElementsFrame.TrackingOptionsButton)
 	addon.button:SetWidth(32)

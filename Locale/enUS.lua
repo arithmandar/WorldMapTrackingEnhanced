@@ -20,12 +20,12 @@ L["Profile Options"] = "Profile Options"
 -- //////////////////////////
 -- Common
 -- //////////////////////////
+L["Second Level Menu"] = "Second Level Menu"
 
 -- //////////////////////////
 -- HandyNotes
 -- //////////////////////////
 L[" (Core)"] = " (Core)" -- HandyNotes (Core)
-L["Second Level Menu"] = "Second Level Menu"
 L["Show HandyNotes plugins in second level menu."] = "Show HandyNotes plugins in second level menu."
 L["HandyNotes Config"] = "HandyNotes Config"
 L["Click to open HandyNotes' config panel"] = "Click to open HandyNotes' config panel"
@@ -46,12 +46,12 @@ L["Click to open PetTracker's config panel"] = "Click to open PetTracker's confi
 -- WorldQuestTracker
 -- //////////////////////////
 L["Show WorldQuestTracker's filter selections in second level menu."] = "Show WorldQuestTracker's filter selections in second level menu."
+L["Disable Icons on World Map"] = "Disable Icons on World Map" -- from World Quest Tracker
 
 -- //////////////////////////
 -- Others
 -- //////////////////////////
 L["Others"] = "Others"
-L["Disable Icons on World Map"] = "Disable Icons on World Map" -- from World Quest Tracker
 
 --@end-do-not-package@
 --@localization(locale="enUS", format="lua_additive_table", handle-subnamespaces="none", handle-unlocalized="ignore", namespace="")@
