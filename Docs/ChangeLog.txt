@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v2.17 (Mar. xx, 2018)
+-----------------------
+- Further integrate World Quest Tracker's filter feature
+
 * v2.16 (Mar. 27, 2018)
 -----------------------
 - Added menu item to toggle GatherMate2's config panel

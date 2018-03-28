@@ -7,7 +7,8 @@ local _G = getfenv(0)
 local select = _G.select
 local pairs = _G.pairs
 -- Libraries
-local GameTooltip, GetAddOnInfo, GetAddOnEnableState, UnitName, PlaySound = _G.GameTooltip, _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.PlaySound
+local GameTooltip, GetAddOnInfo, GetAddOnEnableState, UnitName, PlaySound, GetCVarBool = _G.GameTooltip, _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.PlaySound, _G.GetCVarBool
+local WorldMapTrackingOptionsDropDown_OnClick = _G.WorldMapTrackingOptionsDropDown_OnClick
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
@@ -84,68 +85,75 @@ local function dropDown_Initialize(self, level)
 
 		-- If we aren't on a map with world quests don't show the world quest reward filter options.
 		if (WorldMapFrame.UIElementsFrame.BountyBoard and WorldMapFrame.UIElementsFrame.BountyBoard:AreBountiesAvailable()) then
-			if prof1 or prof2 then
-				info.text = SHOW_PRIMARY_PROFESSION_ON_MAP_TEXT
-				info.value = "primaryProfessionsFilter"
-				info.checked = GetCVarBool("primaryProfessionsFilter")
-				L_UIDropDownMenu_AddButton(info)
-			end
-
-			if fish or cook or firstAid then
-				info.text = SHOW_SECONDARY_PROFESSION_ON_MAP_TEXT
-				info.value = "secondaryProfessionsFilter"
-				info.checked = GetCVarBool("secondaryProfessionsFilter")
-				L_UIDropDownMenu_AddButton(info)
-			end
-
 			L_UIDropDownMenu_AddSeparator(info)
-			-- Clear out the info from the separator wholesale.
-			info = L_UIDropDownMenu_CreateInfo()
-
-			info.isTitle = true
-			info.notCheckable = true
-			info.text = WORLD_QUEST_REWARD_FILTERS_TITLE
-			L_UIDropDownMenu_AddButton(info)
-			info.text = nil
-
-			info.isTitle = nil
-			info.disabled = nil
-			info.notCheckable = nil
-			info.isNotRadio = true
-			info.keepShownOnClick = true
-			info.func = WorldMapTrackingOptionsDropDown_OnClick
-
-			info.text = WORLD_QUEST_REWARD_FILTERS_ORDER_RESOURCES
-			info.value = "worldQuestFilterOrderResources"
-			info.checked = GetCVarBool("worldQuestFilterOrderResources")
-			L_UIDropDownMenu_AddButton(info)
-
-			info.text = WORLD_QUEST_REWARD_FILTERS_ARTIFACT_POWER
-			info.value = "worldQuestFilterArtifactPower"
-			info.checked = GetCVarBool("worldQuestFilterArtifactPower")
-			L_UIDropDownMenu_AddButton(info)
-
-			info.text = WORLD_QUEST_REWARD_FILTERS_PROFESSION_MATERIALS
-			info.value = "worldQuestFilterProfessionMaterials"
-			info.checked = GetCVarBool("worldQuestFilterProfessionMaterials")
-			L_UIDropDownMenu_AddButton(info)
-
-			info.text = WORLD_QUEST_REWARD_FILTERS_GOLD
-			info.value = "worldQuestFilterGold"
-			info.checked = GetCVarBool("worldQuestFilterGold")
-			L_UIDropDownMenu_AddButton(info)
-			
-			info.text = WORLD_QUEST_REWARD_FILTERS_EQUIPMENT
-			info.value = "worldQuestFilterEquipment"
-			info.checked = GetCVarBool("worldQuestFilterEquipment")
-			L_UIDropDownMenu_AddButton(info)
-			
-			-- Adding World Quest Tracker menus
+			-- Adding World Quest Tracker menus;
 			if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker) then
 				local WQT = addon:GetModule("WorldQuestTracker", true)
 				local menu = WQT:DropDownMenus()
 
-				L_UIDropDownMenu_AddButton(menu[1])
+				if (profile.worldQuestTracker_contextMenu) then
+					L_UIDropDownMenu_AddButton(menu[1])
+				else
+					for i = 1, #menu do
+						L_UIDropDownMenu_AddButton(menu[i])
+					end
+				end
+			-- With World Quest Tracker enabled, actually the WoW built-in World Quest menu filters will not working. 
+			else
+				if prof1 or prof2 then
+					info.text = SHOW_PRIMARY_PROFESSION_ON_MAP_TEXT
+					info.value = "primaryProfessionsFilter"
+					info.checked = GetCVarBool("primaryProfessionsFilter")
+					L_UIDropDownMenu_AddButton(info)
+				end
+
+				if fish or cook or firstAid then
+					info.text = SHOW_SECONDARY_PROFESSION_ON_MAP_TEXT
+					info.value = "secondaryProfessionsFilter"
+					info.checked = GetCVarBool("secondaryProfessionsFilter")
+					L_UIDropDownMenu_AddButton(info)
+				end
+
+				-- Clear out the info from the separator wholesale.
+				info = L_UIDropDownMenu_CreateInfo()
+
+				info.isTitle = true
+				info.notCheckable = true
+				info.text = WORLD_QUEST_REWARD_FILTERS_TITLE
+				L_UIDropDownMenu_AddButton(info)
+				info.text = nil
+
+				info.isTitle = nil
+				info.disabled = nil
+				info.notCheckable = nil
+				info.isNotRadio = true
+				info.keepShownOnClick = true
+				info.func = WorldMapTrackingOptionsDropDown_OnClick
+
+				info.text = WORLD_QUEST_REWARD_FILTERS_ORDER_RESOURCES
+				info.value = "worldQuestFilterOrderResources"
+				info.checked = GetCVarBool("worldQuestFilterOrderResources")
+				L_UIDropDownMenu_AddButton(info)
+
+				info.text = WORLD_QUEST_REWARD_FILTERS_ARTIFACT_POWER
+				info.value = "worldQuestFilterArtifactPower"
+				info.checked = GetCVarBool("worldQuestFilterArtifactPower")
+				L_UIDropDownMenu_AddButton(info)
+
+				info.text = WORLD_QUEST_REWARD_FILTERS_PROFESSION_MATERIALS
+				info.value = "worldQuestFilterProfessionMaterials"
+				info.checked = GetCVarBool("worldQuestFilterProfessionMaterials")
+				L_UIDropDownMenu_AddButton(info)
+
+				info.text = WORLD_QUEST_REWARD_FILTERS_GOLD
+				info.value = "worldQuestFilterGold"
+				info.checked = GetCVarBool("worldQuestFilterGold")
+				L_UIDropDownMenu_AddButton(info)
+				
+				info.text = WORLD_QUEST_REWARD_FILTERS_EQUIPMENT
+				info.value = "worldQuestFilterEquipment"
+				info.checked = GetCVarBool("worldQuestFilterEquipment")
+				L_UIDropDownMenu_AddButton(info)
 			end
 		end
 		-- Adding HandyNotes menus
@@ -203,7 +211,7 @@ local function dropDown_Initialize(self, level)
 			end
 		end
 		-- handling World Quest Tracker's level 2 menus
-		if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker and L_UIDROPDOWNMENU_MENU_VALUE == "WorldQuestTracker") then
+		if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker and profile.worldQuestTracker_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "WorldQuestTracker") then
 			local WQT = addon:GetModule("WorldQuestTracker", true)
 			local menu = WQT:DropDownMenus()
 

@@ -19,6 +19,7 @@ private.constants = constants
 constants.defaults = {
 	profile = {
 		handynotes_contextMenu = true,
+		worldQuestTracker_contextMenu = false,
 		enable_HandyNotes = true,
 		enable_GatherMate2 = true,
 		enable_PetTracker = true,

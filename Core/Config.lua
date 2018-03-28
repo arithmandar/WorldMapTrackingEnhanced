@@ -105,17 +105,28 @@ local function getOptions()
 						header2 = {
 							order = 20,
 							type = "header",
-							name = select(2, GetAddOnInfo("HandyNotes")) or L["HandyNotes"],
+							name = L["Second Level Menu"],
 						},
 						handynotes_contextMenu = {
 							order = 21,
 							type = "toggle",
-							name = L["Second Level Menu"],
+							name = select(2, GetAddOnInfo("HandyNotes")) or L["HandyNotes"],
 							desc = L["Show HandyNotes plugins in second level menu."],
 							width = "full",
 							disabled = function() 
 								local iHandyNotes = select(4, GetAddOnInfo("HandyNotes"))
 								return not iHandyNotes or not addon.db.profile.enable_HandyNotes
+							end,
+						},
+						worldQuestTracker_contextMenu = {
+							order = 22,
+							type = "toggle",
+							name = select(2, GetAddOnInfo("WorldQuestTracker")) or L["WorldQuestTracker"],
+							desc = L["Show WorldQuestTracker's filter selections in second level menu."],
+							width = "full",
+							disabled = function() 
+								local iWorldQuestTracker = select(4, GetAddOnInfo("WorldQuestTracker"))
+								return not iWorldQuestTracker or not addon.db.profile.enable_WorldQuestTracker
 							end,
 						},
 					},

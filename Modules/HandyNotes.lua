@@ -25,9 +25,9 @@ local enabled = GetAddOnEnableState(UnitName("player"), MODNAME)
 
 function HandyNotes:OnEnable()
 	if (enabled > 0 and iHandyNotes) then 
-		HN = LibStub("AceAddon-3.0"):GetAddon("HandyNotes") 
+		HN = LibStub("AceAddon-3.0"):GetAddon(MODNAME) 
 		profile = HN.db.profile
-		LH = LibStub("AceLocale-3.0"):GetLocale("HandyNotes", false)
+		LH = LibStub("AceLocale-3.0"):GetLocale(MODNAME, false)
 	end
 end
 	
