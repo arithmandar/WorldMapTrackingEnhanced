@@ -5,7 +5,7 @@ Revision History:
 
 * v2.18 (Mar. xx, 2018)
 -----------------------
-- Further integrate GatherMate2's filter feature
+- Further integrate GatherMate2's filter feature. Now you can toggle the the GatherMate2 filters easier.
 
 * v2.17 (Mar. 28, 2018)
 -----------------------
