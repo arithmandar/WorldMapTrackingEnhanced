@@ -20,7 +20,13 @@ local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local GatherMate2 = addon:NewModule(MODNAME)
 
 local GM, profile, LGM
-local prof_options, prof_options2, prof_options3, prof_options4
+local prof_options = {}
+local prof_options2 = {}
+local prof_options3 = {}
+local prof_options4 = {}
+local filters = {}
+local Config
+
 local iGatherMate2 = select(4, GetAddOnInfo(MODNAME))
 local enabled = GetAddOnEnableState(UnitName("player"), MODNAME)
 
@@ -29,6 +35,7 @@ function GatherMate2:OnEnable()
 		GM = LibStub("AceAddon-3.0"):GetAddon(MODNAME) 
 		profile = GM.db.profile
 		LGM = LibStub("AceLocale-3.0"):GetLocale("GatherMate2", false)
+		Config = GM:GetModule("Config")
 
 		prof_options = {
 			always          = LGM["Always show"],
@@ -52,6 +59,50 @@ function GatherMate2:OnEnable()
 			with_profession  = LGM["Only with profession"],
 			never            = LGM["Never show"],
 		}
+		filters = {
+			showMinerals = {
+				name = LGM["Show Mining Nodes"], 
+				desc = LGM["Toggle showing mining nodes."], 
+				opts = prof_options, 
+				arg = "Mining"
+			},
+			showHerbs = {
+				name = LGM["Show Herbalism Nodes"], 
+				desc = LGM["Toggle showing herbalism nodes."], 
+				opts = prof_options, 
+				arg = "Herb Gathering"
+			},
+			showFishes = {
+				name = LGM["Show Fishing Nodes"], 
+				desc = LGM["Toggle showing fishing nodes."], 
+				opts = prof_options, 
+				arg = "Fishing"
+			},
+			showGases = {
+				name = LGM["Show Gas Clouds"], 
+				desc = LGM["Toggle showing gas clouds."], 
+				opts = prof_options2, 
+				arg = "Extract Gas"
+			},
+			showTreasure = {
+				name = LGM["Show Treasure Nodes"], 
+				desc = LGM["Toggle showing treasure nodes."], 
+				opts = prof_options3, 
+				arg = "Treasure"
+			},
+			showArchaeology = {
+				name = LGM["Show Archaeology Nodes"], 
+				desc = LGM["Toggle showing archaeology nodes."], 
+				opts = prof_options4, 
+				arg = "Archaeology"
+			},
+			showTimber = {
+				name = LGM["Show Timber Nodes"], 
+				desc = LGM["Toggle showing timber nodes."], 
+				opts = prof_options3, 
+				arg = "Logging"
+			},
+		}
 
 	end
 end
@@ -68,12 +119,13 @@ end
 function GatherMate2:DropDownMenus()
 	if (enabled > 0 and iGatherMate2) then
 		local menu = {}
+		local menu2 = {}
 		local i = 1
 		local mode_name = select(2, GetAddOnInfo("GatherMate2")) or MODNAME
 		
 		menu[i] = {}
 		menu[i].isNotRadio = true
-		menu[i].keepShownOnClick = true
+		--menu[i].keepShownOnClick = true
 		menu[i].hasArrow = true
 		menu[i].value = MODNAME
 		menu[i].colorCode = "|cFFFFC90E"
@@ -84,6 +136,42 @@ function GatherMate2:DropDownMenus()
 		menu[i].func = toggleGatherMate2
 		menu[i].checked = checkWorldMapStatus
 		i = i + 1
+
+		for k, v in pairs(filters) do
+			menu[i] = {}
+			menu[i].isNotRadio = true
+			menu[i].notCheckable = true
+			menu[i].hasArrow = true
+			menu[i].keepShownOnClick = true
+			menu[i].colorCode = "|cFFFFC90E"
+			menu[i].value = MODNAME.."."..k
+			menu[i].text = v.name
+			menu[i].tooltipTitle = v.name
+			menu[i].tooltipText = v.desc
+			menu[i].tooltipOnButton = true
+			if (not checkWorldMapStatus()) then
+				menu[i].disabled = true
+			else
+				menu[i].disabled = nil
+			end
+			i = i + 1
+
+			menu2[k] = {}
+			for ka, va in pairs(v.opts) do
+				menu2[k][ka] = {}
+				menu2[k][ka].isNotRadio = true
+				--menu2[k][ka].keepShownOnClick = true
+				menu2[k][ka].text = va
+				menu2[k][ka].disabled = (not checkWorldMapStatus()) and true or nil
+				menu2[k][ka].checked = (function(self)
+					return profile.show[v.arg] == ka and true or false
+				end)
+				menu2[k][ka].func = (function(self)
+					profile.show[v.arg] = ka
+					Config:UpdateConfig()
+				end)
+			end
+		end
 
 		menu[i] = {}
 		menu[i].isNotRadio = true
@@ -99,7 +187,7 @@ function GatherMate2:DropDownMenus()
 			InterfaceOptionsFrame_OpenToCategory("GatherMate 2")
 		end)
 		
-		return menu
+		return menu, menu2
 	else
 		return nil
 	end

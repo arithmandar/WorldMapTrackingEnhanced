@@ -236,6 +236,21 @@ local function dropDown_Initialize(self, level)
 				L_UIDropDownMenu_AddButton(menu[i], 2)
 			end
 		end
+	elseif (level == 3) then
+		-- handling GatherMate2's level 3 menus
+		if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2) then
+--		and L_UIDROPDOWNMENU_MENU_VALUE == "GatherMate2") then
+			local GatherMate2 = addon:GetModule("GatherMate2", true)
+			local _, menu2 = GatherMate2:DropDownMenus()
+			for k, v in pairs(menu2) do
+				if (L_UIDROPDOWNMENU_MENU_VALUE == "GatherMate2".."."..k) then
+					for ka, va in pairs(menu2[k]) do
+						L_UIDropDownMenu_AddButton(menu2[k][ka], 3)
+					end
+				end
+			end
+
+		end
 	end
 end
 

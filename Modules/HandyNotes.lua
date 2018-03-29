@@ -64,22 +64,15 @@ function HandyNotes:DropDownMenus()
 
 		-- Clear out the info from the separator wholesale.
 		menu[i] = {}
---		menu[i].isTitle = true
---		menu[i].notCheckable = true
 		menu[i].text = LH["HandyNotes"]
---		menu[i].num = i
---		i = i + 1
-
---		menu[i] = {}
 		menu[i].isNotRadio = true
-		menu[i].keepShownOnClick = true
+		--menu[i].keepShownOnClick = true
 		if (addon.db.profile.handynotes_contextMenu) then
 			menu[i].hasArrow = true
 		else
 			menu[i].hasArrow = nil
 		end
 		menu[i].value = "HandyNotes"
---		menu[i].text = LH["HandyNotes"]..L[" (Core)"]
 		menu[i].colorCode = "|cFFFFC90E"
 		menu[i].tooltipTitle = LH["HandyNotes"]
 		menu[i].tooltipText = LH["Enable or disable HandyNotes"]
