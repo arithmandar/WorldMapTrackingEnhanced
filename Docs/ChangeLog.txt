@@ -3,7 +3,7 @@ $Id$
 Revision History:
 =================
 
-* v2.18 (Mar. xx, 2018)
+* v2.18 (Mar. 30, 2018)
 -----------------------
 - Further integrate GatherMate2's filter feature. Now you can toggle the the GatherMate2 filters easier.
 
