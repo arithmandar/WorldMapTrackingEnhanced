@@ -6,6 +6,7 @@ Revision History:
 * v2.19 (Apr. 23, 2018)
 -----------------------
 - Remove external
+- Lib Update: LibUIDropDownMenu
 
 * v2.18 (Mar. 30, 2018)
 -----------------------
