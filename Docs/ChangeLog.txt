@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v2.19 (Apr. 23, 2018)
+-----------------------
+- Remove external
+
 * v2.18 (Mar. 30, 2018)
 -----------------------
 - Further integrate GatherMate2's filter feature. Now you can toggle the the GatherMate2 filters easier.
