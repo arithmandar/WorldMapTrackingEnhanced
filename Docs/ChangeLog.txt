@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v2.21 (Apr. 24, 2018)
+-----------------------
+- Lib update: LibUIDropDownMenu
+
 * v2.20 (Apr. 23, 2018)
 -----------------------
 - Fixed the menu of primary and secondary professions were not displayed properly when World Quest Tracker is disabled.
