@@ -39,10 +39,40 @@ local function checkAddonStatus(addonName)
 	end
 end
 
+local function onSelection(value, checked)
+	print(value)
+	if (checked) then
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+	else
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
+	end
+
+	if (value == "quests") then
+		SetCVar("questPOI", checked and "1" or "0", "QUEST_POI")
+	elseif (value == "digsites") then
+		print("digSites")
+		SetCVar("digSites", checked and "1" or "0", "SHOW_DIG_SITES")
+	elseif (value == "tamers") then
+		SetCVar("showTamers", checked and "1" or "0", "SHOW_TAMERS")
+	elseif (value == "primaryProfessionsFilter" or value == "secondaryProfessionsFilter") then
+		SetCVar(value, checked and "1" or "0")
+	elseif (value == "worldQuestFilterResources" or value == "worldQuestFilterArtifactPower" or
+			value == "worldQuestFilterProfessionMaterials" or value == "worldQuestFilterGold" or
+			value == "worldQuestFilterEquipment") then
+		-- World quest reward filter cvars
+		SetCVar(value, checked and "1" or "0")
+	end
+	FilterButton:GetParent():RefreshAllDataProviders()
+end
+
 -- //////////////////////////////////////////////////////////////////////////
 -- Main function to replace World Map Tracking Option's dropdown menu
 -- //////////////////////////////////////////////////////////////////////////
 local function dropDown_Initialize(self, level)
+	local function OnSelection(button)
+		onSelection(button.value, button.checked)
+	end
+
 	if not level then level = 1 end
 	local info = L_UIDropDownMenu_CreateInfo()
 
@@ -57,7 +87,7 @@ local function dropDown_Initialize(self, level)
 		info.notCheckable = nil
 		info.isNotRadio = true
 		info.keepShownOnClick = true
-		info.func = WorldMapTrackingOptionsDropDown_OnClick
+		info.func = OnSelection
 
 		info.text = SHOW_QUEST_OBJECTIVES_ON_MAP_TEXT
 		info.value = "quests"
@@ -87,11 +117,11 @@ local function dropDown_Initialize(self, level)
 			L_UIDropDownMenu_AddButton(menu[1])
 		end
 		-- If we aren't on a map with world quests don't show the world quest reward filter options.
-		if (WorldMapFrame.UIElementsFrame.BountyBoard and WorldMapFrame.UIElementsFrame.BountyBoard:AreBountiesAvailable()) then
-			
+		local mapID = WorldMapFrame:GetMapID()
+		if mapID and MapUtil.MapHasUnlockedBounties(mapID) then
 			-- Adding World Quest Tracker menus;
 			if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker) then
-				L_UIDropDownMenu_AddSeparator(info)
+				L_UIDropDownMenu_AddSeparator(1)
 				local WQT = addon:GetModule("WorldQuestTracker", true)
 				local menu = WQT:DropDownMenus()
 
@@ -128,7 +158,7 @@ local function dropDown_Initialize(self, level)
 					L_UIDropDownMenu_AddButton(info)
 				end
 				
-				L_UIDropDownMenu_AddSeparator(info)
+				L_UIDropDownMenu_AddSeparator(1)
 
 				-- Clear out the info from the separator wholesale.
 				info = L_UIDropDownMenu_CreateInfo()
@@ -144,11 +174,11 @@ local function dropDown_Initialize(self, level)
 				info.notCheckable = nil
 				info.isNotRadio = true
 				info.keepShownOnClick = true
-				info.func = WorldMapTrackingOptionsDropDown_OnClick
+				info.func = OnSelection
 
-				info.text = WORLD_QUEST_REWARD_FILTERS_ORDER_RESOURCES
-				info.value = "worldQuestFilterOrderResources"
-				info.checked = GetCVarBool("worldQuestFilterOrderResources")
+				info.text = WORLD_QUEST_REWARD_FILTERS_RESOURCES
+				info.value = "worldQuestFilterResources"
+				info.checked = GetCVarBool("worldQuestFilterResources")
 				L_UIDropDownMenu_AddButton(info)
 
 				info.text = WORLD_QUEST_REWARD_FILTERS_ARTIFACT_POWER
@@ -177,7 +207,7 @@ local function dropDown_Initialize(self, level)
 			local HandyNotes = addon:GetModule("HandyNotes", true)
 			local menu = HandyNotes:DropDownMenus()
 
-			L_UIDropDownMenu_AddSeparator(info)
+			L_UIDropDownMenu_AddSeparator(1)
 			if (profile.handynotes_contextMenu) then
 				L_UIDropDownMenu_AddButton(menu[1])
 			else
@@ -192,11 +222,11 @@ local function dropDown_Initialize(self, level)
 			local GatherMate2 = addon:GetModule("GatherMate2", true)
 			local menu = GatherMate2:DropDownMenus()
 
-			L_UIDropDownMenu_AddSeparator(info)
+			L_UIDropDownMenu_AddSeparator(1)
 			L_UIDropDownMenu_AddButton(menu[1])
 		end
 		-- Adding WorldMapTrackingEnhanced's Config link
-		L_UIDropDownMenu_AddSeparator(info)
+		L_UIDropDownMenu_AddSeparator(1)
 		info = L_UIDropDownMenu_CreateInfo()
 		info.isNotRadio = true
 		info.notCheckable = true
@@ -268,55 +298,74 @@ local function dropDown_Initialize(self, level)
 end
 
 local function createTrackingButton()
-	addon.dropDown = CreateFrame("Frame", addon.Name.."DropDown", WorldMapFrame.UIElementsFrame.TrackingOptionsButton, "L_UIDropDownMenuTemplate");
+	
+	local button = CreateFrame("Button", addon.Name.."Button", WorldMapFrame.ScrollContainer)
+	addon.button = button
+	button:SetWidth(32)
+	button:SetHeight(32)
+	button:SetPoint("TOPRIGHT", WorldMapFrame, -4, -68, "TOPRIGHT")
+
+	addon.dropDown = CreateFrame("Frame", addon.Name.."DropDown", button, "L_UIDropDownMenuTemplate");
 	addon.dropDown:SetScript("OnShow", function(self) 
 		L_UIDropDownMenu_Initialize(self, dropDown_Initialize, "MENU") 
 	end)
 	
-	addon.button = CreateFrame("Button", addon.Name.."Button", WorldMapFrame.UIElementsFrame.TrackingOptionsButton)
-	addon.button:SetWidth(32)
-	addon.button:SetHeight(32)
-		
-	addon.button:SetPoint("TOPLEFT", WorldMapFrame.UIElementsFrame.TrackingOptionsButton, 0, 0, "TOPLEFT");
-		
-	addon.button.border = addon.button:CreateTexture(addon.Name.."ButtonBorder","BORDER")
-	addon.button.border:SetPoint("TOPLEFT", addon.button, "TOPLEFT")
-	addon.button.border:SetWidth(54)
-	addon.button.border:SetHeight(54)
-	addon.button.border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
-	--[[
-	addon.button.overlay = addon.button:CreateTexture(addon.Name.."ButtonOverlay","OVERLAY")
-	addon.button.overlay:SetWidth(27)
-	addon.button.overlay:SetHeight(27)
-	addon.button.overlay:SetPoint("TOPLEFT", addon.button, "TOPLEFT", 2, -2)
-	addon.button.overlay:SetTexture("Interface\\ComboFrame\\ComboPoint")
-	addon.button.overlay:SetTexCoord(0.5625, 1, 0, 1)
-	]]
-	addon.button:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight", "ADD")
+	button.Border = button:CreateTexture(addon.Name.."ButtonBorder","BORDER")
+	button.Border:SetPoint("TOPLEFT", button, "TOPLEFT")
+	button.Border:SetWidth(54)
+	button.Border:SetHeight(54)
+	button.Border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
 
-	addon.button:SetScript("OnEnter", function(self)
+	button.Background = button:CreateTexture(addon.Name.."ButtonBackground","BACKGROUND")
+	button.Background:SetPoint("TOPLEFT", button, "TOPLEFT", 2, -4)
+	button.Background:SetWidth(25)
+	button.Background:SetHeight(25)
+	button.Background:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
+	--button.Background:SetColorTexture(1, 1, 1, 1)
+
+	button.Icon = button:CreateTexture(addon.Name.."ButtonIcon", "ARTWORK")
+	button.Icon:SetPoint("TOPLEFT", button, "TOPLEFT", 6, -6)
+	button.Icon:SetHeight(20)
+	button.Icon:SetWidth(20)
+	button.Icon:SetTexture("Interface\\Minimap\\Tracking\\None")
+	
+	button.IconOverlay = button:CreateTexture(addon.Name.."ButtonOverlay","OVERLAY")
+	button.IconOverlay:SetWidth(27)
+	button.IconOverlay:SetHeight(27)
+	button.IconOverlay:SetPoint("TOPLEFT", button.Icon, "TOPLEFT", 2, -2)
+	button.IconOverlay:SetColorTexture(0, 0, 0, 0.5)
+	button.IconOverlay:Hide()
+	
+	button:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight", "ADD")
+	
+	button:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
 		GameTooltip:SetText(TRACKING, 1, 1, 1)
 		GameTooltip:AddLine(MINIMAP_TRACKING_TOOLTIP_NONE, nil, nil, nil, true)
 		GameTooltip:Show()
 	end)
-	addon.button:SetScript("OnLeave", function(self)
+	button:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
 	end)
-	addon.button:SetScript("OnClick", function(self)
+	button:SetScript("OnClick", function(self)
 		local parent = self:GetParent()
-		L_ToggleDropDownMenu(1, nil, addon.dropDown, parent, 0, -5)
-		PlaySound(PlaySoundKitID and "igMainMenuOptionCheckBoxOn" or 856)
+		local mapID = WorldMapFrame:GetMapID()
+		if not mapID then
+			return
+		end
+		addon.dropDown.mapID = mapID
+		L_ToggleDropDownMenu(1, nil, addon.dropDown, button, 0, -5)
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	end)
-	addon.button:SetScript("OnMouseDown", function(self)
-		local parent = self:GetParent();
-		parent.Icon:SetPoint("TOPLEFT", parent, "TOPLEFT", 8, -8);
-		parent.IconOverlay:Show();
+	button:SetScript("OnMouseDown", function(self)
+		--local parent = self:GetParent()
+		button.Icon:SetPoint("TOPLEFT", self, "TOPLEFT", 8, -8)
+		button.IconOverlay:Show()
 	end)
-	addon.button:SetScript("OnMouseUp", function(self)
-		local parent = self:GetParent();
-		parent.Icon:SetPoint("TOPLEFT", parent, "TOPLEFT", 6, -6);
-		parent.IconOverlay:Hide();
+	button:SetScript("OnMouseUp", function(self)
+		--local parent = self:GetParent()
+		button.Icon:SetPoint("TOPLEFT", self, "TOPLEFT", 6, -6)
+		button.IconOverlay:Hide()
 	end)
 end
 
@@ -325,7 +374,8 @@ function addon:OnInitialize()
 	profile = self.db.profile;
 
 	self:SetupOptions();
-	FilterButton = WorldMapFrame.UIElementsFrame.TrackingOptionsButton.Button
+	--FilterButton = WorldMapFrame.UIElementsFrame.TrackingOptionsButton.Button
+	FilterButton = WorldMapFrame.overlayFrames[2]
 end
 
 function addon:OnEnable()
@@ -338,8 +388,8 @@ end
 
 function addon:Refresh()
 end
-
+--[[
 function addon:CLOSE_WORLD_MAP()
 	L_CloseDropDownMenus()
 end
-
+]]

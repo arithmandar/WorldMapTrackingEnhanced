@@ -1,4 +1,4 @@
-﻿## Interface: 70300
+﻿## Interface: 80000
 #@non-debug@
 ## Title: @localization(locale="enUS", key="Title", namespace="ToC")@
 ## Title-deDE: @localization(locale="deDE", key="Title", namespace="ToC")@
@@ -32,7 +32,7 @@
 ## Author: arith
 ## Version: @project-version@
 # # RequiredDeps: 
-## OptionalDeps: Ace3, LibStub, CallbackHandler-1.0, LibUIDropDownMenu
+## OptionalDeps: Ace3, LibStub, CallbackHandler-1.0, !LibUIDropDownMenu
 ## DefaultState: enabled
 ## SavedVariables: WorldMapTrackingEnhancedDB
 ## X-Date: @project-date-iso@

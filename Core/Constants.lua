@@ -28,5 +28,5 @@ constants.defaults = {
 }
 
 constants.events = {
-	"CLOSE_WORLD_MAP",
+--	"CLOSE_WORLD_MAP",
 }

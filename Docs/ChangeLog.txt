@@ -3,6 +3,11 @@ $Id$
 Revision History:
 =================
 
+* v3.00 (Sep. xx, 2018)
+-----------------------
+- ToC update to support WoW 8.0.x
+- Codes updated to reflect new WorldMapFrame's design
+
 * v2.21 (Apr. 24, 2018)
 -----------------------
 - Lib update: LibUIDropDownMenu

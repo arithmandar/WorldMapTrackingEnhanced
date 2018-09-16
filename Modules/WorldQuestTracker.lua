@@ -96,7 +96,9 @@ local function toggleFilterStatus(filterType)
 	profile.filters[filterType] = not profile.filters[filterType]
 	if (filterType == "pet_battles") then
 		SetCVar("showTamers", profile.filters[filterType] and "1" or "0");
-		WorldMapFrame_Update()
+		--WorldMapFrame_Update()
+		local FilterButton = WorldMapFrame.overlayFrames[2]
+		FilterButton:GetParent():RefreshAllDataProviders()
 	end
 	WQT.UpdateZoneWidgets()
 end
