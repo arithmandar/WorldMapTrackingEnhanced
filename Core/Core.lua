@@ -40,7 +40,6 @@ local function checkAddonStatus(addonName)
 end
 
 local function onSelection(value, checked)
-	print(value)
 	if (checked) then
 		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	else
