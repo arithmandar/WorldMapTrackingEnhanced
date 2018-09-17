@@ -7,7 +7,7 @@ local _G = getfenv(0)
 local select = _G.select
 local pairs = _G.pairs
 -- Libraries
-local GameTooltip, GetAddOnInfo, GetAddOnEnableState, UnitName, PlaySound, GetCVarBool = _G.GameTooltip, _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.PlaySound, _G.GetCVarBool
+local GameTooltip, GetAddOnInfo, GetAddOnEnableState, UnitName, PlaySound, GetCVarBool, SetCVar = _G.GameTooltip, _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.PlaySound, _G.GetCVarBool, _G.SetCVar
 local WorldMapTrackingOptionsDropDown_OnClick = _G.WorldMapTrackingOptionsDropDown_OnClick
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
@@ -26,7 +26,7 @@ addon.LocName = select(2, GetAddOnInfo(addon.Name))
 addon.Notes = select(3, GetAddOnInfo(addon.Name))
 _G.WorldMapTrackingEnhanced = addon
 local profile
-local FilterButton -- WorldMapFrame.UIElementsFrame.TrackingOptionsButton.Button
+local FilterButton -- WorldMapFrame.overlayFrames[2]
 
 local function checkAddonStatus(addonName)
 	if not addonName then return nil end
@@ -296,17 +296,22 @@ local function dropDown_Initialize(self, level)
 end
 
 local function createTrackingButton()
+	local parent = FilterButton:GetParent()
 	
-	local button = CreateFrame("Button", addon.Name.."Button", WorldMapFrame.ScrollContainer)
+	local button = _G[addon.Name.."Button"]
+	if not button then button = CreateFrame("Button", addon.Name.."Button", WorldMapFrame.ScrollContainer) end
+	
 	addon.button = button
+	
 	button:SetWidth(32)
 	button:SetHeight(32)
-	button:SetPoint("TOPRIGHT", WorldMapFrame, -4, -68, "TOPRIGHT")
+	button:SetPoint("TOPRIGHT", parent:GetCanvasContainer(), -4, -2, "TOPRIGHT")
 
-	addon.dropDown = CreateFrame("Frame", addon.Name.."DropDown", button, "L_UIDropDownMenuTemplate");
-	addon.dropDown:SetScript("OnShow", function(self) 
+	button.dropDown = CreateFrame("Frame", addon.Name.."DropDown", button, "L_UIDropDownMenuTemplate");
+	button.dropDown:SetScript("OnShow", function(self) 
 		L_UIDropDownMenu_Initialize(self, dropDown_Initialize, "MENU") 
 	end)
+	button.dropDown:SetClampedToScreen(true)
 	
 	button.Border = button:CreateTexture(addon.Name.."ButtonBorder","BORDER")
 	button.Border:SetPoint("TOPLEFT", button, "TOPLEFT")
@@ -315,14 +320,14 @@ local function createTrackingButton()
 	button.Border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
 
 	button.Background = button:CreateTexture(addon.Name.."ButtonBackground","BACKGROUND")
-	button.Background:SetPoint("TOPLEFT", button, "TOPLEFT", 2, -4)
+	button.Background:SetPoint("TOPLEFT")
 	button.Background:SetWidth(25)
 	button.Background:SetHeight(25)
 	button.Background:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
 	--button.Background:SetColorTexture(1, 1, 1, 1)
 
 	button.Icon = button:CreateTexture(addon.Name.."ButtonIcon", "ARTWORK")
-	button.Icon:SetPoint("TOPLEFT", button, "TOPLEFT", 6, -6)
+	button.Icon:SetPoint("TOPLEFT", 6, -6)
 	button.Icon:SetHeight(20)
 	button.Icon:SetWidth(20)
 	button.Icon:SetTexture("Interface\\Minimap\\Tracking\\None")
@@ -330,7 +335,7 @@ local function createTrackingButton()
 	button.IconOverlay = button:CreateTexture(addon.Name.."ButtonOverlay","OVERLAY")
 	button.IconOverlay:SetWidth(27)
 	button.IconOverlay:SetHeight(27)
-	button.IconOverlay:SetPoint("TOPLEFT", button.Icon, "TOPLEFT", 2, -2)
+	button.IconOverlay:SetPoint("TOPLEFT", button.Icon)
 	button.IconOverlay:SetColorTexture(0, 0, 0, 0.5)
 	button.IconOverlay:Hide()
 	
@@ -351,19 +356,17 @@ local function createTrackingButton()
 		if not mapID then
 			return
 		end
-		addon.dropDown.mapID = mapID
-		L_ToggleDropDownMenu(1, nil, addon.dropDown, button, 0, -5)
+		self.dropDown.mapID = mapID
+		L_ToggleDropDownMenu(1, nil, self.dropDown, button, 0, -5)
 		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	end)
 	button:SetScript("OnMouseDown", function(self)
-		--local parent = self:GetParent()
-		button.Icon:SetPoint("TOPLEFT", self, "TOPLEFT", 8, -8)
-		button.IconOverlay:Show()
+		self.Icon:SetPoint("TOPLEFT", 8, -8)
+		--self.IconOverlay:Show()
 	end)
 	button:SetScript("OnMouseUp", function(self)
-		--local parent = self:GetParent()
-		button.Icon:SetPoint("TOPLEFT", self, "TOPLEFT", 6, -6)
-		button.IconOverlay:Hide()
+		self.Icon:SetPoint("TOPLEFT", 6, -6)
+		--self.IconOverlay:Hide()
 	end)
 end
 
@@ -371,8 +374,7 @@ function addon:OnInitialize()
 	self.db = AceDB:New(addon.Name.."DB", addon.constants.defaults, true)
 	profile = self.db.profile;
 
-	self:SetupOptions();
-	--FilterButton = WorldMapFrame.UIElementsFrame.TrackingOptionsButton.Button
+	self:SetupOptions()
 	FilterButton = WorldMapFrame.overlayFrames[2]
 end
 

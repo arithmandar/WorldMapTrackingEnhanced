@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v3.01 (Sep. 17, 2018)
+-----------------------
+- Fixed issue the tracking icon will be missing when quest panel is opened.
+
 * v3.00 (Sep. 16, 2018)
 -----------------------
 - ToC update to support WoW 8.0.x
