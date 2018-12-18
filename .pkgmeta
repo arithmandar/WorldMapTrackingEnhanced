@@ -25,8 +25,8 @@ externals:
         url: https://repos.wowace.com/wow/ace3/trunk/AceConfig-3.0
     Libs-release/AceDBOptions-3.0: 
         url: https://repos.wowace.com/wow/ace3/trunk/AceDBOptions-3.0
-    Libs-release/LibUIDropDownMenu: 
-        url: https://repos.wowace.com/wow/libuidropdownmenu/trunk/LibUIDropDownMenu
+#    Libs-release/LibUIDropDownMenu: 
+#        url: https://repos.wowace.com/wow/libuidropdownmenu/trunk/LibUIDropDownMenu
 
 move-folders:
     WorldMapTrackingEnhanced/Libs: WorldMapTrackingEnhanced/Libs-dev

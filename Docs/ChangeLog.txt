@@ -3,6 +3,11 @@ $Id$
 Revision History:
 =================
 
+* v3.02 (Dec. 18, 2018)
+-----------------------
+- ToC update to support WoW 8.1.0
+- Remove LibUIDropDownMenu
+
 * v3.01 (Sep. 17, 2018)
 -----------------------
 - Fixed issue the tracking icon will be missing when quest panel is opened.

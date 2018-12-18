@@ -72,13 +72,13 @@ local function dropDown_Initialize(self, level)
 	end
 
 	if not level then level = 1 end
-	local info = L_UIDropDownMenu_CreateInfo()
+	local info = UIDropDownMenu_CreateInfo()
 
 	if (level == 1) then
 		info.isTitle = true
 		info.notCheckable = true
 		info.text = WORLD_MAP_FILTER_TITLE -- which is "Show:"
-		L_UIDropDownMenu_AddButton(info)
+		UIDropDownMenu_AddButton(info)
 
 		info.isTitle = nil
 		info.disabled = nil
@@ -90,14 +90,14 @@ local function dropDown_Initialize(self, level)
 		info.text = SHOW_QUEST_OBJECTIVES_ON_MAP_TEXT
 		info.value = "quests"
 		info.checked = GetCVarBool("questPOI")
-		L_UIDropDownMenu_AddButton(info)
+		UIDropDownMenu_AddButton(info)
 
 		local prof1, prof2, arch, fish, cook, firstAid = GetProfessions()
 		if arch then
 			info.text = ARCHAEOLOGY_SHOW_DIG_SITES -- "Show Digsites"
 			info.value = "digsites"
 			info.checked = GetCVarBool("digSites")
-			L_UIDropDownMenu_AddButton(info)
+			UIDropDownMenu_AddButton(info)
 		end
 
 		-- Pet Battle
@@ -105,35 +105,35 @@ local function dropDown_Initialize(self, level)
 			info.text = SHOW_PET_BATTLES_ON_MAP_TEXT
 			info.value = "tamers"
 			info.checked = GetCVarBool("showTamers")
-			L_UIDropDownMenu_AddButton(info)
+			UIDropDownMenu_AddButton(info)
 		end
 		-- Adding PetTracker menus
 		if (checkAddonStatus("PetTracker") and profile.enable_PetTracker) then
 			local PT = addon:GetModule("PetTracker", true)
 			local menu = PT:DropDownMenus()
 
-			L_UIDropDownMenu_AddButton(menu[1])
+			UIDropDownMenu_AddButton(menu[1])
 		end
 		-- If we aren't on a map with world quests don't show the world quest reward filter options.
 		local mapID = WorldMapFrame:GetMapID()
-		if mapID and MapUtil.MapHasUnlockedBounties(mapID) then
+		if mapID and MapUtil.MapHasEmissaries(mapID) then
 			-- Adding World Quest Tracker menus;
 			if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker) then
-				L_UIDropDownMenu_AddSeparator(1)
+				UIDropDownMenu_AddSeparator()
 				local WQT = addon:GetModule("WorldQuestTracker", true)
 				local menu = WQT:DropDownMenus()
 
 				if (profile.worldQuestTracker_contextMenu) then
-					L_UIDropDownMenu_AddButton(menu[1])
+					UIDropDownMenu_AddButton(menu[1])
 				else
 					for i = 1, #menu do
-						L_UIDropDownMenu_AddButton(menu[i])
+						UIDropDownMenu_AddButton(menu[i])
 					end
 				end
 			-- With World Quest Tracker enabled, actually the WoW built-in World Quest menu filters will not working. 
 			else
 				-- Clear out the info from the separator wholesale.
-				info = L_UIDropDownMenu_CreateInfo()
+				info = UIDropDownMenu_CreateInfo()
 
 				info.isTitle = nil
 				info.disabled = nil
@@ -146,25 +146,25 @@ local function dropDown_Initialize(self, level)
 					info.text = SHOW_PRIMARY_PROFESSION_ON_MAP_TEXT
 					info.value = "primaryProfessionsFilter"
 					info.checked = GetCVarBool("primaryProfessionsFilter")
-					L_UIDropDownMenu_AddButton(info)
+					UIDropDownMenu_AddButton(info)
 				end
 
 				if fish or cook or firstAid then
 					info.text = SHOW_SECONDARY_PROFESSION_ON_MAP_TEXT
 					info.value = "secondaryProfessionsFilter"
 					info.checked = GetCVarBool("secondaryProfessionsFilter")
-					L_UIDropDownMenu_AddButton(info)
+					UIDropDownMenu_AddButton(info)
 				end
 				
-				L_UIDropDownMenu_AddSeparator(1)
+				UIDropDownMenu_AddSeparator()
 
 				-- Clear out the info from the separator wholesale.
-				info = L_UIDropDownMenu_CreateInfo()
+				info = UIDropDownMenu_CreateInfo()
 
 				info.isTitle = true
 				info.notCheckable = true
 				info.text = WORLD_QUEST_REWARD_FILTERS_TITLE
-				L_UIDropDownMenu_AddButton(info)
+				UIDropDownMenu_AddButton(info)
 				info.text = nil
 
 				info.isTitle = nil
@@ -177,27 +177,27 @@ local function dropDown_Initialize(self, level)
 				info.text = WORLD_QUEST_REWARD_FILTERS_RESOURCES
 				info.value = "worldQuestFilterResources"
 				info.checked = GetCVarBool("worldQuestFilterResources")
-				L_UIDropDownMenu_AddButton(info)
+				UIDropDownMenu_AddButton(info)
 
 				info.text = WORLD_QUEST_REWARD_FILTERS_ARTIFACT_POWER
 				info.value = "worldQuestFilterArtifactPower"
 				info.checked = GetCVarBool("worldQuestFilterArtifactPower")
-				L_UIDropDownMenu_AddButton(info)
+				UIDropDownMenu_AddButton(info)
 
 				info.text = WORLD_QUEST_REWARD_FILTERS_PROFESSION_MATERIALS
 				info.value = "worldQuestFilterProfessionMaterials"
 				info.checked = GetCVarBool("worldQuestFilterProfessionMaterials")
-				L_UIDropDownMenu_AddButton(info)
+				UIDropDownMenu_AddButton(info)
 
 				info.text = WORLD_QUEST_REWARD_FILTERS_GOLD
 				info.value = "worldQuestFilterGold"
 				info.checked = GetCVarBool("worldQuestFilterGold")
-				L_UIDropDownMenu_AddButton(info)
+				UIDropDownMenu_AddButton(info)
 				
 				info.text = WORLD_QUEST_REWARD_FILTERS_EQUIPMENT
 				info.value = "worldQuestFilterEquipment"
 				info.checked = GetCVarBool("worldQuestFilterEquipment")
-				L_UIDropDownMenu_AddButton(info)
+				UIDropDownMenu_AddButton(info)
 			end
 		end
 		-- Adding HandyNotes menus
@@ -205,12 +205,12 @@ local function dropDown_Initialize(self, level)
 			local HandyNotes = addon:GetModule("HandyNotes", true)
 			local menu = HandyNotes:DropDownMenus()
 
-			L_UIDropDownMenu_AddSeparator(1)
+			UIDropDownMenu_AddSeparator()
 			if (profile.handynotes_contextMenu) then
-				L_UIDropDownMenu_AddButton(menu[1])
+				UIDropDownMenu_AddButton(menu[1])
 			else
 				for i = 1, #menu do
-					L_UIDropDownMenu_AddButton(menu[i])
+					UIDropDownMenu_AddButton(menu[i])
 				end
 			end
 
@@ -220,12 +220,12 @@ local function dropDown_Initialize(self, level)
 			local GatherMate2 = addon:GetModule("GatherMate2", true)
 			local menu = GatherMate2:DropDownMenus()
 
-			L_UIDropDownMenu_AddSeparator(1)
-			L_UIDropDownMenu_AddButton(menu[1])
+			UIDropDownMenu_AddSeparator()
+			UIDropDownMenu_AddButton(menu[1])
 		end
 		-- Adding WorldMapTrackingEnhanced's Config link
-		L_UIDropDownMenu_AddSeparator(1)
-		info = L_UIDropDownMenu_CreateInfo()
+		UIDropDownMenu_AddSeparator()
+		info = UIDropDownMenu_CreateInfo()
 		info.isNotRadio = true
 		info.notCheckable = true
 		info.text = L["World Map Tracking Enhanced Config"]
@@ -238,55 +238,55 @@ local function dropDown_Initialize(self, level)
 			InterfaceOptionsFrame_OpenToCategory(addon.LocName)
 			InterfaceOptionsFrame_OpenToCategory(addon.LocName)
 		end)
-		L_UIDropDownMenu_AddButton(info)
+		UIDropDownMenu_AddButton(info)
 	-- Handling level 2 menus
 	elseif (level == 2) then
 		-- handling PetTracker's level 2 menus
-		if (checkAddonStatus("PetTracker") and profile.enable_PetTracker and L_UIDROPDOWNMENU_MENU_VALUE == "PetTracker") then
+		if (checkAddonStatus("PetTracker") and profile.enable_PetTracker and UIDROPDOWNMENU_MENU_VALUE == "PetTracker") then
 			local PetTracker = addon:GetModule("PetTracker", true)
 			local menu = PetTracker:DropDownMenus()
 
 			for i = 2, #menu do
-				L_UIDropDownMenu_AddButton(menu[i], 2)
+				UIDropDownMenu_AddButton(menu[i], 2)
 			end
 		end
 		-- handling GatherMate2's level 2 menus
-		if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2 and L_UIDROPDOWNMENU_MENU_VALUE == "GatherMate2") then
+		if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2 and UIDROPDOWNMENU_MENU_VALUE == "GatherMate2") then
 			local GatherMate2 = addon:GetModule("GatherMate2", true)
 			local menu = GatherMate2:DropDownMenus()
 
 			for i = 2, #menu do
-				L_UIDropDownMenu_AddButton(menu[i], 2)
+				UIDropDownMenu_AddButton(menu[i], 2)
 			end
 		end
 		-- handling World Quest Tracker's level 2 menus
-		if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker and profile.worldQuestTracker_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "WorldQuestTracker") then
+		if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker and profile.worldQuestTracker_contextMenu and UIDROPDOWNMENU_MENU_VALUE == "WorldQuestTracker") then
 			local WQT = addon:GetModule("WorldQuestTracker", true)
 			local menu = WQT:DropDownMenus()
 
 			for i = 2, #menu do
-				L_UIDropDownMenu_AddButton(menu[i], 2)
+				UIDropDownMenu_AddButton(menu[i], 2)
 			end
 		end
 		-- handling HandyNotes' level 2 menus
-		if (checkAddonStatus("HandyNotes") and profile.enable_HandyNotes and profile.handynotes_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "HandyNotes") then
+		if (checkAddonStatus("HandyNotes") and profile.enable_HandyNotes and profile.handynotes_contextMenu and UIDROPDOWNMENU_MENU_VALUE == "HandyNotes") then
 			local HandyNotes = addon:GetModule("HandyNotes", true)
 			local menu = HandyNotes:DropDownMenus()
 
 			for i = 2, #menu do
-				L_UIDropDownMenu_AddButton(menu[i], 2)
+				UIDropDownMenu_AddButton(menu[i], 2)
 			end
 		end
 	elseif (level == 3) then
 		-- handling GatherMate2's level 3 menus
 		if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2) then
---		and L_UIDROPDOWNMENU_MENU_VALUE == "GatherMate2") then
+--		and UIDROPDOWNMENU_MENU_VALUE == "GatherMate2") then
 			local GatherMate2 = addon:GetModule("GatherMate2", true)
 			local _, menu2 = GatherMate2:DropDownMenus()
 			for k, v in pairs(menu2) do
-				if (L_UIDROPDOWNMENU_MENU_VALUE == "GatherMate2".."."..k) then
+				if (UIDROPDOWNMENU_MENU_VALUE == "GatherMate2".."."..k) then
 					for ka, va in pairs(menu2[k]) do
-						L_UIDropDownMenu_AddButton(menu2[k][ka], 3)
+						UIDropDownMenu_AddButton(menu2[k][ka], 3)
 					end
 				end
 			end
@@ -307,9 +307,9 @@ local function createTrackingButton()
 	button:SetHeight(32)
 	button:SetPoint("TOPRIGHT", parent:GetCanvasContainer(), -4, -2, "TOPRIGHT")
 
-	button.dropDown = CreateFrame("Frame", addon.Name.."DropDown", button, "L_UIDropDownMenuTemplate");
+	button.dropDown = CreateFrame("Frame", addon.Name.."DropDown", button, "UIDropDownMenuTemplate");
 	button.dropDown:SetScript("OnShow", function(self) 
-		L_UIDropDownMenu_Initialize(self, dropDown_Initialize, "MENU") 
+		UIDropDownMenu_Initialize(self, dropDown_Initialize, "MENU") 
 	end)
 	button.dropDown:SetClampedToScreen(true)
 	
@@ -357,7 +357,7 @@ local function createTrackingButton()
 			return
 		end
 		self.dropDown.mapID = mapID
-		L_ToggleDropDownMenu(1, nil, self.dropDown, button, 0, -5)
+		ToggleDropDownMenu(1, nil, self.dropDown, button, 0, -5)
 		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	end)
 	button:SetScript("OnMouseDown", function(self)
