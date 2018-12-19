@@ -92,6 +92,16 @@ local function getOptions()
 								return not iPetTracker
 							end,
 						},
+						enable_RareScanner = {
+							order = 14,
+							type = "toggle",
+							name = select(2, GetAddOnInfo("RareScanner")) or L["RareScanner"],
+							desc = select(3, GetAddOnInfo("RareScanner")) or nil,
+							disabled = function() 
+								local iRareScanner = select(4, GetAddOnInfo("RareScanner"))
+								return not iRareScanner
+							end,
+						},
 						enable_WorldQuestTracker = {
 							order = 14,
 							type = "toggle",

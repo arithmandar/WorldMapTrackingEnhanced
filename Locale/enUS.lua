@@ -45,6 +45,12 @@ L["PetTracker Config"] = "PetTracker Config"
 L["Click to open PetTracker's config panel"] = "Click to open PetTracker's config panel"
 
 -- //////////////////////////
+-- RareScanner
+-- //////////////////////////
+L["RareScanner Config"] = "RareScanner Config"
+L["Click to open RareScanner's config panel"] = "Click to open RareScanner's config panel"
+
+-- //////////////////////////
 -- WorldQuestTracker
 -- //////////////////////////
 L["Show WorldQuestTracker's filter selections in second level menu."] = "Show WorldQuestTracker's filter selections in second level menu."

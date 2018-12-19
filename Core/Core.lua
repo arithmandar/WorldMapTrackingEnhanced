@@ -100,7 +100,7 @@ local function dropDown_Initialize(self, level)
 			UIDropDownMenu_AddButton(info)
 		end
 
-		-- Pet Battle
+		-- BZ's Pet Battle
 		if CanTrackBattlePets() then
 			info.text = SHOW_PET_BATTLES_ON_MAP_TEXT
 			info.value = "tamers"
@@ -130,7 +130,7 @@ local function dropDown_Initialize(self, level)
 						UIDropDownMenu_AddButton(menu[i])
 					end
 				end
-			-- With World Quest Tracker enabled, actually the WoW built-in World Quest menu filters will not working. 
+			-- With World Quest Tracker enabled, actually the WoW built-in World Quest menu filters will not work. 
 			else
 				-- Clear out the info from the separator wholesale.
 				info = UIDropDownMenu_CreateInfo()
@@ -222,6 +222,16 @@ local function dropDown_Initialize(self, level)
 
 			UIDropDownMenu_AddSeparator()
 			UIDropDownMenu_AddButton(menu[1])
+		end
+		-- Adding RareScanner menus
+		if (checkAddonStatus("RareScanner") and profile.enable_RareScanner) then
+			local RareScanner = addon:GetModule("RareScanner", true)
+			local menu = RareScanner:DropDownMenus()
+
+			UIDropDownMenu_AddSeparator()
+			for i = 1, #menu do
+				UIDropDownMenu_AddButton(menu[i])
+			end
 		end
 		-- Adding WorldMapTrackingEnhanced's Config link
 		UIDropDownMenu_AddSeparator()
@@ -390,6 +400,6 @@ function addon:Refresh()
 end
 --[[
 function addon:CLOSE_WORLD_MAP()
-	L_CloseDropDownMenus()
+	CloseDropDownMenus()
 end
 ]]

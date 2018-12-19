@@ -3,10 +3,12 @@ $Id$
 Revision History:
 =================
 
-* v3.02 (Dec. 18, 2018)
+* v3.02 (Dec. 21, 2018)
 -----------------------
 - ToC update to support WoW 8.1.0
 - Remove LibUIDropDownMenu
+- Added support of RareScanner
+- Fixed issue of World Quest menu missing in BfA maps
 
 * v3.01 (Sep. 17, 2018)
 -----------------------
