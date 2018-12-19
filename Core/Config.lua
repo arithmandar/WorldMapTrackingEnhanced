@@ -103,7 +103,7 @@ local function getOptions()
 							end,
 						},
 						enable_WorldQuestTracker = {
-							order = 14,
+							order = 15,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("WorldQuestTracker")) or L["WorldQuestTracker"],
 							desc = select(3, GetAddOnInfo("WorldQuestTracker")) or nil,
