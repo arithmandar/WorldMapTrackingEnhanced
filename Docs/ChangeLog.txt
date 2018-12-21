@@ -7,8 +7,10 @@ Revision History:
 -----------------------
 - ToC update to support WoW 8.1.0
 - Remove LibUIDropDownMenu
+  - added workaround for resolving UI taint issue
 - Added support of RareScanner
 - Fixed issue of World Quest menu missing in BfA maps
+  - added missing world quest reward filter for reputation
 
 * v3.01 (Sep. 17, 2018)
 -----------------------
