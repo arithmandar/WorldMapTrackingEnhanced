@@ -56,7 +56,7 @@ local function onSelection(value, checked)
 		SetCVar(value, checked and "1" or "0")
 	elseif (value == "worldQuestFilterResources" or value == "worldQuestFilterArtifactPower" or
 			value == "worldQuestFilterProfessionMaterials" or value == "worldQuestFilterGold" or
-			value == "worldQuestFilterEquipment") then
+			value == "worldQuestFilterEquipment" or value == "worldQuestFilterReputation") then
 		-- World quest reward filter cvars
 		SetCVar(value, checked and "1" or "0")
 	end
