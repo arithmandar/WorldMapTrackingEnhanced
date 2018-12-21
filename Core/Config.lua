@@ -62,8 +62,28 @@ local function getOptions()
 							type = "description",
 							name = L["Toggle which map enhancement addon to be included in the enhanced tracking option menu."],
 						},
-						enable_HandyNotes = {
+						enable_Atlas = {
 							order = 11,
+							type = "toggle",
+							name = select(2, GetAddOnInfo("Atlas")) or L["Atlas"],
+							desc = select(3, GetAddOnInfo("Atlas")) or nil,
+							disabled = function() 
+								local iAtlas = select(4, GetAddOnInfo("Atlas"))
+								return not iAtlas
+							end,
+						},
+						enable_AtlasLoot = {
+							order = 12,
+							type = "toggle",
+							name = select(2, GetAddOnInfo("AtlasLoot")) or L["AtlasLoot"],
+							desc = select(3, GetAddOnInfo("AtlasLoot")) or nil,
+							disabled = function() 
+								local iAtlasLoot = select(4, GetAddOnInfo("AtlasLoot"))
+								return not iAtlasLoot
+							end,
+						},
+						enable_HandyNotes = {
+							order = 13,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("HandyNotes")) or L["HandyNotes"],
 							desc = select(3, GetAddOnInfo("HandyNotes")) or nil,
@@ -73,7 +93,7 @@ local function getOptions()
 							end,
 						},
 						enable_GatherMate2 = {
-							order = 12,
+							order = 14,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("GatherMate2")) or L["GatherMate2"],
 							desc = select(3, GetAddOnInfo("GatherMate2")) or nil,
@@ -83,7 +103,7 @@ local function getOptions()
 							end,
 						},
 						enable_PetTracker = {
-							order = 13,
+							order = 15,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("PetTracker")) or L["PetTracker"],
 							desc = select(3, GetAddOnInfo("PetTracker")) or nil,
@@ -93,7 +113,7 @@ local function getOptions()
 							end,
 						},
 						enable_RareScanner = {
-							order = 14,
+							order = 16,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("RareScanner")) or L["RareScanner"],
 							desc = select(3, GetAddOnInfo("RareScanner")) or nil,
@@ -103,7 +123,7 @@ local function getOptions()
 							end,
 						},
 						enable_WorldQuestTracker = {
-							order = 15,
+							order = 17,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("WorldQuestTracker")) or L["WorldQuestTracker"],
 							desc = select(3, GetAddOnInfo("WorldQuestTracker")) or nil,

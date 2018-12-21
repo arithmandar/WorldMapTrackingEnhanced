@@ -205,6 +205,22 @@ local function dropDown_Initialize(self, level)
 				UIDropDownMenu_AddButton(info)
 			end
 		end
+		-- Adding Atlas menus
+		if (checkAddonStatus("Atlas") and profile.enable_Atlas) then
+			local Atlas = addon:GetModule("Atlas", true)
+			local menu = Atlas:DropDownMenus()
+
+			UIDropDownMenu_AddSeparator()
+			UIDropDownMenu_AddButton(menu[1])
+		end
+		-- Adding AtlasLoot menus
+		if (checkAddonStatus("Atlas") and profile.enable_AtlasLoot) then
+			local AtlasLoot = addon:GetModule("AtlasLoot", true)
+			local menu = AtlasLoot:DropDownMenus()
+
+			UIDropDownMenu_AddSeparator()
+			UIDropDownMenu_AddButton(menu[1])
+		end
 		-- Adding HandyNotes menus
 		if (checkAddonStatus("HandyNotes") and profile.enable_HandyNotes) then
 			local HandyNotes = addon:GetModule("HandyNotes", true)

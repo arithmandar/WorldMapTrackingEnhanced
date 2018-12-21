@@ -25,6 +25,8 @@ constants.defaults = {
 		enable_PetTracker = true,
 		enable_RareScanner = true,
 		enable_WorldQuestTracker = true,
+		enable_Atlas = true,
+		enable_AtlasLoot = true,
 	},
 }
 
