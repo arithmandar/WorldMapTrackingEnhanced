@@ -9,6 +9,11 @@ local pairs = _G.pairs
 -- Libraries
 local GameTooltip, GetAddOnInfo, GetAddOnEnableState, UnitName, PlaySound, GetCVarBool, SetCVar = _G.GameTooltip, _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.PlaySound, _G.GetCVarBool, _G.SetCVar
 local WorldMapTrackingOptionsDropDown_OnClick = _G.WorldMapTrackingOptionsDropDown_OnClick
+local UIDropDownMenu_CreateInfo = L_UIDropDownMenu_CreateInfo
+local UIDropDownMenu_AddButton = L_UIDropDownMenu_AddButton
+local UIDropDownMenu_AddSeparator = L_UIDropDownMenu_AddSeparator
+local UIDropDownMenu_Initialize = L_UIDropDownMenu_Initialize
+local ToggleDropDownMenu = L_ToggleDropDownMenu
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
@@ -119,7 +124,7 @@ local function dropDown_Initialize(self, level)
 		if mapID and MapUtil.MapHasEmissaries(mapID) then
 			-- Adding World Quest Tracker menus;
 			if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker) then
-				UIDropDownMenu_AddSeparator()
+				UIDropDownMenu_AddSeparator(1)
 				local WQT = addon:GetModule("WorldQuestTracker", true)
 				local menu = WQT:DropDownMenus()
 
@@ -156,7 +161,7 @@ local function dropDown_Initialize(self, level)
 					UIDropDownMenu_AddButton(info)
 				end
 				
-				UIDropDownMenu_AddSeparator()
+				UIDropDownMenu_AddSeparator(1)
 
 				-- Clear out the info from the separator wholesale.
 				info = UIDropDownMenu_CreateInfo()
@@ -210,7 +215,7 @@ local function dropDown_Initialize(self, level)
 			local Atlas = addon:GetModule("Atlas", true)
 			local menu = Atlas:DropDownMenus()
 
-			UIDropDownMenu_AddSeparator()
+			UIDropDownMenu_AddSeparator(1)
 			UIDropDownMenu_AddButton(menu[1])
 		end
 		-- Adding AtlasLoot menus
@@ -218,7 +223,7 @@ local function dropDown_Initialize(self, level)
 			local AtlasLoot = addon:GetModule("AtlasLoot", true)
 			local menu = AtlasLoot:DropDownMenus()
 
-			UIDropDownMenu_AddSeparator()
+			UIDropDownMenu_AddSeparator(1)
 			UIDropDownMenu_AddButton(menu[1])
 		end
 		-- Adding HandyNotes menus
@@ -226,7 +231,7 @@ local function dropDown_Initialize(self, level)
 			local HandyNotes = addon:GetModule("HandyNotes", true)
 			local menu = HandyNotes:DropDownMenus()
 
-			UIDropDownMenu_AddSeparator()
+			UIDropDownMenu_AddSeparator(1)
 			if (profile.handynotes_contextMenu) then
 				UIDropDownMenu_AddButton(menu[1])
 			else
@@ -241,7 +246,7 @@ local function dropDown_Initialize(self, level)
 			local GatherMate2 = addon:GetModule("GatherMate2", true)
 			local menu = GatherMate2:DropDownMenus()
 
-			UIDropDownMenu_AddSeparator()
+			UIDropDownMenu_AddSeparator(1)
 			UIDropDownMenu_AddButton(menu[1])
 		end
 		-- Adding RareScanner menus
@@ -249,13 +254,13 @@ local function dropDown_Initialize(self, level)
 			local RareScanner = addon:GetModule("RareScanner", true)
 			local menu = RareScanner:DropDownMenus()
 
-			UIDropDownMenu_AddSeparator()
+			UIDropDownMenu_AddSeparator(1)
 			for i = 1, #menu do
 				UIDropDownMenu_AddButton(menu[i])
 			end
 		end
 		-- Adding WorldMapTrackingEnhanced's Config link
-		UIDropDownMenu_AddSeparator()
+		UIDropDownMenu_AddSeparator(1)
 		info = UIDropDownMenu_CreateInfo()
 		info.isNotRadio = true
 		info.notCheckable = true
@@ -273,7 +278,7 @@ local function dropDown_Initialize(self, level)
 	-- Handling level 2 menus
 	elseif (level == 2) then
 		-- handling PetTracker's level 2 menus
-		if (checkAddonStatus("PetTracker") and profile.enable_PetTracker and UIDROPDOWNMENU_MENU_VALUE == "PetTracker") then
+		if (checkAddonStatus("PetTracker") and profile.enable_PetTracker and L_UIDROPDOWNMENU_MENU_VALUE == "PetTracker") then
 			local PetTracker = addon:GetModule("PetTracker", true)
 			local menu = PetTracker:DropDownMenus()
 
@@ -282,7 +287,7 @@ local function dropDown_Initialize(self, level)
 			end
 		end
 		-- handling GatherMate2's level 2 menus
-		if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2 and UIDROPDOWNMENU_MENU_VALUE == "GatherMate2") then
+		if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2 and L_UIDROPDOWNMENU_MENU_VALUE == "GatherMate2") then
 			local GatherMate2 = addon:GetModule("GatherMate2", true)
 			local menu = GatherMate2:DropDownMenus()
 
@@ -291,7 +296,7 @@ local function dropDown_Initialize(self, level)
 			end
 		end
 		-- handling World Quest Tracker's level 2 menus
-		if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker and profile.worldQuestTracker_contextMenu and UIDROPDOWNMENU_MENU_VALUE == "WorldQuestTracker") then
+		if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker and profile.worldQuestTracker_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "WorldQuestTracker") then
 			local WQT = addon:GetModule("WorldQuestTracker", true)
 			local menu = WQT:DropDownMenus()
 
@@ -300,7 +305,7 @@ local function dropDown_Initialize(self, level)
 			end
 		end
 		-- handling HandyNotes' level 2 menus
-		if (checkAddonStatus("HandyNotes") and profile.enable_HandyNotes and profile.handynotes_contextMenu and UIDROPDOWNMENU_MENU_VALUE == "HandyNotes") then
+		if (checkAddonStatus("HandyNotes") and profile.enable_HandyNotes and profile.handynotes_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "HandyNotes") then
 			local HandyNotes = addon:GetModule("HandyNotes", true)
 			local menu = HandyNotes:DropDownMenus()
 
@@ -311,11 +316,11 @@ local function dropDown_Initialize(self, level)
 	elseif (level == 3) then
 		-- handling GatherMate2's level 3 menus
 		if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2) then
---		and UIDROPDOWNMENU_MENU_VALUE == "GatherMate2") then
+--		and L_UIDROPDOWNMENU_MENU_VALUE == "GatherMate2") then
 			local GatherMate2 = addon:GetModule("GatherMate2", true)
 			local _, menu2 = GatherMate2:DropDownMenus()
 			for k, v in pairs(menu2) do
-				if (UIDROPDOWNMENU_MENU_VALUE == "GatherMate2".."."..k) then
+				if (L_UIDROPDOWNMENU_MENU_VALUE == "GatherMate2".."."..k) then
 					for ka, va in pairs(menu2[k]) do
 						UIDropDownMenu_AddButton(menu2[k][ka], 3)
 					end
@@ -329,76 +334,90 @@ end
 local function createTrackingButton()
 	local parent = FilterButton:GetParent()
 	
-	local button = _G[addon.Name.."Button"]
-	if not button then button = CreateFrame("Button", addon.Name.."Button", WorldMapFrame.ScrollContainer) end
+	local name = addon.Name.."Button"
+	local f = _G[name]
+	if not f then f = CreateFrame("Button", name, WorldMapFrame.ScrollContainer) end
 	
-	addon.button = button
+	addon.button = f
 	
-	button:SetWidth(32)
-	button:SetHeight(32)
-	button:SetPoint("TOPRIGHT", parent:GetCanvasContainer(), -4, -2, "TOPRIGHT")
+	f:SetWidth(32)
+	f:SetHeight(32)
+	f:SetPoint("TOPRIGHT", parent:GetCanvasContainer(), -4, -2, "TOPRIGHT")
+	f:SetFrameStrata("HIGH")
 
-	button.dropDown = CreateFrame("Frame", addon.Name.."DropDown", button, "UIDropDownMenuTemplate");
-	button.dropDown:SetScript("OnShow", function(self) 
+	-- Layers
+	f.Shadow = f:CreateTexture(name.."Shadow", "BACKGROUND")
+	f.Shadow:SetAtlas("MapCornerShadow-Right", true)
+	f.Shadow:SetPoint("TOPRIGHT", f, 4, 4)
+	f.Shadow:SetTexCoord(0, 1, 1, 0)
+	f.Shadow:SetDrawLayer("BACKGROUND", -1)
+
+	f.Background = f:CreateTexture(name.."Background", "BACKGROUND")
+	f.Background:SetPoint("TOPLEFT", f, 2, -4)
+	f.Background:SetWidth(25)
+	f.Background:SetHeight(25)
+	f.Background:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
+	f.Background:SetVertexColor(1, 1, 1, 1)
+
+	f.Icon = f:CreateTexture(name.."Icon", "ARTWORK")
+	f.Icon:SetHeight(20)
+	f.Icon:SetWidth(20)
+	f.Icon:SetPoint("TOPLEFT", f, 6, -6)
+	f.Icon:SetTexture("Interface\\Minimap\\Tracking\\None")
+	
+	f.IconOverlay = f:CreateTexture(name.."IconOverlay", "OVERLAY")
+	f.IconOverlay:Hide()
+	f.IconOverlay:SetWidth(27)
+	f.IconOverlay:SetHeight(27)
+	f.IconOverlay:SetPoint("TOPLEFT", f.Icon, 0, 0)
+	f.IconOverlay:SetPoint("BOTTOMRIGHT", f.Icon, 0, 0)
+	f.IconOverlay:SetVertexColor(0, 0, 0, 0.5)
+
+	f.Border = f:CreateTexture(name.."Border", "OVERLAY")
+	f.Border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+	f.Border:SetPoint("TOPLEFT", f, 0, 0)
+	f.Border:SetWidth(54)
+	f.Border:SetHeight(54)
+	f.Border:SetDrawLayer("BACKGROUND", -1)
+
+	--f.DropDown = CreateFrame("Frame", addon.Name.."DropDown", f, "UIDropDownMenuTemplate");
+	f.DropDown = L_Create_UIDropDownMenu(name.."DropDown", f)
+	f.DropDown:SetClampedToScreen(true)
+	--f.DropDown:Hide()
+	f.DropDown:SetScript("OnShow", function(self) 
 		UIDropDownMenu_Initialize(self, dropDown_Initialize, "MENU") 
 	end)
-	button.dropDown:SetClampedToScreen(true)
 	
-	button.Border = button:CreateTexture(addon.Name.."ButtonBorder","BORDER")
-	button.Border:SetPoint("TOPLEFT", button, "TOPLEFT")
-	button.Border:SetWidth(54)
-	button.Border:SetHeight(54)
-	button.Border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
-
-	button.Background = button:CreateTexture(addon.Name.."ButtonBackground","BACKGROUND")
-	button.Background:SetPoint("TOPLEFT")
-	button.Background:SetWidth(25)
-	button.Background:SetHeight(25)
-	button.Background:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
-	--button.Background:SetColorTexture(1, 1, 1, 1)
-
-	button.Icon = button:CreateTexture(addon.Name.."ButtonIcon", "ARTWORK")
-	button.Icon:SetPoint("TOPLEFT", 6, -6)
-	button.Icon:SetHeight(20)
-	button.Icon:SetWidth(20)
-	button.Icon:SetTexture("Interface\\Minimap\\Tracking\\None")
+	f:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight", "ADD")
 	
-	button.IconOverlay = button:CreateTexture(addon.Name.."ButtonOverlay","OVERLAY")
-	button.IconOverlay:SetWidth(27)
-	button.IconOverlay:SetHeight(27)
-	button.IconOverlay:SetPoint("TOPLEFT", button.Icon)
-	button.IconOverlay:SetColorTexture(0, 0, 0, 0.5)
-	button.IconOverlay:Hide()
-	
-	button:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight", "ADD")
-	
-	button:SetScript("OnEnter", function(self)
+	f:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
 		GameTooltip:SetText(TRACKING, 1, 1, 1)
 		GameTooltip:AddLine(MINIMAP_TRACKING_TOOLTIP_NONE, nil, nil, nil, true)
 		GameTooltip:Show()
 	end)
-	button:SetScript("OnLeave", function(self)
+	f:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
 	end)
-	button:SetScript("OnClick", function(self)
+	f:SetScript("OnClick", function(self)
 		local parent = self:GetParent()
 		local mapID = WorldMapFrame:GetMapID()
 		if not mapID then
 			return
 		end
-		self.dropDown.mapID = mapID
-		ToggleDropDownMenu(1, nil, self.dropDown, button, 0, -5)
+		self.DropDown.mapID = mapID or 0
+		ToggleDropDownMenu(1, nil, f.DropDown, f, 0, -5)
 		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	end)
-	button:SetScript("OnMouseDown", function(self)
+	f:SetScript("OnMouseDown", function(self)
 		self.Icon:SetPoint("TOPLEFT", 8, -8)
-		--self.IconOverlay:Show()
+		self.IconOverlay:Show()
 	end)
-	button:SetScript("OnMouseUp", function(self)
+	f:SetScript("OnMouseUp", function(self)
 		self.Icon:SetPoint("TOPLEFT", 6, -6)
-		--self.IconOverlay:Hide()
+		self.IconOverlay:Hide()
 	end)
+	
 end
 
 function addon:OnInitialize()
@@ -421,47 +440,6 @@ function addon:Refresh()
 end
 --[[
 function addon:CLOSE_WORLD_MAP()
-	CloseDropDownMenus()
+	L_CloseDropDownMenus()
 end
 ]]
-
--- ----------------------------------------------------------------------------
--- UIDropDownMenu's tainting workaround
--- credit https://www.townlong-yak.com/bugs/Kjq4hm-DisplayModeCommunitiesTaint
--- ----------------------------------------------------------------------------
-if (UIDROPDOWNMENU_VALUE_PATCH_VERSION or 0) < 2 then
-	UIDROPDOWNMENU_VALUE_PATCH_VERSION = 2
-	hooksecurefunc("UIDropDownMenu_InitializeHelper", function()
-		if UIDROPDOWNMENU_VALUE_PATCH_VERSION ~= 2 then
-			return
-		end
-		for i=1, UIDROPDOWNMENU_MAXLEVELS do
-			for j=1, UIDROPDOWNMENU_MAXBUTTONS do
-				local b = _G["DropDownList" .. i .. "Button" .. j]
-				if not (issecurevariable(b, "value") or b:IsShown()) then
-					b.value = nil
-					repeat
-						j, b["fx" .. j] = j+1
-					until issecurevariable(b, "value")
-				end
-			end
-		end
-	end)
-end
-
-if (UIDROPDOWNMENU_OPEN_PATCH_VERSION or 0) < 1 then
-	UIDROPDOWNMENU_OPEN_PATCH_VERSION = 1
-	hooksecurefunc("UIDropDownMenu_InitializeHelper", function(frame)
-		if UIDROPDOWNMENU_OPEN_PATCH_VERSION ~= 1 then
-			return
-		end
-		if UIDROPDOWNMENU_OPEN_MENU and UIDROPDOWNMENU_OPEN_MENU ~= frame
-		   and not issecurevariable(UIDROPDOWNMENU_OPEN_MENU, "displayMode") then
-			UIDROPDOWNMENU_OPEN_MENU = nil
-			local t, f, prefix, i = _G, issecurevariable, " \0", 1
-			repeat
-				i, t[prefix .. i] = i + 1
-			until f("UIDROPDOWNMENU_OPEN_MENU")
-		end
-	end)
-end

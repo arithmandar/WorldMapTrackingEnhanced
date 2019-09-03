@@ -2,6 +2,7 @@
 ..\FrameXML\UI.xsd">
 
 <!--@no-lib-strip@-->
+<Script file="MSA-DropDownMenu-1.0\MSA-DropDownMenu-1.0.lua"/>
 <!--@end-no-lib-strip@-->
 
 </Ui>

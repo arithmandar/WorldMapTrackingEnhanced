@@ -19,7 +19,7 @@ local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local Atlas = addon:NewModule(MODNAME)
 
-local AT, profile
+local AT, profile, WorldMap
 
 local iAtlas = select(4, GetAddOnInfo(MODNAME))
 local enabled = GetAddOnEnableState(UnitName("player"), MODNAME)
@@ -50,7 +50,7 @@ function Atlas:DropDownMenus()
 		menu[i].tooltipTitle = mode_name
 		menu[i].tooltipText = select(3, GetAddOnInfo("Atlas")) or nil
 		menu[i].tooltipOnButton = true
-		menu[i].func = AtlasToggleFromWorldMap_OnClick
+		menu[i].func = AT.WorldMap.Button_OnClick
 		menu[i].checked = nil
 		menu[i].icon = "Interface\\WorldMap\\WorldMap-Icon"
 
