@@ -219,7 +219,7 @@ local function dropDown_Initialize(self, level)
 			UIDropDownMenu_AddButton(menu[1])
 		end
 		-- Adding AtlasLoot menus
-		if (checkAddonStatus("Atlas") and profile.enable_AtlasLoot) then
+		if (checkAddonStatus("AtlasLoot") and profile.enable_AtlasLoot) then
 			local AtlasLoot = addon:GetModule("AtlasLoot", true)
 			local menu = AtlasLoot:DropDownMenus()
 

@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v3.04 (Sep. 04, 2018)
+-----------------------
+- Fixed AtlasLoot's status checking
+
 * v3.03 (Sep. 03, 2018)
 -----------------------
 - ToC update to support WoW 8.2.0
