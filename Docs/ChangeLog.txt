@@ -3,11 +3,16 @@ $Id$
 Revision History:
 =================
 
-* v3.04 (Sep. 04, 2018)
+* v3.05 (Jan. 17, 2020)
+-----------------------
+- ToC update to support WoW 8.3.0
+- Added dungeon entrance's toggle
+
+* v3.04 (Sep. 04, 2019)
 -----------------------
 - Fixed AtlasLoot's status checking
 
-* v3.03 (Sep. 03, 2018)
+* v3.03 (Sep. 03, 2019)
 -----------------------
 - ToC update to support WoW 8.2.0
 
