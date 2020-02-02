@@ -49,7 +49,11 @@ function RareScanner:DropDownMenus()
 		menu[i].isNotRadio = true
 		menu[i].notCheckable = true
 		--menu[i].keepShownOnClick = true
-		menu[i].hasArrow = nil
+		if (addon.db.profile.rarescanner_contextMenu) then
+			menu[i].hasArrow = true
+		else
+			menu[i].hasArrow = nil
+		end
 		menu[i].value = MODNAME
 		menu[i].colorCode = "|cFFFFC90E"
 		menu[i].text = mode_name

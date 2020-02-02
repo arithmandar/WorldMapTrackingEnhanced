@@ -148,8 +148,19 @@ local function getOptions()
 								return not iHandyNotes or not addon.db.profile.enable_HandyNotes
 							end,
 						},
-						worldQuestTracker_contextMenu = {
+						rarescanner_contextMenu = {
 							order = 22,
+							type = "toggle",
+							name = select(2, GetAddOnInfo("RareScanner")) or L["RareScanner"],
+							desc = L["Show RareScanner plugins in second level menu."],
+							width = "full",
+							disabled = function() 
+								local iRareScanner = select(4, GetAddOnInfo("RareScanner"))
+								return not iRareScanner or not addon.db.profile.enable_RareScanner
+							end,
+						},
+						worldQuestTracker_contextMenu = {
+							order = 23,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("WorldQuestTracker")) or L["WorldQuestTracker"],
 							desc = L["Show WorldQuestTracker's filter selections in second level menu."],

@@ -262,8 +262,12 @@ local function dropDown_Initialize(self, level)
 			local menu = RareScanner:DropDownMenus()
 
 			UIDropDownMenu_AddSeparator(1)
-			for i = 1, #menu do
-				UIDropDownMenu_AddButton(menu[i])
+			if (profile.rarescanner_contextMenu) then
+				UIDropDownMenu_AddButton(menu[1])
+			else
+				for i = 1, #menu do
+					UIDropDownMenu_AddButton(menu[i])
+				end
 			end
 		end
 		-- Adding WorldMapTrackingEnhanced's Config link
@@ -315,6 +319,15 @@ local function dropDown_Initialize(self, level)
 		if (checkAddonStatus("HandyNotes") and profile.enable_HandyNotes and profile.handynotes_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "HandyNotes") then
 			local HandyNotes = addon:GetModule("HandyNotes", true)
 			local menu = HandyNotes:DropDownMenus()
+
+			for i = 2, #menu do
+				UIDropDownMenu_AddButton(menu[i], 2)
+			end
+		end
+		-- handling RareScanner' level 2 menus
+		if (checkAddonStatus("RareScanner") and profile.enable_RareScanner and profile.rarescanner_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "RareScanner") then
+			local RareScanner = addon:GetModule("RareScanner", true)
+			local menu = RareScanner:DropDownMenus()
 
 			for i = 2, #menu do
 				UIDropDownMenu_AddButton(menu[i], 2)
@@ -387,7 +400,15 @@ local function createTrackingButton()
 	f.Border:SetHeight(54)
 	f.Border:SetDrawLayer("BACKGROUND", -1)
 
-	--f.DropDown = CreateFrame("Frame", addon.Name.."DropDown", f, "UIDropDownMenuTemplate");
+--[[
+	f.Slider = CreateFrame("Slider", name.."SliderFrame", f, "OptionsSliderTemplate")
+	f.Slider:SetWidth(20)
+	f.Slider:SetHeight(200)
+	f.Slider:SetPoint("TOPRIGHT", f, 0, 0)
+	f.Slider:SetOrientation('VERTICAL')
+	f.Slider:Show()
+]]
+	--f.DropDown = CreateFrame("Frame", addon.Name.."DropDown", f, "UIDropDownMenuTemplate")
 	f.DropDown = L_Create_UIDropDownMenu(name.."DropDown", f)
 	f.DropDown:SetClampedToScreen(true)
 	--f.DropDown:Hide()

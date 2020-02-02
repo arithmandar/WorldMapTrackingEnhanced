@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v3.06 (Feb. XX, 2020)
+-----------------------
+- Enable RareScanner to have 2nd level of menus
+
 * v3.05 (Jan. 17, 2020)
 -----------------------
 - ToC update to support WoW 8.3.0
