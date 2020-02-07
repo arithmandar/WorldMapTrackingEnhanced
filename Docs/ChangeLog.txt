@@ -6,6 +6,7 @@ Revision History:
 * v3.06 (Feb. XX, 2020)
 -----------------------
 - Enable RareScanner to have 2nd level of menus
+- Categorize HandyNotes' plugins into sub-menus
 
 * v3.05 (Jan. 17, 2020)
 -----------------------

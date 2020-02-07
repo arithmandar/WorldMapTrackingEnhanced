@@ -6,6 +6,8 @@
 local _G = getfenv(0)
 local select = _G.select
 local pairs = _G.pairs
+local math = _G.math
+local ceil = math.ceil
 -- Libraries
 local GameTooltip, GetAddOnInfo, GetAddOnEnableState, UnitName, PlaySound, GetCVarBool, SetCVar = _G.GameTooltip, _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.PlaySound, _G.GetCVarBool, _G.SetCVar
 local WorldMapTrackingOptionsDropDown_OnClick = _G.WorldMapTrackingOptionsDropDown_OnClick
@@ -32,6 +34,7 @@ addon.Notes = select(3, GetAddOnInfo(addon.Name))
 _G.WorldMapTrackingEnhanced = addon
 local profile
 local FilterButton -- WorldMapFrame.overlayFrames[2]
+local iMaxMenu = 20
 
 local function checkAddonStatus(addonName)
 	if not addonName then return nil end
@@ -320,8 +323,23 @@ local function dropDown_Initialize(self, level)
 			local HandyNotes = addon:GetModule("HandyNotes", true)
 			local menu = HandyNotes:DropDownMenus()
 
-			for i = 2, #menu do
-				UIDropDownMenu_AddButton(menu[i], 2)
+			if (#menu > iMaxMenu+1) then
+				local j = ceil((#menu-1) / iMaxMenu)
+				for i = 1, j do
+					local info = {
+						isNotRadio = true,
+						notCheckable = true,
+						keepShownOnClick = true,
+						hasArrow = true,
+						text = format("HandyNotes - %s/%s", i, j),
+						value = "HandyNotes"..i,
+					}
+					UIDropDownMenu_AddButton(info, 2)
+				end
+			else
+				for i = 2, #menu do
+					UIDropDownMenu_AddButton(menu[i], 2)
+				end
 			end
 		end
 		-- handling RareScanner' level 2 menus
@@ -346,7 +364,27 @@ local function dropDown_Initialize(self, level)
 					end
 				end
 			end
-
+		end
+		if (checkAddonStatus("HandyNotes") and profile.enable_HandyNotes and profile.handynotes_contextMenu) then
+			local HandyNotes = addon:GetModule("HandyNotes", true)
+			local menu = HandyNotes:DropDownMenus()
+			if (#menu > iMaxMenu+1) then
+				local j = ceil((#menu-1) / iMaxMenu)
+				for i = 1, j do
+					if (L_UIDROPDOWNMENU_MENU_VALUE == "HandyNotes"..i) then
+						local s, t
+						s = 2 + (iMaxMenu * (i-1))
+						if (i == j) then 
+							t = #menu
+						else
+							t = ((iMaxMenu*i) + 1)
+						end
+						for k = s, t do
+							UIDropDownMenu_AddButton(menu[k], 3)
+						end
+					end
+				end
+			end
 		end
 	end
 end
