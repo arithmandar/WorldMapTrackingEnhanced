@@ -26,7 +26,7 @@ local MapFilter
 
 function PT:OnEnable()
 	if (enabled > 0 and iPetTracker) then 
-		--MapFilter = PetTracker:GetModule("MapFilter", true)
+		MapFilter = PetTracker.MapFilter
 	else
 		return false
 	end
@@ -93,9 +93,10 @@ function PT:DropDownMenus()
 		menu[i].tooltipText = L["Click to open PetTracker's config panel"]
 		menu[i].tooltipOnButton = true
 		menu[i].func = (function(self)
+			local PAW_ICON = '|TInterface\\Garrison\\MobileAppIcons:13:13:0:0:1024:1024:261:389:261:389|t '
 			ToggleFrame(WorldMapFrame)
-			InterfaceOptionsFrame_OpenToCategory("PetTracker")
-			InterfaceOptionsFrame_OpenToCategory("PetTracker")
+			InterfaceOptionsFrame_OpenToCategory(PAW_ICON.."PetTracker")
+			InterfaceOptionsFrame_OpenToCategory(PAW_ICON.."PetTracker")
 		end)
 		
 		return menu
