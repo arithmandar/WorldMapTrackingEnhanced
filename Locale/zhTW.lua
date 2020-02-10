@@ -14,6 +14,10 @@ if L then
 -- Configs
 -- //////////////////////////
 L["Options"] = "選項"
+L["Config"] = "設定"
+L["Addon Configuration"] = "插件設定"
+L["Use Separator"] = "使用分隔線"
+L["Use separator in menu to separate different type of menu items"] = "使用分隔線來分隔不同的選單項目"
 L["Support"] = "支援"
 L["Toggle which map enhancement addon to be included in the enhanced tracking option menu."] = "選擇要將哪些地圖增強的插件加入強化的地圖追蹤選項清單裡。"
 L["Profile Options"] = "設定檔選項"
@@ -43,7 +47,13 @@ L["Click to open GatherMate2's config panel"] = "點擊以開啟 GatherMate2 的
 -- PetTracker
 -- //////////////////////////
 L["PetTracker Config"] = "PetTracker 設定"
-L["Click to open PetTracker's config panel"] = "點擊以開啟 PetTracker 的選項設定視窗"
+
+-- //////////////////////////
+-- RareScanner
+-- //////////////////////////
+L["RareScanner Config"] = "RareScanner 設定"
+L["Click to open RareScanner's config panel"] = "點擊以開啟 RareScanner 的設定面板"
+L["Show RareScanner plugins in second level menu."] = "將 RareScanner 的套件清單顯示在第二層選單。"
 
 -- //////////////////////////
 -- WorldQuestTracker

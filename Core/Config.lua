@@ -47,23 +47,41 @@ local function getOptions()
 					get = optGetter,
 					set = optSetter,
 					args = {
-						version = {
+						description = {
 							order = 1,
 							type = "description",
 							name = addon.Notes,
 						},
+						--[[ //////// Header 1 //////// --]]
 						header1 = {
 							order = 10,
 							type = "header",
-							name = L["Support"],
+							name = L["Config"],
 						},
 						desc1 = {
 							order = 10.1,
 							type = "description",
+							name = L["Addon Configuration"],
+						},
+						useSeparator = {
+							order = 11,
+							type = "toggle",
+							name = L["Use Separator"],
+							desc = L["Use separator in menu to separate different type of menu items"],
+						},
+						--[[ //////// Header 1 //////// --]]
+						header2 = {
+							order = 20,
+							type = "header",
+							name = L["Support"],
+						},
+						desc2 = {
+							order = 20.1,
+							type = "description",
 							name = L["Toggle which map enhancement addon to be included in the enhanced tracking option menu."],
 						},
 						enable_Atlas = {
-							order = 11,
+							order = 21,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("Atlas")) or L["Atlas"],
 							desc = select(3, GetAddOnInfo("Atlas")) or nil,
@@ -73,7 +91,7 @@ local function getOptions()
 							end,
 						},
 						enable_AtlasLoot = {
-							order = 12,
+							order = 22,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("AtlasLoot")) or L["AtlasLoot"],
 							desc = select(3, GetAddOnInfo("AtlasLoot")) or nil,
@@ -83,7 +101,7 @@ local function getOptions()
 							end,
 						},
 						enable_HandyNotes = {
-							order = 13,
+							order = 23,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("HandyNotes")) or L["HandyNotes"],
 							desc = select(3, GetAddOnInfo("HandyNotes")) or nil,
@@ -93,7 +111,7 @@ local function getOptions()
 							end,
 						},
 						enable_GatherMate2 = {
-							order = 14,
+							order = 24,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("GatherMate2")) or L["GatherMate2"],
 							desc = select(3, GetAddOnInfo("GatherMate2")) or nil,
@@ -103,7 +121,7 @@ local function getOptions()
 							end,
 						},
 						enable_PetTracker = {
-							order = 15,
+							order = 25,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("PetTracker")) or L["PetTracker"],
 							desc = select(3, GetAddOnInfo("PetTracker")) or nil,
@@ -113,7 +131,7 @@ local function getOptions()
 							end,
 						},
 						enable_RareScanner = {
-							order = 16,
+							order = 26,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("RareScanner")) or L["RareScanner"],
 							desc = select(3, GetAddOnInfo("RareScanner")) or nil,
@@ -123,7 +141,7 @@ local function getOptions()
 							end,
 						},
 						enable_WorldQuestTracker = {
-							order = 17,
+							order = 27,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("WorldQuestTracker")) or L["WorldQuestTracker"],
 							desc = select(3, GetAddOnInfo("WorldQuestTracker")) or nil,
@@ -132,13 +150,14 @@ local function getOptions()
 								return not iWorldQuestTracker
 							end,
 						},
-						header2 = {
-							order = 20,
+						--[[ //////// Header 1 //////// --]]
+						header3 = {
+							order = 30,
 							type = "header",
 							name = L["Second Level Menu"],
 						},
 						handynotes_contextMenu = {
-							order = 21,
+							order = 31,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("HandyNotes")) or L["HandyNotes"],
 							desc = L["Show HandyNotes plugins in second level menu."],
@@ -149,7 +168,7 @@ local function getOptions()
 							end,
 						},
 						rarescanner_contextMenu = {
-							order = 22,
+							order = 32,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("RareScanner")) or L["RareScanner"],
 							desc = L["Show RareScanner plugins in second level menu."],
@@ -160,7 +179,7 @@ local function getOptions()
 							end,
 						},
 						worldQuestTracker_contextMenu = {
-							order = 23,
+							order = 33,
 							type = "toggle",
 							name = select(2, GetAddOnInfo("WorldQuestTracker")) or L["WorldQuestTracker"],
 							desc = L["Show WorldQuestTracker's filter selections in second level menu."],

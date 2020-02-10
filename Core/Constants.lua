@@ -18,6 +18,7 @@ private.constants = constants
 
 constants.defaults = {
 	profile = {
+		useSeparator = true,
 		handynotes_contextMenu = true,
 		rarescanner_contextMenu = true,
 		worldQuestTracker_contextMenu = false,

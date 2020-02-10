@@ -3,10 +3,16 @@ $Id$
 Revision History:
 =================
 
+* v3.07 (Feb. 10, 2020)
+-----------------------
+- Fixed the issue that PetTracker's search box is missing. It's now showing properly.
+- Added feature to toggle the separator to be show on dropdown or not
+
 * v3.06 (Feb. 10, 2020)
 -----------------------
 - Enable RareScanner to have 2nd level of menus
 - Categorize HandyNotes' plugins into sub-menus
+- Fixed PetTracker's config menu item, it will now open PetTracker's configuration correctly
 
 * v3.05 (Jan. 17, 2020)
 -----------------------

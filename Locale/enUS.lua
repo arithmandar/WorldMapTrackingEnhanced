@@ -13,6 +13,10 @@ if L then
 -- Configs
 -- //////////////////////////
 L["Options"] = "Options"
+L["Config"] = "Config"
+L["Addon Configuration"] = "Addon Configuration"
+L["Use Separator"] = "Use Separator"
+L["Use separator in menu to separate different type of menu items"] = "Use separator in menu to separate different type of menu items"
 L["Support"] = "Support"
 L["Toggle which map enhancement addon to be included in the enhanced tracking option menu."] = "Toggle which map enhancement addon to be included in the enhanced tracking option menu."
 L["Profile Options"] = "Profile Options"

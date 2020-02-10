@@ -80,6 +80,12 @@ local function dropDown_Initialize(self, level)
 	local function OnSelection(button)
 		onSelection(button.value, button.checked)
 	end
+	
+	local function AddSeparator()
+		if (profile.useSeparator) then
+			UIDropDownMenu_AddSeparator(1)
+		end
+	end
 
 	if not level then level = 1 end
 	local info = UIDropDownMenu_CreateInfo()
@@ -134,7 +140,7 @@ local function dropDown_Initialize(self, level)
 		if mapID and MapUtil.MapHasEmissaries(mapID) then
 			-- Adding World Quest Tracker menus;
 			if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker) then
-				UIDropDownMenu_AddSeparator(1)
+				AddSeparator()
 				local WQT = addon:GetModule("WorldQuestTracker", true)
 				local menu = WQT:DropDownMenus()
 
@@ -171,7 +177,7 @@ local function dropDown_Initialize(self, level)
 					UIDropDownMenu_AddButton(info)
 				end
 				
-				UIDropDownMenu_AddSeparator(1)
+				AddSeparator()
 
 				-- Clear out the info from the separator wholesale.
 				info = UIDropDownMenu_CreateInfo()
@@ -225,7 +231,7 @@ local function dropDown_Initialize(self, level)
 			local Atlas = addon:GetModule("Atlas", true)
 			local menu = Atlas:DropDownMenus()
 
-			UIDropDownMenu_AddSeparator(1)
+			AddSeparator()
 			UIDropDownMenu_AddButton(menu[1])
 		end
 		-- Adding AtlasLoot menus
@@ -233,7 +239,7 @@ local function dropDown_Initialize(self, level)
 			local AtlasLoot = addon:GetModule("AtlasLoot", true)
 			local menu = AtlasLoot:DropDownMenus()
 
-			UIDropDownMenu_AddSeparator(1)
+			AddSeparator()
 			UIDropDownMenu_AddButton(menu[1])
 		end
 		-- Adding HandyNotes menus
@@ -241,7 +247,7 @@ local function dropDown_Initialize(self, level)
 			local HandyNotes = addon:GetModule("HandyNotes", true)
 			local menu = HandyNotes:DropDownMenus()
 
-			UIDropDownMenu_AddSeparator(1)
+			AddSeparator()
 			if (profile.handynotes_contextMenu) then
 				UIDropDownMenu_AddButton(menu[1])
 			else
@@ -256,7 +262,7 @@ local function dropDown_Initialize(self, level)
 			local GatherMate2 = addon:GetModule("GatherMate2", true)
 			local menu = GatherMate2:DropDownMenus()
 
-			UIDropDownMenu_AddSeparator(1)
+			AddSeparator()
 			UIDropDownMenu_AddButton(menu[1])
 		end
 		-- Adding RareScanner menus
@@ -264,7 +270,7 @@ local function dropDown_Initialize(self, level)
 			local RareScanner = addon:GetModule("RareScanner", true)
 			local menu = RareScanner:DropDownMenus()
 
-			UIDropDownMenu_AddSeparator(1)
+			AddSeparator()
 			if (profile.rarescanner_contextMenu) then
 				UIDropDownMenu_AddButton(menu[1])
 			else
@@ -274,7 +280,7 @@ local function dropDown_Initialize(self, level)
 			end
 		end
 		-- Adding WorldMapTrackingEnhanced's Config link
-		UIDropDownMenu_AddSeparator(1)
+		AddSeparator()
 		info = UIDropDownMenu_CreateInfo()
 		info.isNotRadio = true
 		info.notCheckable = true
@@ -438,14 +444,6 @@ local function createTrackingButton()
 	f.Border:SetHeight(54)
 	f.Border:SetDrawLayer("BACKGROUND", -1)
 
---[[
-	f.Slider = CreateFrame("Slider", name.."SliderFrame", f, "OptionsSliderTemplate")
-	f.Slider:SetWidth(20)
-	f.Slider:SetHeight(200)
-	f.Slider:SetPoint("TOPRIGHT", f, 0, 0)
-	f.Slider:SetOrientation('VERTICAL')
-	f.Slider:Show()
-]]
 	--f.DropDown = CreateFrame("Frame", addon.Name.."DropDown", f, "UIDropDownMenuTemplate")
 	f.DropDown = L_Create_UIDropDownMenu(name.."DropDown", f)
 	f.DropDown:SetClampedToScreen(true)
@@ -488,18 +486,27 @@ end
 
 function addon:OnInitialize()
 	self.db = AceDB:New(addon.Name.."DB", addon.constants.defaults, true)
-	profile = self.db.profile;
+	profile = self.db.profile
 
 	self:SetupOptions()
 	FilterButton = WorldMapFrame.overlayFrames[2]
 end
 
+local function rearrangeFilterButtonTexture()
+	FilterButton.Background:SetTexture(nil)
+	FilterButton.Icon:SetTexture(nil)
+	FilterButton.IconOverlay:SetTexture(nil)
+	FilterButton.Border:SetTexture(nil)
+	FilterButton:SetHighlightTexture(nil)
+end
+
 function addon:OnEnable()
 	for key, value in pairs( addon.constants.events ) do
-		self:RegisterEvent( value );
+		self:RegisterEvent( value )
 	end
 	createTrackingButton()
-	FilterButton:Hide()
+	rearrangeFilterButtonTexture()
+--	FilterButton:Hide()
 end
 
 function addon:Refresh()
