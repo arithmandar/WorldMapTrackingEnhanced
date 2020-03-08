@@ -31,10 +31,11 @@ addon.constants.addon_name = private.addon_name
 addon.Name = FOLDER_NAME
 addon.LocName = select(2, GetAddOnInfo(addon.Name))
 addon.Notes = select(3, GetAddOnInfo(addon.Name))
+addon.plugins = {}
 _G.WorldMapTrackingEnhanced = addon
 local profile
 local FilterButton -- WorldMapFrame.overlayFrames[2]
-local iMaxMenu = 20
+local iMaxMenu = 20 -- Maximum number of dropdown menu item
 
 local function checkAddonStatus(addonName)
 	if not addonName then return nil end
@@ -57,7 +58,7 @@ local function onSelection(value, checked)
 	if (value == "quests") then
 		SetCVar("questPOI", checked and "1" or "0", "QUEST_POI")
 	elseif (value == "dungeon entrances") then
-		SetCVar("showDungeonEntrancesOnMap", checked and "1" or "0", "SHOW_DUNGEON_ENTRANCES");
+		SetCVar("showDungeonEntrancesOnMap", checked and "1" or "0", "SHOW_DUNGEON_ENTRANCES")
 	elseif (value == "digsites") then
 		SetCVar("digSites", checked and "1" or "0", "SHOW_DIG_SITES")
 	elseif (value == "tamers") then
@@ -128,18 +129,11 @@ local function dropDown_Initialize(self, level)
 			info.checked = GetCVarBool("showTamers")
 			UIDropDownMenu_AddButton(info)
 		end
-		-- Adding PetTracker menus
-		if (checkAddonStatus("PetTracker") and profile.enable_PetTracker) then
-			local PT = addon:GetModule("PetTracker", true)
-			local menu = PT:DropDownMenus()
-
-			UIDropDownMenu_AddButton(menu[1])
-		end
 		-- If we aren't on a map with world quests don't show the world quest reward filter options.
 		local mapID = WorldMapFrame:GetMapID()
 		if mapID and MapUtil.MapHasEmissaries(mapID) then
 			-- Adding World Quest Tracker menus;
-			if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker) then
+--[[			if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker) then
 				AddSeparator()
 				local WQT = addon:GetModule("WorldQuestTracker", true)
 				local menu = WQT:DropDownMenus()
@@ -152,7 +146,7 @@ local function dropDown_Initialize(self, level)
 					end
 				end
 			-- With World Quest Tracker enabled, actually the WoW built-in World Quest menu filters will not work. 
-			else
+			else]]
 				-- Clear out the info from the separator wholesale.
 				info = UIDropDownMenu_CreateInfo()
 
@@ -224,58 +218,20 @@ local function dropDown_Initialize(self, level)
 				info.value = "worldQuestFilterReputation"
 				info.checked = GetCVarBool("worldQuestFilterReputation")
 				UIDropDownMenu_AddButton(info)
-			end
+			--end
 		end
-		-- Adding Atlas menus
-		if (checkAddonStatus("Atlas") and profile.enable_Atlas) then
-			local Atlas = addon:GetModule("Atlas", true)
-			local menu = Atlas:DropDownMenus()
-
-			AddSeparator()
-			UIDropDownMenu_AddButton(menu[1])
-		end
-		-- Adding AtlasLoot menus
-		if (checkAddonStatus("AtlasLoot") and profile.enable_AtlasLoot) then
-			local AtlasLoot = addon:GetModule("AtlasLoot", true)
-			local menu = AtlasLoot:DropDownMenus()
-
-			AddSeparator()
-			UIDropDownMenu_AddButton(menu[1])
-		end
-		-- Adding HandyNotes menus
-		if (checkAddonStatus("HandyNotes") and profile.enable_HandyNotes) then
-			local HandyNotes = addon:GetModule("HandyNotes", true)
-			local menu = HandyNotes:DropDownMenus()
-
-			AddSeparator()
-			if (profile.handynotes_contextMenu) then
-				UIDropDownMenu_AddButton(menu[1])
-			else
-				for i = 1, #menu do
-					UIDropDownMenu_AddButton(menu[i])
-				end
-			end
-
-		end
-		-- Adding GatherMate2 menus
-		if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2) then
-			local GatherMate2 = addon:GetModule("GatherMate2", true)
-			local menu = GatherMate2:DropDownMenus()
-
-			AddSeparator()
-			UIDropDownMenu_AddButton(menu[1])
-		end
-		-- Adding RareScanner menus
-		if (checkAddonStatus("RareScanner") and profile.enable_RareScanner) then
-			local RareScanner = addon:GetModule("RareScanner", true)
-			local menu = RareScanner:DropDownMenus()
-
-			AddSeparator()
-			if (profile.rarescanner_contextMenu) then
-				UIDropDownMenu_AddButton(menu[1])
-			else
-				for i = 1, #menu do
-					UIDropDownMenu_AddButton(menu[i])
+		for k, v in pairs(addon.plugins) do
+			if (v and profile.enableModules[k]) then
+				if (k == "WorldQuestTracker") then
+					-- do nothing
+				else
+					local Module = addon:GetModule(k, true)
+					local menu = Module:DropDownMenus()
+					
+					AddSeparator()
+					for i = 1, #menu do
+						UIDropDownMenu_AddButton(menu[i])
+					end
 				end
 			end
 		end
@@ -297,96 +253,33 @@ local function dropDown_Initialize(self, level)
 		UIDropDownMenu_AddButton(info)
 	-- Handling level 2 menus
 	elseif (level == 2) then
-		-- handling PetTracker's level 2 menus
-		if (checkAddonStatus("PetTracker") and profile.enable_PetTracker and L_UIDROPDOWNMENU_MENU_VALUE == "PetTracker") then
-			local PetTracker = addon:GetModule("PetTracker", true)
-			local menu = PetTracker:DropDownMenus()
-
-			for i = 2, #menu do
-				UIDropDownMenu_AddButton(menu[i], 2)
-			end
-		end
-		-- handling GatherMate2's level 2 menus
-		if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2 and L_UIDROPDOWNMENU_MENU_VALUE == "GatherMate2") then
-			local GatherMate2 = addon:GetModule("GatherMate2", true)
-			local menu = GatherMate2:DropDownMenus()
-
-			for i = 2, #menu do
-				UIDropDownMenu_AddButton(menu[i], 2)
-			end
-		end
-		-- handling World Quest Tracker's level 2 menus
-		if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker and profile.worldQuestTracker_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "WorldQuestTracker") then
-			local WQT = addon:GetModule("WorldQuestTracker", true)
-			local menu = WQT:DropDownMenus()
-
-			for i = 2, #menu do
-				UIDropDownMenu_AddButton(menu[i], 2)
-			end
-		end
-		-- handling HandyNotes' level 2 menus
-		if (checkAddonStatus("HandyNotes") and profile.enable_HandyNotes and profile.handynotes_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "HandyNotes") then
-			local HandyNotes = addon:GetModule("HandyNotes", true)
-			local menu = HandyNotes:DropDownMenus()
-
-			if (#menu > iMaxMenu+1) then
-				local j = ceil((#menu-1) / iMaxMenu)
-				for i = 1, j do
-					local info = {
-						isNotRadio = true,
-						notCheckable = true,
-						keepShownOnClick = true,
-						hasArrow = true,
-						text = format("HandyNotes - %s/%s", i, j),
-						value = "HandyNotes"..i,
-					}
-					UIDropDownMenu_AddButton(info, 2)
-				end
-			else
-				for i = 2, #menu do
-					UIDropDownMenu_AddButton(menu[i], 2)
-				end
-			end
-		end
-		-- handling RareScanner' level 2 menus
-		if (checkAddonStatus("RareScanner") and profile.enable_RareScanner and profile.rarescanner_contextMenu and L_UIDROPDOWNMENU_MENU_VALUE == "RareScanner") then
-			local RareScanner = addon:GetModule("RareScanner", true)
-			local menu = RareScanner:DropDownMenus()
-
-			for i = 2, #menu do
-				UIDropDownMenu_AddButton(menu[i], 2)
-			end
-		end
-	elseif (level == 3) then
-		-- handling GatherMate2's level 3 menus
-		if (checkAddonStatus("GatherMate2") and profile.enable_GatherMate2) then
---		and L_UIDROPDOWNMENU_MENU_VALUE == "GatherMate2") then
-			local GatherMate2 = addon:GetModule("GatherMate2", true)
-			local _, menu2 = GatherMate2:DropDownMenus()
-			for k, v in pairs(menu2) do
-				if (L_UIDROPDOWNMENU_MENU_VALUE == "GatherMate2".."."..k) then
-					for ka, va in pairs(menu2[k]) do
-						UIDropDownMenu_AddButton(menu2[k][ka], 3)
+		for k, v in pairs(addon.plugins) do
+			if (v and profile.enableModules[k] and L_UIDROPDOWNMENU_MENU_VALUE == k) then
+				local Module = addon:GetModule(k, true)
+				local _, menu2 = Module:DropDownMenus()
+				
+				if (menu2) then
+					for i = 1, #menu2 do
+						UIDropDownMenu_AddButton(menu2[i], 2)
 					end
 				end
 			end
 		end
-		if (checkAddonStatus("HandyNotes") and profile.enable_HandyNotes and profile.handynotes_contextMenu) then
-			local HandyNotes = addon:GetModule("HandyNotes", true)
-			local menu = HandyNotes:DropDownMenus()
-			if (#menu > iMaxMenu+1) then
-				local j = ceil((#menu-1) / iMaxMenu)
-				for i = 1, j do
-					if (L_UIDROPDOWNMENU_MENU_VALUE == "HandyNotes"..i) then
-						local s, t
-						s = 2 + (iMaxMenu * (i-1))
-						if (i == j) then 
-							t = #menu
-						else
-							t = ((iMaxMenu*i) + 1)
-						end
-						for k = s, t do
-							UIDropDownMenu_AddButton(menu[k], 3)
+	elseif (level == 3) then
+		for k, v in pairs(addon.plugins) do
+			if (v and profile.enableModules[k]) then
+				local Module = addon:GetModule(k, true)
+				local _, menu2 = Module:DropDownMenus()
+				
+				if (menu2) then
+					for i = 1, #menu2 do
+						if (L_UIDROPDOWNMENU_MENU_VALUE == k..i) then
+							local t = menu2[i].menuTable
+							if (t) then
+								for j = 1, #t do
+									UIDropDownMenu_AddButton(t[j], 3)
+								end
+							end
 						end
 					end
 				end
@@ -409,7 +302,7 @@ local function createTrackingButton()
 	f:SetPoint("TOPRIGHT", parent:GetCanvasContainer(), -4, -2, "TOPRIGHT")
 	f:SetFrameStrata("HIGH")
 
-	-- Layers
+--[[	-- Layers
 	f.Shadow = f:CreateTexture(name.."Shadow", "BACKGROUND")
 	f.Shadow:SetAtlas("MapCornerShadow-Right", true)
 	f.Shadow:SetPoint("TOPRIGHT", f, 4, 4)
@@ -422,7 +315,7 @@ local function createTrackingButton()
 	f.Background:SetHeight(25)
 	f.Background:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
 	f.Background:SetVertexColor(1, 1, 1, 1)
-
+]]
 	f.Icon = f:CreateTexture(name.."Icon", "ARTWORK")
 	f.Icon:SetHeight(20)
 	f.Icon:SetWidth(20)
@@ -444,10 +337,8 @@ local function createTrackingButton()
 	f.Border:SetHeight(54)
 	f.Border:SetDrawLayer("BACKGROUND", -1)
 
-	--f.DropDown = CreateFrame("Frame", addon.Name.."DropDown", f, "UIDropDownMenuTemplate")
 	f.DropDown = L_Create_UIDropDownMenu(name.."DropDown", f)
 	f.DropDown:SetClampedToScreen(true)
-	--f.DropDown:Hide()
 	f.DropDown:SetScript("OnShow", function(self) 
 		UIDropDownMenu_Initialize(self, dropDown_Initialize, "MENU") 
 	end)
@@ -488,6 +379,10 @@ function addon:OnInitialize()
 	self.db = AceDB:New(addon.Name.."DB", addon.constants.defaults, true)
 	profile = self.db.profile
 
+	self.db.RegisterCallback(self, "OnProfileChanged", "Refresh")
+	self.db.RegisterCallback(self, "OnProfileCopied", "Refresh")
+	self.db.RegisterCallback(self, "OnProfileReset", "Refresh")
+
 	self:SetupOptions()
 	FilterButton = WorldMapFrame.overlayFrames[2]
 end
@@ -510,7 +405,36 @@ function addon:OnEnable()
 end
 
 function addon:Refresh()
+	profile = self.db.profile
+
+	for k,v in self:IterateModules() do
+		if self:GetModuleEnabled(k) and not v:IsEnabled() then
+			self:EnableModule(k)
+		elseif not self:GetModuleEnabled(k) and v:IsEnabled() then
+			self:DisableModule(k)
+		end
+		if (v.Refresh) and (type(v.Refresh) == "function") then
+			v:Refresh()
+		end
+	end
 end
+
+function addon:GetModuleEnabled(module)
+	return profile.enableModules[module]
+end
+
+function addon:SetModuleEnabled(module, value)
+	local old = profile.enableModules[module]
+	profile.enableModules[module] = value
+	if old ~= value then
+		if value then
+			self:EnableModule(module)
+		else
+			self:DisableModule(module)
+		end
+	end
+end
+
 --[[
 function addon:CLOSE_WORLD_MAP()
 	L_CloseDropDownMenus()

@@ -32,174 +32,79 @@ do
 	end
 end
 
-local options, moduleOptions = nil, {}
+local pluginsOptionsText = {}
+local moduleOptions = {}
 
-local function getOptions()
-	if not options then
-		options = {
+local options = {
+	type = "group",
+	name = addon.LocName,
+	args = {
+		general = {
+			order = 1,
 			type = "group",
-			name = addon.LocName,
+			name = L["Options"],
+			get = optGetter,
+			set = optSetter,
 			args = {
-				general = {
+				description = {
 					order = 1,
-					type = "group",
-					name = L["Options"],
-					get = optGetter,
-					set = optSetter,
-					args = {
-						description = {
-							order = 1,
-							type = "description",
-							name = addon.Notes,
-						},
-						--[[ //////// Header 1 //////// --]]
-						header1 = {
-							order = 10,
-							type = "header",
-							name = L["Config"],
-						},
-						desc1 = {
-							order = 10.1,
-							type = "description",
-							name = L["Addon Configuration"],
-						},
-						useSeparator = {
-							order = 11,
-							type = "toggle",
-							name = L["Use Separator"],
-							desc = L["Use separator in menu to separate different type of menu items"],
-						},
-						--[[ //////// Header 1 //////// --]]
-						header2 = {
-							order = 20,
-							type = "header",
-							name = L["Support"],
-						},
-						desc2 = {
-							order = 20.1,
-							type = "description",
-							name = L["Toggle which map enhancement addon to be included in the enhanced tracking option menu."],
-						},
-						enable_Atlas = {
-							order = 21,
-							type = "toggle",
-							name = select(2, GetAddOnInfo("Atlas")) or L["Atlas"],
-							desc = select(3, GetAddOnInfo("Atlas")) or nil,
-							disabled = function() 
-								local iAtlas = select(4, GetAddOnInfo("Atlas"))
-								return not iAtlas
-							end,
-						},
-						enable_AtlasLoot = {
-							order = 22,
-							type = "toggle",
-							name = select(2, GetAddOnInfo("AtlasLoot")) or L["AtlasLoot"],
-							desc = select(3, GetAddOnInfo("AtlasLoot")) or nil,
-							disabled = function() 
-								local iAtlasLoot = select(4, GetAddOnInfo("AtlasLoot"))
-								return not iAtlasLoot
-							end,
-						},
-						enable_HandyNotes = {
-							order = 23,
-							type = "toggle",
-							name = select(2, GetAddOnInfo("HandyNotes")) or L["HandyNotes"],
-							desc = select(3, GetAddOnInfo("HandyNotes")) or nil,
-							disabled = function() 
-								local iHandyNotes = select(4, GetAddOnInfo("HandyNotes"))
-								return not iHandyNotes
-							end,
-						},
-						enable_GatherMate2 = {
-							order = 24,
-							type = "toggle",
-							name = select(2, GetAddOnInfo("GatherMate2")) or L["GatherMate2"],
-							desc = select(3, GetAddOnInfo("GatherMate2")) or nil,
-							disabled = function() 
-								local iGatherMate2 = select(4, GetAddOnInfo("GatherMate2"))
-								return not iGatherMate2
-							end,
-						},
-						enable_PetTracker = {
-							order = 25,
-							type = "toggle",
-							name = select(2, GetAddOnInfo("PetTracker")) or L["PetTracker"],
-							desc = select(3, GetAddOnInfo("PetTracker")) or nil,
-							disabled = function() 
-								local iPetTracker = select(4, GetAddOnInfo("PetTracker"))
-								return not iPetTracker
-							end,
-						},
-						enable_RareScanner = {
-							order = 26,
-							type = "toggle",
-							name = select(2, GetAddOnInfo("RareScanner")) or L["RareScanner"],
-							desc = select(3, GetAddOnInfo("RareScanner")) or nil,
-							disabled = function() 
-								local iRareScanner = select(4, GetAddOnInfo("RareScanner"))
-								return not iRareScanner
-							end,
-						},
-						enable_WorldQuestTracker = {
-							order = 27,
-							type = "toggle",
-							name = select(2, GetAddOnInfo("WorldQuestTracker")) or L["WorldQuestTracker"],
-							desc = select(3, GetAddOnInfo("WorldQuestTracker")) or nil,
-							disabled = function() 
-								local iWorldQuestTracker = select(4, GetAddOnInfo("WorldQuestTracker"))
-								return not iWorldQuestTracker
-							end,
-						},
-						--[[ //////// Header 1 //////// --]]
-						header3 = {
-							order = 30,
-							type = "header",
-							name = L["Second Level Menu"],
-						},
-						handynotes_contextMenu = {
-							order = 31,
-							type = "toggle",
-							name = select(2, GetAddOnInfo("HandyNotes")) or L["HandyNotes"],
-							desc = L["Show HandyNotes plugins in second level menu."],
-							width = "full",
-							disabled = function() 
-								local iHandyNotes = select(4, GetAddOnInfo("HandyNotes"))
-								return not iHandyNotes or not addon.db.profile.enable_HandyNotes
-							end,
-						},
-						rarescanner_contextMenu = {
-							order = 32,
-							type = "toggle",
-							name = select(2, GetAddOnInfo("RareScanner")) or L["RareScanner"],
-							desc = L["Show RareScanner plugins in second level menu."],
-							width = "full",
-							disabled = function() 
-								local iRareScanner = select(4, GetAddOnInfo("RareScanner"))
-								return not iRareScanner or not addon.db.profile.enable_RareScanner
-							end,
-						},
-						worldQuestTracker_contextMenu = {
-							order = 33,
-							type = "toggle",
-							name = select(2, GetAddOnInfo("WorldQuestTracker")) or L["WorldQuestTracker"],
-							desc = L["Show WorldQuestTracker's filter selections in second level menu."],
-							width = "full",
-							disabled = function() 
-								local iWorldQuestTracker = select(4, GetAddOnInfo("WorldQuestTracker"))
-								return not iWorldQuestTracker or not addon.db.profile.enable_WorldQuestTracker
-							end,
-						},
-					},
+					type = "description",
+					name = addon.Notes,
+				},
+				--[[ //////// Header 1 //////// --]]
+				header1 = {
+					order = 10,
+					type = "header",
+					name = L["Config"],
+				},
+				desc1 = {
+					order = 10.1,
+					type = "description",
+					name = L["Addon Configuration"],
+				},
+				useSeparator = {
+					order = 11,
+					type = "toggle",
+					name = L["Use Separator"],
+					desc = L["Use separator in menu to separate different type of menu items"],
 				},
 			},
-		}
-		for k,v in pairs(moduleOptions) do
-			options.args[k] = (type(v) == "function") and v() or v
-		end
-	end
-	
-	return options
-end
+		},
+		plugins = {
+			order = 2,
+			type = "group",
+			name = L["Support"],
+			args = {
+				--[[ //////// Header 2 //////// --]]
+				header2 = {
+					order = 10,
+					type = "header",
+					name = L["Support"],
+				},
+				desc2 = {
+					order = 20,
+					type = "description",
+					name = L["Toggle which map enhancement addon to be included in the enhanced tracking option menu."],
+				},
+				show_plugins = {
+					name = L["Modules"], 
+					type = "multiselect",
+					order = 21,
+					values = pluginsOptionsText,
+					get = function(info, k)
+						return addon.db.profile.enableModules[k]
+					end,
+					set = function(info, k, v)
+						addon.db.profile.enableModules[k] = v
+						addon:SetModuleEnabled(k, v)
+						addon:Refresh()
+					end,
+				},
+			},
+		},
+	},
+}
+
 
 local function openOptions()
 	-- open the profiles tab before, so the menu expands
@@ -221,8 +126,8 @@ function addon:SetupOptions()
 	self.optionsFrames = {}
 
 	-- setup options table
-	AceConfigReg:RegisterOptionsTable(addon.LocName, getOptions)
-	self.optionsFrames.General = AceConfigDialog:AddToBlizOptions(addon.LocName, nil, nil, "general")
+	AceConfigReg:RegisterOptionsTable(addon.LocName, options)
+	self.optionsFrames.General = AceConfigDialog:AddToBlizOptions(addon.LocName)
 
 	self:RegisterModuleOptions("Profiles", giveProfiles, L["Profile Options"])
 end
@@ -230,11 +135,21 @@ end
 -- Description: Function which extends our options table in a modular way
 -- Expected result: add a new modular options table to the modularOptions upvalue as well as the Blizzard config
 -- Input:
---		name			: index of the options table in our main options table
+--		name		: index of the options table in our main options table
 --		optionsTable	: the sub-table to insert
 --		displayName	: the name to display in the config interface for this set of options
 -- Output: None.
-function addon:RegisterModuleOptions(name, optionTbl, displayName)
-	moduleOptions[name] = optionTbl
-	self.optionsFrames[name] = AceConfigDialog:AddToBlizOptions(addon.LocName, displayName, addon.LocName, name)
+function addon:RegisterModuleOptions(name, optionsTable, displayName)
+	if (name == "Profiles") then
+		moduleOptions[name] = optionsTable
+		self.optionsFrames[name] = AceConfigDialog:AddToBlizOptions(addon.LocName, displayName, addon.LocName, name)
+	else
+		if self.plugins[name] ~= nil then
+			error(name.." is already registered by another plugin.")
+		else
+			self.plugins[name] = true
+		end
+		options.args.plugins.args[name] = optionsTable
+		pluginsOptionsText[name] = optionsTable and optionsTable.name or displayName or name
+	end
 end

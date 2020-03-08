@@ -18,17 +18,10 @@ private.constants = constants
 
 constants.defaults = {
 	profile = {
+		enableModules = {
+			['*'] = true,
+		},
 		useSeparator = true,
-		handynotes_contextMenu = true,
-		rarescanner_contextMenu = true,
-		worldQuestTracker_contextMenu = false,
-		enable_HandyNotes = true,
-		enable_GatherMate2 = true,
-		enable_PetTracker = true,
-		enable_RareScanner = true,
-		enable_WorldQuestTracker = true,
-		enable_Atlas = true,
-		enable_AtlasLoot = true,
 	},
 }
 

@@ -3,6 +3,13 @@ $Id$
 Revision History:
 =================
 
+* v4.00 (Mar. 09, 2020)
+-----------------------
+- Better modulize all the moduels and the core functions
+- Update RareScanner's selection menu
+- Support PetTracker's v8.3.6
+- Remove the support of WorldQuestTracker (hopefully temporary)
+
 * v3.07 (Feb. 10, 2020)
 -----------------------
 - Fixed the issue that PetTracker's search box is missing. It's now showing properly.

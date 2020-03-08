@@ -19,10 +19,13 @@ L["Addon Configuration"] = "插件設定"
 L["Use Separator"] = "使用分隔線"
 L["Use separator in menu to separate different type of menu items"] = "使用分隔線來分隔不同的選單項目"
 L["Support"] = "支援"
-L["Toggle which map enhancement addon to be included in the enhanced tracking option menu."] = "選擇要將哪些地圖增強的插件加入強化的地圖追蹤選項清單裡。"
+L["Toggle which map enhancement addon to be included in the enhanced tracking option menu."] = "選擇要將哪些地圖增強的插件加入強化的地圖追蹤選項清單裡"
 L["Profile Options"] = "設定檔選項"
 L["World Map Tracking Enhanced Config"] = "強化的世界地圖追蹤設定"
 L["Click to open World Map Tracking Enhanced's config panel"] = "點擊以開啟強化的世界地圖追蹤的選項設定視窗"
+L["Modules"] = "模組"
+L["Show %s module's config link in menu."] = "在選單中顯示 %s 模組的設定連結"
+L["Show %s module's menu items in second level of menu."] = "將模組的選單選項顯示在第二層的選單"
 
 -- //////////////////////////
 -- Common
@@ -33,9 +36,10 @@ L["Second Level Menu"] = "第二層選單"
 -- HandyNotes
 -- //////////////////////////
 L[" (Core)"] = " (核心主程式)"
-L["Show HandyNotes plugins in second level menu."] = "將 HandyNotes 的套件清單顯示在第二層選單。"
+L["Show HandyNotes plugins in second level menu."] = "將 HandyNotes 的套件清單顯示在第二層選單"
 L["HandyNotes Config"] = "HandyNotes 設定"
 L["Click to open HandyNotes' config panel"] = "點擊以開啟 HandyNotes 的選項設定視窗"
+L["Second level menu will be forced to be created when there are more than 20 of HandyNotes plugins."] = "當有超過20個以上的 HandyNotes 插件時，將會強制顯示在第二層目錄"
 
 -- //////////////////////////
 -- GatherMate2
@@ -47,6 +51,7 @@ L["Click to open GatherMate2's config panel"] = "點擊以開啟 GatherMate2 的
 -- PetTracker
 -- //////////////////////////
 L["PetTracker Config"] = "PetTracker 設定"
+L["Click to open PetTracker's config panel"] = "點擊以開啟 PetTracker 的選項設定視"
 
 -- //////////////////////////
 -- RareScanner

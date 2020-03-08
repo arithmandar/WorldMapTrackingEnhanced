@@ -22,6 +22,9 @@ L["Toggle which map enhancement addon to be included in the enhanced tracking op
 L["Profile Options"] = "Profile Options"
 L["World Map Tracking Enhanced Config"] = "World Map Tracking Enhanced Config"
 L["Click to open World Map Tracking Enhanced's config panel"] = "Click to open World Map Tracking Enhanced's config panel"
+L["Modules"] = "Modules"
+L["Show %s module's config link in menu."] = "Show %s module's config link in menu."
+L["Show %s module's menu items in second level of menu."] = "Show %s module's menu items in second level of menu."
 
 -- //////////////////////////
 -- Common
@@ -35,6 +38,7 @@ L[" (Core)"] = " (Core)" -- HandyNotes (Core)
 L["Show HandyNotes plugins in second level menu."] = "Show HandyNotes plugins in second level menu."
 L["HandyNotes Config"] = "HandyNotes Config"
 L["Click to open HandyNotes' config panel"] = "Click to open HandyNotes' config panel"
+L["Second level menu will be forced to be created when there are more than 20 of HandyNotes plugins."] = "Second level menu will be forced to be created when there are more than 20 of HandyNotes plugins."
 
 -- //////////////////////////
 -- GatherMate2

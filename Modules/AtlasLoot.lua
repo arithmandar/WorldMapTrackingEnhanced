@@ -17,25 +17,82 @@ local MODNAME = "AtlasLoot"
 local LibStub = _G.LibStub
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
-local AL = addon:NewModule(MODNAME)
+local Module = addon:NewModule(MODNAME)
+local db
 
 local AT, profile
 
 local iAtlasLoot = select(4, GetAddOnInfo(MODNAME))
 local enabled = GetAddOnEnableState(UnitName("player"), MODNAME)
 
-function AL:OnEnable()
-	if (enabled > 0 and iAtlasLoot) then 
-	else
-		return false
+local defaults = {
+	profile = {
+		contextMenu = true,
+	}
+}
+
+local optGetter, optSetter
+do
+	function optGetter(info)
+		local key = info[#info]
+		return Module.db.profile[key]
+	end
+
+	function optSetter(info, value)
+		local key = info[#info]
+		Module.db.profile[key] = value
+		Module:Refresh()
 	end
 end
 
-function AL:DropDownMenus()
+local options = {
+	type = "group",
+	name = MODNAME,
+	get = optGetter,
+	set = optSetter,
+	args = {
+--[[		intro = {
+			order = 1,
+			type = "description",
+			name = L["AtlasLoot Config"],
+		},
+		contextMenu = {
+			order = 2,
+			type = "toggle",
+			name = L["Show AtlasLoot menu items in second level menu."],
+		},]]
+	},
+}
+
+function Module:OnInitialize()
+	if (enabled > 0 and iAtlasLoot) then 
+		self.db = addon.db:RegisterNamespace(MODNAME, defaults)
+		db = self.db.profile
+
+		self:SetEnabledState(addon:GetModuleEnabled(MODNAME))
+		addon:RegisterModuleOptions(MODNAME, options, MODNAME)
+	else
+		addon:DisableModule(MODNAME)
+	end
+end
+
+function Module:OnEnable()
+
+end
+
+function Module:OnDisable()
+
+end
+
+function Module:Refresh()
+	if not self:IsEnabled() then return end
+end
+
+function Module:DropDownMenus()
 	if (enabled > 0 and iAtlasLoot) then
 		local menu = {}
 		local i = 1
-		local mode_name = select(2, GetAddOnInfo("AtlasLoot")) or "AtlasLoot"
+		local mode_name = select(2, GetAddOnInfo(MODNAME)) or "AtlasLoot"
 		
 		menu[i] = {}
 		menu[i].isNotRadio = true
@@ -46,7 +103,7 @@ function AL:DropDownMenus()
 		menu[i].colorCode = "|cFFFFC90E"
 		menu[i].text = mode_name
 		menu[i].tooltipTitle = mode_name
-		menu[i].tooltipText = select(3, GetAddOnInfo("AtlasLoot")) or nil
+		menu[i].tooltipText = select(3, GetAddOnInfo(MODNAME)) or nil
 		menu[i].tooltipOnButton = true
 		menu[i].func = AtlasLoot.WorldMap.Button_OnClick
 		menu[i].checked = nil

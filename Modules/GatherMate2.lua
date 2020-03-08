@@ -17,7 +17,8 @@ local MODNAME = "GatherMate2"
 local LibStub = _G.LibStub
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
-local GatherMate2 = addon:NewModule(MODNAME)
+local Module = addon:NewModule(MODNAME)
+local db
 
 local GM, profile, LGM
 local prof_options = {}
@@ -30,11 +31,61 @@ local Config
 local iGatherMate2 = select(4, GetAddOnInfo(MODNAME))
 local enabled = GetAddOnEnableState(UnitName("player"), MODNAME)
 
-function GatherMate2:OnEnable()
+local defaults = {
+	profile = {
+		contextMenu = true,
+		showConfig = true,
+	}
+}
+
+local optGetter, optSetter
+do
+	function optGetter(info)
+		local key = info[#info]
+		return Module.db.profile[key]
+	end
+
+	function optSetter(info, value)
+		local key = info[#info]
+		Module.db.profile[key] = value
+		Module:Refresh()
+	end
+end
+
+local options = {
+	type = "group",
+	name = MODNAME,
+	get = optGetter,
+	set = optSetter,
+	args = {
+		config = {
+			order = 10,
+			type = "group",
+			name = L["Config"],
+			inline = true,
+			args = {
+				contextMenu = {
+					order = 11,
+					type = "toggle",
+					name = format(L["Show %s module's menu items in second level of menu."], MODNAME),
+					width = "full",
+				},
+				showConfig = {
+					order = 12, 
+					type = "toggle",
+					name = format(L["Show %s module's config link in menu."], MODNAME),
+					width = "full",
+				},
+			},
+		},
+	},
+}
+
+function Module:OnInitialize()
 	if (enabled > 0 and iGatherMate2) then 
 		GM = LibStub("AceAddon-3.0"):GetAddon(MODNAME) 
 		profile = GM.db.profile
-		LGM = LibStub("AceLocale-3.0"):GetLocale("GatherMate2", false)
+		LGM = LibStub("AceLocale-3.0"):GetLocale(MODNAME, false)
 		Config = GM:GetModule("Config")
 
 		prof_options = {
@@ -104,24 +155,44 @@ function GatherMate2:OnEnable()
 			},
 		}
 
+		self.db = addon.db:RegisterNamespace(MODNAME, defaults)
+		db = self.db.profile
+
+		self:SetEnabledState(addon:GetModuleEnabled(MODNAME))
+		addon:RegisterModuleOptions(MODNAME, options, MODNAME)
+	else
+		addon:DisableModule(MODNAME)
 	end
 end
+
+function Module:OnEnable()
+
+end
+
+function Module:OnDisable()
+
+end
+
+function Module:Refresh()
+	if not self:IsEnabled() then return end
+end
 	
-local function toggleGatherMate2()
-	profile.showWorldMap = not profile.showWorldMap
-	GM:OnProfileChanged()
-end
-
-local function checkWorldMapStatus()
-	return profile.showWorldMap or nil
-end
-
-function GatherMate2:DropDownMenus()
+function Module:DropDownMenus()
 	if (enabled > 0 and iGatherMate2) then
+		local function toggleGatherMate2()
+			profile.showWorldMap = not profile.showWorldMap
+			GM:OnProfileChanged()
+		end
+
+		local function checkWorldMapStatus()
+			return profile.showWorldMap or nil
+		end
+
 		local menu = {}
 		local menu2 = {}
 		local i = 1
-		local mode_name = select(2, GetAddOnInfo("GatherMate2")) or MODNAME
+		local j = 1
+		local mode_name = select(2, GetAddOnInfo(MODNAME)) or MODNAME
 		
 		menu[i] = {}
 		menu[i].isNotRadio = true
@@ -136,56 +207,60 @@ function GatherMate2:DropDownMenus()
 		menu[i].func = toggleGatherMate2
 		menu[i].checked = checkWorldMapStatus
 		i = i + 1
-
-		for k, v in pairs(filters) do
+		if (db.showConfig) then 
+			-- Last menu item for config option
 			menu[i] = {}
 			menu[i].isNotRadio = true
 			menu[i].notCheckable = true
-			menu[i].hasArrow = true
-			menu[i].keepShownOnClick = true
-			menu[i].colorCode = "|cFFFFC90E"
-			menu[i].value = MODNAME.."."..k
-			menu[i].text = v.name
-			menu[i].tooltipTitle = v.name
-			menu[i].tooltipText = v.desc
+			menu[i].text = L["GatherMate2 Config"]
+			menu[i].colorCode = "|cFFB5E61D"
+			menu[i].tooltipTitle = mode_name
+			menu[i].tooltipText = L["Click to open GatherMate2's config panel"]
 			menu[i].tooltipOnButton = true
-			if (not checkWorldMapStatus()) then
-				menu[i].disabled = true
-			else
-				menu[i].disabled = nil
-			end
-			i = i + 1
+			menu[i].func = (function(self)
+				ToggleFrame(WorldMapFrame)
+				InterfaceOptionsFrame_OpenToCategory("GatherMate 2")
+				InterfaceOptionsFrame_OpenToCategory("GatherMate 2")
+			end)
+		end
 
-			menu2[k] = {}
+		for k, v in pairs(filters) do
+			menu2[j] = {}
+			menu2[j].isNotRadio = true
+			menu2[j].notCheckable = true
+			menu2[j].hasArrow = true
+			menu2[j].keepShownOnClick = true
+			menu2[j].colorCode = "|cFFFFC90E"
+			menu2[j].value = MODNAME..j
+			menu2[j].text = v.name
+			menu2[j].tooltipTitle = v.name
+			menu2[j].tooltipText = v.desc
+			menu2[j].tooltipOnButton = true
+			if (not checkWorldMapStatus()) then
+				menu2[j].disabled = true
+			else
+				menu2[j].disabled = nil
+			end
+			local menu3 = {}
+			local n = 1
 			for ka, va in pairs(v.opts) do
-				menu2[k][ka] = {}
-				menu2[k][ka].isNotRadio = true
-				--menu2[k][ka].keepShownOnClick = true
-				menu2[k][ka].text = va
-				menu2[k][ka].disabled = (not checkWorldMapStatus()) and true or nil
-				menu2[k][ka].checked = (function(self)
+				menu3[n] = {}
+				menu3[n].isNotRadio = true
+				--menu2[n].keepShownOnClick = true
+				menu3[n].text = va
+				menu3[n].disabled = (not checkWorldMapStatus()) and true or nil
+				menu3[n].checked = (function(self)
 					return profile.show[v.arg] == ka and true or false
 				end)
-				menu2[k][ka].func = (function(self)
+				menu3[n].func = (function(self)
 					profile.show[v.arg] = ka
 					Config:UpdateConfig()
 				end)
+				n = n + 1
 			end
+			menu2[j].menuTable = menu3
+			j = j + 1
 		end
-
-		menu[i] = {}
-		menu[i].isNotRadio = true
-		menu[i].notCheckable = true
-		menu[i].text = L["GatherMate2 Config"]
-		menu[i].colorCode = "|cFFB5E61D"
-		menu[i].tooltipTitle = mode_name
-		menu[i].tooltipText = L["Click to open GatherMate2's config panel"]
-		menu[i].tooltipOnButton = true
-		menu[i].func = (function(self)
-			ToggleFrame(WorldMapFrame)
-			InterfaceOptionsFrame_OpenToCategory("GatherMate 2")
-			InterfaceOptionsFrame_OpenToCategory("GatherMate 2")
-		end)
 		
 		return menu, menu2
 	else
