@@ -74,13 +74,20 @@ function Module:OnInitialize()
 
 		self:SetEnabledState(addon:GetModuleEnabled(MODNAME))
 		addon:RegisterModuleOptions(MODNAME, options, MODNAME)
+
+		if Atlas.db.profile.options.worldMapButton then
+			local name = addon.Name.."Button"
+			local button = _G[name]
+
+			AtlasToggleFromWorldMap:ClearAllPoints()
+			AtlasToggleFromWorldMap:SetPoint("TOPRIGHT", WorldMapFrame, "TOPRIGHT", -36, -70)
+		end
 	else
 		addon:DisableModule(MODNAME)
 	end
 end
 
 function Module:OnEnable()
-
 end
 
 function Module:OnDisable()

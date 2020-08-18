@@ -10,12 +10,33 @@ local math = _G.math
 local ceil = math.ceil
 -- Libraries
 local GameTooltip, GetAddOnInfo, GetAddOnEnableState, UnitName, PlaySound, GetCVarBool, SetCVar = _G.GameTooltip, _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.PlaySound, _G.GetCVarBool, _G.SetCVar
-local WorldMapTrackingOptionsDropDown_OnClick = _G.WorldMapTrackingOptionsDropDown_OnClick
+local WorldMapTrackingOptionsDropDown_OnClick
+local GetBuildInfo = _G.GetBuildInfo
+
+-- UIDropDownMenu functions
 local UIDropDownMenu_CreateInfo = L_UIDropDownMenu_CreateInfo
 local UIDropDownMenu_AddButton = L_UIDropDownMenu_AddButton
 local UIDropDownMenu_AddSeparator = L_UIDropDownMenu_AddSeparator
 local UIDropDownMenu_Initialize = L_UIDropDownMenu_Initialize
 local ToggleDropDownMenu = L_ToggleDropDownMenu
+
+-- Determine WoW TOC Version
+local WoWClassic, WoWRetail, WoWShadowlands
+local wowtocversion  = select(4, GetBuildInfo())
+if wowtocversion < 19999 then
+	WoWClassic = true
+elseif wowtocversion > 19999 and wowtocversion < 90000 then 
+	WoWRetail = true
+else
+	WoWShadowlands = true
+end
+
+if WoWClassic then
+
+else
+	WorldMapTrackingOptionsDropDown_OnClick = _G.WorldMapTrackingOptionsDropDown_OnClick
+end
+
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
@@ -49,29 +70,33 @@ local function checkAddonStatus(addonName)
 end
 
 local function onSelection(value, checked)
-	if (checked) then
-		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+	if WoWClassic then
+		-- do nothing
 	else
-		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
-	end
+		if (checked) then
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+		else
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
+		end
 
-	if (value == "quests") then
-		SetCVar("questPOI", checked and "1" or "0", "QUEST_POI")
-	elseif (value == "dungeon entrances") then
-		SetCVar("showDungeonEntrancesOnMap", checked and "1" or "0", "SHOW_DUNGEON_ENTRANCES")
-	elseif (value == "digsites") then
-		SetCVar("digSites", checked and "1" or "0", "SHOW_DIG_SITES")
-	elseif (value == "tamers") then
-		SetCVar("showTamers", checked and "1" or "0", "SHOW_TAMERS")
-	elseif (value == "primaryProfessionsFilter" or value == "secondaryProfessionsFilter") then
-		SetCVar(value, checked and "1" or "0")
-	elseif (value == "worldQuestFilterResources" or value == "worldQuestFilterArtifactPower" or
-			value == "worldQuestFilterProfessionMaterials" or value == "worldQuestFilterGold" or
-			value == "worldQuestFilterEquipment" or value == "worldQuestFilterReputation") then
-		-- World quest reward filter cvars
-		SetCVar(value, checked and "1" or "0")
+		if (value == "quests") then
+			SetCVar("questPOI", checked and "1" or "0", "QUEST_POI")
+		elseif (value == "dungeon entrances") then
+			SetCVar("showDungeonEntrancesOnMap", checked and "1" or "0", "SHOW_DUNGEON_ENTRANCES")
+		elseif (value == "digsites") then
+			SetCVar("digSites", checked and "1" or "0", "SHOW_DIG_SITES")
+		elseif (value == "tamers") then
+			SetCVar("showTamers", checked and "1" or "0", "SHOW_TAMERS")
+		elseif (value == "primaryProfessionsFilter" or value == "secondaryProfessionsFilter") then
+			SetCVar(value, checked and "1" or "0")
+		elseif (value == "worldQuestFilterResources" or value == "worldQuestFilterArtifactPower" or
+				value == "worldQuestFilterProfessionMaterials" or value == "worldQuestFilterGold" or
+				value == "worldQuestFilterEquipment" or value == "worldQuestFilterReputation") then
+			-- World quest reward filter cvars
+			SetCVar(value, checked and "1" or "0")
+		end
+		FilterButton:GetParent():RefreshAllDataProviders()
 	end
-	FilterButton:GetParent():RefreshAllDataProviders()
 end
 
 -- //////////////////////////////////////////////////////////////////////////
@@ -104,30 +129,32 @@ local function dropDown_Initialize(self, level)
 		info.keepShownOnClick = true
 		info.func = OnSelection
 
-		info.text = SHOW_QUEST_OBJECTIVES_ON_MAP_TEXT
-		info.value = "quests"
-		info.checked = GetCVarBool("questPOI")
-		UIDropDownMenu_AddButton(info)
-
-		info.text = SHOW_DUNGEON_ENTRACES_ON_MAP_TEXT
-		info.value = "dungeon entrances"
-		info.checked = GetCVarBool("showDungeonEntrancesOnMap")
-		UIDropDownMenu_AddButton(info)
-
-		local prof1, prof2, arch, fish, cook, firstAid = GetProfessions()
-		if arch then
-			info.text = ARCHAEOLOGY_SHOW_DIG_SITES -- "Show Digsites"
-			info.value = "digsites"
-			info.checked = GetCVarBool("digSites")
+		if not WoWClassic then
+			info.text = SHOW_QUEST_OBJECTIVES_ON_MAP_TEXT
+			info.value = "quests"
+			info.checked = GetCVarBool("questPOI")
 			UIDropDownMenu_AddButton(info)
-		end
 
-		-- BZ's Pet Battle
-		if CanTrackBattlePets() then
-			info.text = SHOW_PET_BATTLES_ON_MAP_TEXT
-			info.value = "tamers"
-			info.checked = GetCVarBool("showTamers")
+			info.text = SHOW_DUNGEON_ENTRACES_ON_MAP_TEXT
+			info.value = "dungeon entrances"
+			info.checked = GetCVarBool("showDungeonEntrancesOnMap")
 			UIDropDownMenu_AddButton(info)
+
+			local prof1, prof2, arch, fish, cook, firstAid = GetProfessions()
+			if arch then
+				info.text = ARCHAEOLOGY_SHOW_DIG_SITES -- "Show Digsites"
+				info.value = "digsites"
+				info.checked = GetCVarBool("digSites")
+				UIDropDownMenu_AddButton(info)
+			end
+
+			-- BZ's Pet Battle
+			if CanTrackBattlePets() then
+				info.text = SHOW_PET_BATTLES_ON_MAP_TEXT
+				info.value = "tamers"
+				info.checked = GetCVarBool("showTamers")
+				UIDropDownMenu_AddButton(info)
+			end
 		end
 		-- If we aren't on a map with world quests don't show the world quest reward filter options.
 		local mapID = WorldMapFrame:GetMapID()
@@ -289,17 +316,35 @@ local function dropDown_Initialize(self, level)
 end
 
 local function createTrackingButton()
-	local parent = FilterButton:GetParent()
+	local parent
 	
 	local name = addon.Name.."Button"
 	local f = _G[name]
-	if not f then f = CreateFrame("Button", name, WorldMapFrame.ScrollContainer) end
+	if WoWClassic then
+		parent = WorldMapFrame
+		parent.BlackoutFrame:Hide()
+		parent:SetFrameStrata("HIGH")
+		parent.BorderFrame:SetFrameStrata("LOW")
+
+		if not f then f = CreateFrame("Button", name, parent) end
+		f:SetWidth(32)
+		f:SetHeight(32)
+		f:SetFrameLevel(20)
+		f:SetToplevel(true)
+		f:ClearAllPoints()
+		f:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -8, -70)
+	else
+		parent = FilterButton:GetParent()
+		
+		if not f then f = CreateFrame("Button", name, WorldMapFrame.ScrollContainer) end
+		f:SetWidth(32)
+		f:SetHeight(32)
+		f:SetPoint("TOPRIGHT", parent:GetCanvasContainer(), -4, -2, "TOPRIGHT")
+	end
 	
 	addon.button = f
 	
-	f:SetWidth(32)
-	f:SetHeight(32)
-	f:SetPoint("TOPRIGHT", parent:GetCanvasContainer(), -4, -2, "TOPRIGHT")
+	
 	f:SetFrameStrata("HIGH")
 
 --[[	-- Layers
@@ -384,10 +429,15 @@ function addon:OnInitialize()
 	self.db.RegisterCallback(self, "OnProfileReset", "Refresh")
 
 	self:SetupOptions()
-	FilterButton = WorldMapFrame.overlayFrames[2]
+	if WoWClassic then
+		-- do nothing
+	else
+		FilterButton = WorldMapFrame.overlayFrames[2]
+	end
 end
 
 local function rearrangeFilterButtonTexture()
+	if WoWClassic then return end
 	FilterButton.Background:SetTexture(nil)
 	FilterButton.Icon:SetTexture(nil)
 	FilterButton.IconOverlay:SetTexture(nil)

@@ -33,77 +33,85 @@ do
 end
 
 local pluginsOptionsText = {}
-local moduleOptions = {}
-
-local options = {
-	type = "group",
-	name = addon.LocName,
-	args = {
-		general = {
-			order = 1,
+local options, moduleOptions = nil, {}
+local function getOptions()
+	if not options then
+		options = {
 			type = "group",
-			name = L["Options"],
-			get = optGetter,
-			set = optSetter,
+			name = addon.LocName,
 			args = {
-				description = {
+				general = {
 					order = 1,
-					type = "description",
-					name = addon.Notes,
+					type = "group",
+					name = L["Options"],
+					get = optGetter,
+					set = optSetter,
+					args = {
+						description = {
+							order = 1,
+							type = "description",
+							name = addon.Notes,
+						},
+						--[[ //////// Header 1 //////// --]]
+						header1 = {
+							order = 10,
+							type = "header",
+							name = L["Config"],
+						},
+						desc1 = {
+							order = 10.1,
+							type = "description",
+							name = L["Addon Configuration"],
+						},
+						useSeparator = {
+							order = 11,
+							type = "toggle",
+							name = L["Use Separator"],
+							desc = L["Use separator in menu to separate different type of menu items"],
+						},
+					},
 				},
-				--[[ //////// Header 1 //////// --]]
-				header1 = {
-					order = 10,
-					type = "header",
-					name = L["Config"],
-				},
-				desc1 = {
-					order = 10.1,
-					type = "description",
-					name = L["Addon Configuration"],
-				},
-				useSeparator = {
-					order = 11,
-					type = "toggle",
-					name = L["Use Separator"],
-					desc = L["Use separator in menu to separate different type of menu items"],
-				},
-			},
-		},
-		plugins = {
-			order = 2,
-			type = "group",
-			name = L["Support"],
-			args = {
-				--[[ //////// Header 2 //////// --]]
-				header2 = {
-					order = 10,
-					type = "header",
+				plugins = {
+					order = 2,
+					type = "group",
 					name = L["Support"],
-				},
-				desc2 = {
-					order = 20,
-					type = "description",
-					name = L["Toggle which map enhancement addon to be included in the enhanced tracking option menu."],
-				},
-				show_plugins = {
-					name = L["Modules"], 
-					type = "multiselect",
-					order = 21,
-					values = pluginsOptionsText,
-					get = function(info, k)
-						return addon.db.profile.enableModules[k]
-					end,
-					set = function(info, k, v)
-						addon.db.profile.enableModules[k] = v
-						addon:SetModuleEnabled(k, v)
-						addon:Refresh()
-					end,
+					args = {
+						--[[ //////// Header 2 //////// --]]
+						header2 = {
+							order = 10,
+							type = "header",
+							name = L["Support"],
+						},
+						desc2 = {
+							order = 20,
+							type = "description",
+							name = L["Toggle which map enhancement addon to be included in the enhanced tracking option menu."],
+						},
+						show_plugins = {
+							name = L["Modules"], 
+							type = "multiselect",
+							order = 21,
+							values = pluginsOptionsText,
+							get = function(info, k)
+								return addon.db.profile.enableModules[k]
+							end,
+							set = function(info, k, v)
+								addon.db.profile.enableModules[k] = v
+								addon:SetModuleEnabled(k, v)
+								addon:Refresh()
+							end,
+						},
+					},
 				},
 			},
-		},
-	},
-}
+		}
+		for k,v in pairs(moduleOptions) do
+			options.args[k] = (type(v) == "function") and v() or v
+		end
+	end
+
+	return options
+end
 
 
 local function openOptions()
@@ -126,7 +134,7 @@ function addon:SetupOptions()
 	self.optionsFrames = {}
 
 	-- setup options table
-	AceConfigReg:RegisterOptionsTable(addon.LocName, options)
+	AceConfigReg:RegisterOptionsTable(addon.LocName, getOptions)
 	self.optionsFrames.General = AceConfigDialog:AddToBlizOptions(addon.LocName)
 
 	self:RegisterModuleOptions("Profiles", giveProfiles, L["Profile Options"])
@@ -142,13 +150,14 @@ end
 function addon:RegisterModuleOptions(name, optionsTable, displayName)
 	if (name == "Profiles") then
 		moduleOptions[name] = optionsTable
-		self.optionsFrames[name] = AceConfigDialog:AddToBlizOptions(addon.LocName, displayName, addon.LocName, name)
+		--self.optionsFrames[name] = AceConfigDialog:AddToBlizOptions(addon.LocName, displayName, addon.LocName, name)
 	else
 		if self.plugins[name] ~= nil then
 			error(name.." is already registered by another plugin.")
 		else
 			self.plugins[name] = true
 		end
+		if not options then options = getOptions() end
 		options.args.plugins.args[name] = optionsTable
 		pluginsOptionsText[name] = optionsTable and optionsTable.name or displayName or name
 	end

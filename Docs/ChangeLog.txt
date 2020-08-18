@@ -3,6 +3,15 @@ $Id$
 Revision History:
 =================
 
+* v4.01 (Aug. 18, 2020)
+-----------------------
+- Library update: LibUIDropDownMenu
+- Fixes: 
+  - Options -> Profiles now can be launched properly
+- Enhancement:
+  - If Atlas is enabled and the icon is also enabled in WorldMap, adjust its position so that it won't conflict with WMTE
+  - WoW Classic support
+
 * v4.00 (Mar. 09, 2020)
 -----------------------
 - Better modulize all the moduels and the core functions
