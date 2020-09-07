@@ -23,7 +23,7 @@ local db
 local iPetTracker = select(4, GetAddOnInfo(MODNAME))
 local enabled = GetAddOnEnableState(UnitName("player"), MODNAME)
 
-local MapFilter
+local MapSearch
 
 local defaults = {
 	profile = {
@@ -83,6 +83,8 @@ function Module:OnInitialize()
 
 		self:SetEnabledState(addon:GetModuleEnabled(MODNAME))
 		addon:RegisterModuleOptions(MODNAME, options, MODNAME)
+		
+		MapSearch = PetTracker.MapSearch
 	else
 		addon:DisableModule(MODNAME)
 	end
@@ -103,21 +105,22 @@ end
 function Module:DropDownMenus()
 	if (enabled > 0 and iPetTracker) then
 		local function checkActiveSpecies()
-			return not PetTracker.sets["hideSpecies"]
+			return not PetTracker.sets.hideSpecies
 		end
 			
 		local function toggleSpecies()
-			PetTracker.sets["hideSpecies"] = not PetTracker.sets["hideSpecies"]
+			PetTracker.sets.hideSpecies = not PetTracker.sets.hideSpecies
 			--PetTracker.WorldMap:UpdateBlips()
 			PetTracker.MapCanvas:UpdateAll()
+			MapSearch:UpdateFrames()
 		end
 
 		local function checkActiveStables()
-			return not PetTracker.sets["hideStables"]
+			return not PetTracker.sets.hideStables
 		end
 			
 		local function toggleStables()
-			PetTracker.sets["hideStables"] = not PetTracker.sets["hideStables"]
+			PetTracker.sets.hideStables = not PetTracker.sets.hideStables
 			--PetTracker.WorldMap:UpdateBlips()
 			PetTracker.MapCanvas:UpdateAll()
 		end

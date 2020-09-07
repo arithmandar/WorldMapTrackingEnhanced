@@ -3,6 +3,12 @@ $Id$
 Revision History:
 =================
 
+* v4.02 (Sep. 07, 2020)
+-----------------------
+- Bug fix:
+  - Fix the support of PetTracker. Now toggling hide / show Species via WMT will also hide / show the search bar
+- Library update: LibUIDropDownMenu
+
 * v4.01 (Aug. 18, 2020)
 -----------------------
 - Library update: LibUIDropDownMenu
