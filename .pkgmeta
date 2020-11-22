@@ -4,7 +4,7 @@ manual-changelog:
     filename: Docs/ChangeLog.txt
     markup-type: plain
     
-enable-nolib-creation: yes
+enable-nolib-creation: no
 
 externals:
     Libs-release/LibStub: 

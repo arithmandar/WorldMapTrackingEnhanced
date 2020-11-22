@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v4.05 (Nov. 22, 2020)
+-----------------------
+- Disable no-lib release as the new CurseForge seems to bring-in more torubles for users to download addon
+
 * v4.04 (Nov. 22, 2020)
 -----------------------
 - ToC update to support WoW 9.0.2
