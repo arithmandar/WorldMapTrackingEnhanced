@@ -13,13 +13,6 @@ local GameTooltip, GetAddOnInfo, GetAddOnEnableState, UnitName, PlaySound, GetCV
 local WorldMapTrackingOptionsDropDown_OnClick
 local GetBuildInfo = _G.GetBuildInfo
 
--- UIDropDownMenu functions
-local UIDropDownMenu_CreateInfo = L_UIDropDownMenu_CreateInfo
-local UIDropDownMenu_AddButton = L_UIDropDownMenu_AddButton
-local UIDropDownMenu_AddSeparator = L_UIDropDownMenu_AddSeparator
-local UIDropDownMenu_Initialize = L_UIDropDownMenu_Initialize
-local ToggleDropDownMenu = L_ToggleDropDownMenu
-
 -- Determine WoW TOC Version
 local WoWClassic, WoWRetail, WoWShadowlands
 local wowtocversion  = select(4, GetBuildInfo())
@@ -45,6 +38,8 @@ local FOLDER_NAME, private = ...
 local LibStub = _G.LibStub
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local AceDB = LibStub("AceDB-3.0")
+-- UIDropDownMenu
+local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 local addon = LibStub("AceAddon-3.0"):NewAddon(private.addon_name, "AceEvent-3.0")
 addon.constants = private.constants
@@ -109,18 +104,18 @@ local function dropDown_Initialize(self, level)
 	
 	local function AddSeparator()
 		if (profile.useSeparator) then
-			UIDropDownMenu_AddSeparator(1)
+			LibDD:UIDropDownMenu_AddSeparator(1)
 		end
 	end
 
 	if not level then level = 1 end
-	local info = UIDropDownMenu_CreateInfo()
+	local info = LibDD:UIDropDownMenu_CreateInfo()
 
 	if (level == 1) then
 		info.isTitle = true
 		info.notCheckable = true
 		info.text = WORLD_MAP_FILTER_TITLE -- which is "Show:"
-		UIDropDownMenu_AddButton(info)
+		LibDD:UIDropDownMenu_AddButton(info)
 
 		info.isTitle = nil
 		info.disabled = nil
@@ -133,19 +128,19 @@ local function dropDown_Initialize(self, level)
 			info.text = SHOW_QUEST_OBJECTIVES_ON_MAP_TEXT
 			info.value = "quests"
 			info.checked = GetCVarBool("questPOI")
-			UIDropDownMenu_AddButton(info)
+			LibDD:UIDropDownMenu_AddButton(info)
 
 			info.text = SHOW_DUNGEON_ENTRACES_ON_MAP_TEXT
 			info.value = "dungeon entrances"
 			info.checked = GetCVarBool("showDungeonEntrancesOnMap")
-			UIDropDownMenu_AddButton(info)
+			LibDD:UIDropDownMenu_AddButton(info)
 
 			local prof1, prof2, arch, fish, cook, firstAid = GetProfessions()
 			if arch then
 				info.text = ARCHAEOLOGY_SHOW_DIG_SITES -- "Show Digsites"
 				info.value = "digsites"
 				info.checked = GetCVarBool("digSites")
-				UIDropDownMenu_AddButton(info)
+				LibDD:UIDropDownMenu_AddButton(info)
 			end
 
 			-- BZ's Pet Battle
@@ -153,7 +148,7 @@ local function dropDown_Initialize(self, level)
 				info.text = SHOW_PET_BATTLES_ON_MAP_TEXT
 				info.value = "tamers"
 				info.checked = GetCVarBool("showTamers")
-				UIDropDownMenu_AddButton(info)
+				LibDD:UIDropDownMenu_AddButton(info)
 			end
 		end
 		-- If we aren't on a map with world quests don't show the world quest reward filter options.
@@ -166,16 +161,16 @@ local function dropDown_Initialize(self, level)
 				local menu = WQT:DropDownMenus()
 
 				if (profile.worldQuestTracker_contextMenu) then
-					UIDropDownMenu_AddButton(menu[1])
+					LibDD:UIDropDownMenu_AddButton(menu[1])
 				else
 					for i = 1, #menu do
-						UIDropDownMenu_AddButton(menu[i])
+						LibDD:UIDropDownMenu_AddButton(menu[i])
 					end
 				end
 			-- With World Quest Tracker enabled, actually the WoW built-in World Quest menu filters will not work. 
 			else]]
 				-- Clear out the info from the separator wholesale.
-				info = UIDropDownMenu_CreateInfo()
+				info = LibDD:UIDropDownMenu_CreateInfo()
 
 				info.isTitle = nil
 				info.disabled = nil
@@ -188,25 +183,25 @@ local function dropDown_Initialize(self, level)
 					info.text = SHOW_PRIMARY_PROFESSION_ON_MAP_TEXT
 					info.value = "primaryProfessionsFilter"
 					info.checked = GetCVarBool("primaryProfessionsFilter")
-					UIDropDownMenu_AddButton(info)
+					LibDD:UIDropDownMenu_AddButton(info)
 				end
 
 				if fish or cook or firstAid then
 					info.text = SHOW_SECONDARY_PROFESSION_ON_MAP_TEXT
 					info.value = "secondaryProfessionsFilter"
 					info.checked = GetCVarBool("secondaryProfessionsFilter")
-					UIDropDownMenu_AddButton(info)
+					LibDD:UIDropDownMenu_AddButton(info)
 				end
 				
 				AddSeparator()
 
 				-- Clear out the info from the separator wholesale.
-				info = UIDropDownMenu_CreateInfo()
+				info = LibDD:UIDropDownMenu_CreateInfo()
 
 				info.isTitle = true
 				info.notCheckable = true
 				info.text = WORLD_QUEST_REWARD_FILTERS_TITLE
-				UIDropDownMenu_AddButton(info)
+				LibDD:UIDropDownMenu_AddButton(info)
 				info.text = nil
 
 				info.isTitle = nil
@@ -219,32 +214,32 @@ local function dropDown_Initialize(self, level)
 				info.text = WORLD_QUEST_REWARD_FILTERS_RESOURCES
 				info.value = "worldQuestFilterResources"
 				info.checked = GetCVarBool("worldQuestFilterResources")
-				UIDropDownMenu_AddButton(info)
+				LibDD:UIDropDownMenu_AddButton(info)
 
 				info.text = WORLD_QUEST_REWARD_FILTERS_ARTIFACT_POWER
 				info.value = "worldQuestFilterArtifactPower"
 				info.checked = GetCVarBool("worldQuestFilterArtifactPower")
-				UIDropDownMenu_AddButton(info)
+				LibDD:UIDropDownMenu_AddButton(info)
 
 				info.text = WORLD_QUEST_REWARD_FILTERS_PROFESSION_MATERIALS
 				info.value = "worldQuestFilterProfessionMaterials"
 				info.checked = GetCVarBool("worldQuestFilterProfessionMaterials")
-				UIDropDownMenu_AddButton(info)
+				LibDD:UIDropDownMenu_AddButton(info)
 
 				info.text = WORLD_QUEST_REWARD_FILTERS_GOLD
 				info.value = "worldQuestFilterGold"
 				info.checked = GetCVarBool("worldQuestFilterGold")
-				UIDropDownMenu_AddButton(info)
+				LibDD:UIDropDownMenu_AddButton(info)
 				
 				info.text = WORLD_QUEST_REWARD_FILTERS_EQUIPMENT
 				info.value = "worldQuestFilterEquipment"
 				info.checked = GetCVarBool("worldQuestFilterEquipment")
-				UIDropDownMenu_AddButton(info)
+				LibDD:UIDropDownMenu_AddButton(info)
 				
 				info.text = WORLD_QUEST_REWARD_FILTERS_REPUTATION
 				info.value = "worldQuestFilterReputation"
 				info.checked = GetCVarBool("worldQuestFilterReputation")
-				UIDropDownMenu_AddButton(info)
+				LibDD:UIDropDownMenu_AddButton(info)
 			--end
 		end
 		for k, v in pairs(addon.plugins) do
@@ -257,14 +252,14 @@ local function dropDown_Initialize(self, level)
 					
 					AddSeparator()
 					for i = 1, #menu do
-						UIDropDownMenu_AddButton(menu[i])
+						LibDD:UIDropDownMenu_AddButton(menu[i])
 					end
 				end
 			end
 		end
 		-- Adding WorldMapTrackingEnhanced's Config link
 		AddSeparator()
-		info = UIDropDownMenu_CreateInfo()
+		info = LibDD:UIDropDownMenu_CreateInfo()
 		info.isNotRadio = true
 		info.notCheckable = true
 		info.text = L["World Map Tracking Enhanced Config"]
@@ -277,7 +272,7 @@ local function dropDown_Initialize(self, level)
 			InterfaceOptionsFrame_OpenToCategory(addon.LocName)
 			InterfaceOptionsFrame_OpenToCategory(addon.LocName)
 		end)
-		UIDropDownMenu_AddButton(info)
+		LibDD:UIDropDownMenu_AddButton(info)
 	-- Handling level 2 menus
 	elseif (level == 2) then
 		for k, v in pairs(addon.plugins) do
@@ -287,7 +282,7 @@ local function dropDown_Initialize(self, level)
 				
 				if (menu2) then
 					for i = 1, #menu2 do
-						UIDropDownMenu_AddButton(menu2[i], 2)
+						LibDD:UIDropDownMenu_AddButton(menu2[i], 2)
 					end
 				end
 			end
@@ -304,7 +299,7 @@ local function dropDown_Initialize(self, level)
 							local t = menu2[i].menuTable
 							if (t) then
 								for j = 1, #t do
-									UIDropDownMenu_AddButton(t[j], 3)
+									LibDD:UIDropDownMenu_AddButton(t[j], 3)
 								end
 							end
 						end
@@ -382,10 +377,10 @@ local function createTrackingButton()
 	f.Border:SetHeight(54)
 	f.Border:SetDrawLayer("BACKGROUND", -1)
 
-	f.DropDown = L_Create_UIDropDownMenu(name.."DropDown", f)
+	f.DropDown = LibDD:Create_UIDropDownMenu(name.."DropDown", f)
 	f.DropDown:SetClampedToScreen(true)
 	f.DropDown:SetScript("OnShow", function(self) 
-		UIDropDownMenu_Initialize(self, dropDown_Initialize, "MENU") 
+		LibDD:UIDropDownMenu_Initialize(self, dropDown_Initialize, "MENU") 
 	end)
 	
 	f:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight", "ADD")
@@ -406,7 +401,7 @@ local function createTrackingButton()
 			return
 		end
 		self.DropDown.mapID = mapID or 0
-		ToggleDropDownMenu(1, nil, f.DropDown, f, 0, -5)
+		LibDD:ToggleDropDownMenu(1, nil, f.DropDown, f, 0, -5)
 		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	end)
 	f:SetScript("OnMouseDown", function(self)
@@ -484,9 +479,3 @@ function addon:SetModuleEnabled(module, value)
 		end
 	end
 end
-
---[[
-function addon:CLOSE_WORLD_MAP()
-	L_CloseDropDownMenus()
-end
-]]
