@@ -45,8 +45,15 @@ local addon = LibStub("AceAddon-3.0"):NewAddon(private.addon_name, "AceEvent-3.0
 addon.constants = private.constants
 addon.constants.addon_name = private.addon_name
 addon.Name = FOLDER_NAME
-addon.LocName = select(2, GetAddOnInfo(addon.Name))
-addon.Notes = select(3, GetAddOnInfo(addon.Name))
+local _
+_, addon.LocName, addon.Notes = GetAddOnInfo(addon.Name)
+-- ToC Metadata
+addon.Version 		= GetAddOnMetadata(addon.Name, "Version")
+addon.UpdateDate 	= GetAddOnMetadata(addon.Name, "X-Date")
+addon.Author 		= GetAddOnMetadata(addon.Name, "Author")
+--addon.LocName = select(2, GetAddOnInfo(addon.Name))
+--addon.Notes = select(3, GetAddOnInfo(addon.Name))
+
 addon.plugins = {}
 _G.WorldMapTrackingEnhanced = addon
 local profile

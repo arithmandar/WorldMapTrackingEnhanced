@@ -52,19 +52,44 @@ local function getOptions()
 							type = "description",
 							name = addon.Notes,
 						},
-						--[[ //////// Header 1 //////// --]]
-						header1 = {
+						info = {
 							order = 10,
+							type = "group",
+							name = L["Addon Info"],
+							inline = true,
+							args = {
+								version = {
+									order = 10.1,
+									type = "description",
+									name = GAME_VERSION_LABEL..HEADER_COLON.." "..addon.Version,
+								},
+								update = {
+									order = 10.2, 
+									type = "description",
+									name = UPDATE..HEADER_COLON.." "..addon.UpdateDate,
+									width = "full",
+								},
+								author = {
+									order = 10.3, 
+									type = "description",
+									name = L["Author"]..HEADER_COLON.." "..addon.Author,
+									width = "full",
+								},
+							},
+						},
+						--[[ //////// Header //////// --]]
+						header2 = {
+							order = 20,
 							type = "header",
 							name = L["Config"],
 						},
 						desc1 = {
-							order = 10.1,
+							order = 20.1,
 							type = "description",
 							name = L["Addon Configuration"],
 						},
 						useSeparator = {
-							order = 11,
+							order = 21,
 							type = "toggle",
 							name = L["Use Separator"],
 							desc = L["Use separator in menu to separate different type of menu items"],

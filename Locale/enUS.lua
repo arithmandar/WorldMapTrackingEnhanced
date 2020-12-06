@@ -14,6 +14,8 @@ if L then
 -- //////////////////////////
 L["Options"] = "Options"
 L["Config"] = "Config"
+L["Addon Info"] = "Addon Info"
+L["Author"] = "Author"
 L["Addon Configuration"] = "Addon Configuration"
 L["Use Separator"] = "Use Separator"
 L["Use separator in menu to separate different type of menu items"] = "Use separator in menu to separate different type of menu items"
