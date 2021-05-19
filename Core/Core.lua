@@ -13,15 +13,14 @@ local GameTooltip, GetAddOnInfo, GetAddOnEnableState, UnitName, PlaySound, GetCV
 local WorldMapTrackingOptionsDropDown_OnClick
 local GetBuildInfo = _G.GetBuildInfo
 
+
 -- Determine WoW TOC Version
-local WoWClassic, WoWRetail, WoWShadowlands
+local WoWClassic, WoWRetail
 local wowtocversion  = select(4, GetBuildInfo())
-if wowtocversion < 19999 then
+if wowtocversion < 30000 then
 	WoWClassic = true
-elseif wowtocversion > 19999 and wowtocversion < 90000 then 
-	WoWRetail = true
 else
-	WoWShadowlands = true
+	WoWRetail = true
 end
 
 if WoWClassic then

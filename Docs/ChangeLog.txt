@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v4.07 (May 19, 2021)
+-----------------------
+- ToC update to support WoW 9.0.5
+
 * v4.06 (Dec. 06, 2020)
 -----------------------
 - Fixed addon metadata issue
