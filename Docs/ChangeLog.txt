@@ -3,6 +3,11 @@ $Id$
 Revision History:
 =================
 
+* v4.09 (Jan. 26, 2022)
+-----------------------
+- ToC update to support WoW 9.1.5
+- Library update: LibUIDropDownMenu
+
 * v4.08 (Jun. 30, 2021)
 -----------------------
 - ToC update to support WoW 9.1.0
