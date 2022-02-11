@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v4.11 (Feb. 10, 2022)
+-----------------------
+- Library update: LibUIDropDownMenu
+
 * v4.10 (Feb. 9, 2022)
 -----------------------
 - Support multiple ToC
