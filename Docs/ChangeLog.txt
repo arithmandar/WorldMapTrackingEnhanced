@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v4.13 (Feb. 15, 2022)
+-----------------------
+- Added Shadowland maps' filter feature
+
 * v4.12 (Feb. 15, 2022)
 -----------------------
 - Library update: LibUIDropDownMenu

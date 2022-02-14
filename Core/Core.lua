@@ -15,16 +15,18 @@ local GetBuildInfo = _G.GetBuildInfo
 
 
 -- Determine WoW TOC Version
-local WoWClassic, WoWRetail
+local WoWClassicEra, WoWClassicTBC, WoWRetail
 local wowtocversion  = select(4, GetBuildInfo())
-if wowtocversion < 30000 then
-	WoWClassic = true
+if wowtocversion < 20000 then
+	WoWClassicEra = true
+elseif wowtocversion > 19999 and wowtocversion < 90000 then 
+	WoWClassicTBC = true
 else
 	WoWRetail = true
 end
 
-if WoWClassic then
-
+if (WoWClassicEra or WoWClassicTBC) then
+	-- do nothing
 else
 	WorldMapTrackingOptionsDropDown_OnClick = _G.WorldMapTrackingOptionsDropDown_OnClick
 end
@@ -71,7 +73,7 @@ local function checkAddonStatus(addonName)
 end
 
 local function onSelection(value, checked)
-	if WoWClassic then
+	if (WoWClassicEra or WoWClassicTBC) then
 		-- do nothing
 	else
 		if (checked) then
@@ -92,7 +94,8 @@ local function onSelection(value, checked)
 			SetCVar(value, checked and "1" or "0")
 		elseif (value == "worldQuestFilterResources" or value == "worldQuestFilterArtifactPower" or
 				value == "worldQuestFilterProfessionMaterials" or value == "worldQuestFilterGold" or
-				value == "worldQuestFilterEquipment" or value == "worldQuestFilterReputation") then
+				value == "worldQuestFilterEquipment" or value == "worldQuestFilterReputation" or
+				value == "worldQuestFilterAnima") then
 			-- World quest reward filter cvars
 			SetCVar(value, checked and "1" or "0")
 		end
@@ -130,7 +133,7 @@ local function dropDown_Initialize(self, level)
 		info.keepShownOnClick = true
 		info.func = OnSelection
 
-		if not WoWClassic then
+		if (WoWRetail) then
 			info.text = SHOW_QUEST_OBJECTIVES_ON_MAP_TEXT
 			info.value = "quests"
 			info.checked = GetCVarBool("questPOI")
@@ -159,7 +162,7 @@ local function dropDown_Initialize(self, level)
 		end
 		-- If we aren't on a map with world quests don't show the world quest reward filter options.
 		local mapID = WorldMapFrame:GetMapID()
-		if mapID and MapUtil.MapHasEmissaries(mapID) then
+		if mapID and MapUtil.MapShouldShowWorldQuestFilters(mapID) then
 			-- Adding World Quest Tracker menus;
 --[[			if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker) then
 				AddSeparator()
@@ -217,15 +220,22 @@ local function dropDown_Initialize(self, level)
 				info.keepShownOnClick = true
 				info.func = OnSelection
 
-				info.text = WORLD_QUEST_REWARD_FILTERS_RESOURCES
-				info.value = "worldQuestFilterResources"
-				info.checked = GetCVarBool("worldQuestFilterResources")
-				LibDD:UIDropDownMenu_AddButton(info)
+				if MapUtil.IsShadowlandsZoneMap(mapID) then
+					info.text = WORLD_QUEST_REWARD_FILTERS_ANIMA
+					info.value = "worldQuestFilterAnima"
+					info.checked = GetCVarBool("worldQuestFilterAnima")
+					LibDD:UIDropDownMenu_AddButton(info)
+				else
+					info.text = WORLD_QUEST_REWARD_FILTERS_RESOURCES
+					info.value = "worldQuestFilterResources"
+					info.checked = GetCVarBool("worldQuestFilterResources")
+					LibDD:UIDropDownMenu_AddButton(info)
 
-				info.text = WORLD_QUEST_REWARD_FILTERS_ARTIFACT_POWER
-				info.value = "worldQuestFilterArtifactPower"
-				info.checked = GetCVarBool("worldQuestFilterArtifactPower")
-				LibDD:UIDropDownMenu_AddButton(info)
+					info.text = WORLD_QUEST_REWARD_FILTERS_ARTIFACT_POWER
+					info.value = "worldQuestFilterArtifactPower"
+					info.checked = GetCVarBool("worldQuestFilterArtifactPower")
+					LibDD:UIDropDownMenu_AddButton(info)
+				end
 
 				info.text = WORLD_QUEST_REWARD_FILTERS_PROFESSION_MATERIALS
 				info.value = "worldQuestFilterProfessionMaterials"
@@ -321,7 +331,7 @@ local function createTrackingButton()
 	
 	local name = addon.Name.."Button"
 	local f = _G[name]
-	if WoWClassic then
+	if (WoWClassicEra or WoWClassicTBC) then
 		parent = WorldMapFrame
 		parent.BlackoutFrame:Hide()
 		parent:SetFrameStrata("HIGH")
@@ -430,7 +440,7 @@ function addon:OnInitialize()
 	self.db.RegisterCallback(self, "OnProfileReset", "Refresh")
 
 	self:SetupOptions()
-	if WoWClassic then
+	if (WoWClassicEra or WoWClassicTBC) then
 		-- do nothing
 	else
 		FilterButton = WorldMapFrame.overlayFrames[2]
@@ -438,7 +448,7 @@ function addon:OnInitialize()
 end
 
 local function rearrangeFilterButtonTexture()
-	if WoWClassic then return end
+	if (WoWClassicEra or WoWClassicTBC) then return end
 	FilterButton.Background:SetTexture(nil)
 	FilterButton.Icon:SetTexture(nil)
 	FilterButton.IconOverlay:SetTexture(nil)
