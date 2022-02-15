@@ -3,6 +3,12 @@ $Id$
 Revision History:
 =================
 
+* v4.14 (Feb. XX, 2022)
+-----------------------
+- Bug fixed:
+  - Professions' toggle was missing
+  - Quest object's toggle was missing in Classic server
+
 * v4.13 (Feb. 15, 2022)
 -----------------------
 - Added Shadowland maps' filter feature

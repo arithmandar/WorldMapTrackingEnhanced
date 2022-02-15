@@ -133,12 +133,13 @@ local function dropDown_Initialize(self, level)
 		info.keepShownOnClick = true
 		info.func = OnSelection
 
-		if (WoWRetail) then
-			info.text = SHOW_QUEST_OBJECTIVES_ON_MAP_TEXT
-			info.value = "quests"
-			info.checked = GetCVarBool("questPOI")
-			LibDD:UIDropDownMenu_AddButton(info)
+		info.text = SHOW_QUEST_OBJECTIVES_ON_MAP_TEXT
+		info.value = "quests"
+		info.checked = GetCVarBool("questPOI")
+		LibDD:UIDropDownMenu_AddButton(info)
 
+		-- currently it looks like below three features are only available in Retail server
+		if (WoWRetail) then
 			info.text = SHOW_DUNGEON_ENTRACES_ON_MAP_TEXT
 			info.value = "dungeon entrances"
 			info.checked = GetCVarBool("showDungeonEntrancesOnMap")
@@ -162,7 +163,7 @@ local function dropDown_Initialize(self, level)
 		end
 		-- If we aren't on a map with world quests don't show the world quest reward filter options.
 		local mapID = WorldMapFrame:GetMapID()
-		if mapID and MapUtil.MapShouldShowWorldQuestFilters(mapID) then
+		if mapID and MapUtil.MapHasEmissaries(mapID) then
 			-- Adding World Quest Tracker menus;
 --[[			if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker) then
 				AddSeparator()
@@ -188,10 +189,12 @@ local function dropDown_Initialize(self, level)
 				info.keepShownOnClick = true
 				info.func = WorldMapTrackingOptionsDropDown_OnClick
 
+				local prof1, prof2, arch, fish, cook, firstAid = GetProfessions()
 				if prof1 or prof2 then
 					info.text = SHOW_PRIMARY_PROFESSION_ON_MAP_TEXT
 					info.value = "primaryProfessionsFilter"
 					info.checked = GetCVarBool("primaryProfessionsFilter")
+					info.func = OnSelection
 					LibDD:UIDropDownMenu_AddButton(info)
 				end
 
@@ -199,6 +202,7 @@ local function dropDown_Initialize(self, level)
 					info.text = SHOW_SECONDARY_PROFESSION_ON_MAP_TEXT
 					info.value = "secondaryProfessionsFilter"
 					info.checked = GetCVarBool("secondaryProfessionsFilter")
+					info.func = OnSelection
 					LibDD:UIDropDownMenu_AddButton(info)
 				end
 				
