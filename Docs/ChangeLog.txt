@@ -3,8 +3,9 @@ $Id$
 Revision History:
 =================
 
-* v4.14 (Feb. XX, 2022)
+* v4.14 (Feb. 23, 2022)
 -----------------------
+- Toc update to support WoW 9.2.0
 - Bug fixed:
   - Professions' toggle was missing
   - Quest object's toggle was missing in Classic server
