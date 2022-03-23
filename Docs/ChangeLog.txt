@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v4.16 (Mar. 23, 2022)
+-----------------------
+- BCC ToC update to support WoW 2.5.3
+
 * v4.15 (Feb. 28, 2022)
 -----------------------
 - Library update: LibUIDropDownMenu
