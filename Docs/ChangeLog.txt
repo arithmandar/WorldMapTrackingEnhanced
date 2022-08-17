@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v4.18 (Aug. 17, 2022)
+-----------------------
+- Retail ToC update to support WoW 9.2.7
+
 * v4.17 (Jul. 17, 2022)
 -----------------------
 - Retail ToC update to support WoW 9.2.5
