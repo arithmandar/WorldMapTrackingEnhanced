@@ -15,17 +15,21 @@ local GetBuildInfo = _G.GetBuildInfo
 
 
 -- Determine WoW TOC Version
-local WoWClassicEra, WoWClassicTBC, WoWRetail
-local wowtocversion  = select(4, GetBuildInfo())
-if wowtocversion < 20000 then
+local WoWClassicEra, WoWClassicTBC, WoWWOTLKC, WoWRetail
+local wowversion  = select(4, GetBuildInfo())
+if wowversion < 20000 then
 	WoWClassicEra = true
-elseif wowtocversion > 19999 and wowtocversion < 90000 then 
+elseif wowversion < 30000 then 
 	WoWClassicTBC = true
-else
+elseif wowversion < 40000 then 
+	WoWWOTLKC = true
+elseif wowversion > 90000 then
 	WoWRetail = true
+else
+	-- n/a
 end
 
-if (WoWClassicEra or WoWClassicTBC) then
+if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
 	-- do nothing
 else
 	WorldMapTrackingOptionsDropDown_OnClick = _G.WorldMapTrackingOptionsDropDown_OnClick
@@ -73,7 +77,7 @@ local function checkAddonStatus(addonName)
 end
 
 local function onSelection(value, checked)
-	if (WoWClassicEra or WoWClassicTBC) then
+	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
 		-- do nothing
 	else
 		if (checked) then
@@ -335,7 +339,7 @@ local function createTrackingButton()
 	
 	local name = addon.Name.."Button"
 	local f = _G[name]
-	if (WoWClassicEra or WoWClassicTBC) then
+	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
 		parent = WorldMapFrame
 		parent.BlackoutFrame:Hide()
 		parent:SetFrameStrata("HIGH")
@@ -444,7 +448,7 @@ function addon:OnInitialize()
 	self.db.RegisterCallback(self, "OnProfileReset", "Refresh")
 
 	self:SetupOptions()
-	if (WoWClassicEra or WoWClassicTBC) then
+	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
 		-- do nothing
 	else
 		FilterButton = WorldMapFrame.overlayFrames[2]
@@ -452,7 +456,7 @@ function addon:OnInitialize()
 end
 
 local function rearrangeFilterButtonTexture()
-	if (WoWClassicEra or WoWClassicTBC) then return end
+	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then return end
 	FilterButton.Background:SetTexture(nil)
 	FilterButton.Icon:SetTexture(nil)
 	FilterButton.IconOverlay:SetTexture(nil)

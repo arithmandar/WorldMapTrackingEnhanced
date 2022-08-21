@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v4.19 (Aug. 21, 2022)
+-----------------------
+- Added support for WOLTKC 3.4.0
+
 * v4.18 (Aug. 17, 2022)
 -----------------------
 - Retail ToC update to support WoW 9.2.7
