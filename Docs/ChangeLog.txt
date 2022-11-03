@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v4.20 (Nov. 4, 2022)
+-----------------------
+- Dragonflight implementation
+
 * v4.19 (Aug. 21, 2022)
 -----------------------
 - Added support for WOLTKC 3.4.0

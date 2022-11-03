@@ -87,13 +87,14 @@ local function onSelection(value, checked)
 		end
 
 		if (value == "quests") then
-			SetCVar("questPOI", checked and "1" or "0", "QUEST_POI")
+			SetCVar("questPOI", checked and "1" or "0");
 		elseif (value == "dungeon entrances") then
-			SetCVar("showDungeonEntrancesOnMap", checked and "1" or "0", "SHOW_DUNGEON_ENTRANCES")
+			SetCVar("showDungeonEntrancesOnMap", checked and "1" or "0");
 		elseif (value == "digsites") then
-			SetCVar("digSites", checked and "1" or "0", "SHOW_DIG_SITES")
+			SetCVar("digSites", checked and "1" or "0");
+			--self:SetTrackingFilter(Enum.MinimapTrackingFilter.Digsites, checked);
 		elseif (value == "tamers") then
-			SetCVar("showTamers", checked and "1" or "0", "SHOW_TAMERS")
+			SetCVar("showTamers", checked and "1" or "0");
 		elseif (value == "primaryProfessionsFilter" or value == "secondaryProfessionsFilter") then
 			SetCVar(value, checked and "1" or "0")
 		elseif (value == "worldQuestFilterResources" or value == "worldQuestFilterArtifactPower" or
@@ -102,6 +103,9 @@ local function onSelection(value, checked)
 				value == "worldQuestFilterAnima") then
 			-- World quest reward filter cvars
 			SetCVar(value, checked and "1" or "0")
+			--[[
+		elseif (value == "trivialQuests") then
+			self:SetTrackingFilter(Enum.MinimapTrackingFilter.TrivialQuests, checked);]]
 		end
 		FilterButton:GetParent():RefreshAllDataProviders()
 	end
@@ -153,17 +157,22 @@ local function dropDown_Initialize(self, level)
 			if arch then
 				info.text = ARCHAEOLOGY_SHOW_DIG_SITES -- "Show Digsites"
 				info.value = "digsites"
-				info.checked = GetCVarBool("digSites")
+				info.checked = GetCVarBool("digSites") --and self:IsTrackingFilter(Enum.MinimapTrackingFilter.Digsites);
 				LibDD:UIDropDownMenu_AddButton(info)
 			end
 
 			-- BZ's Pet Battle
-			if CanTrackBattlePets() then
+			if C_Minimap.CanTrackBattlePets() then
 				info.text = SHOW_PET_BATTLES_ON_MAP_TEXT
 				info.value = "tamers"
 				info.checked = GetCVarBool("showTamers")
 				LibDD:UIDropDownMenu_AddButton(info)
 			end
+			--[[
+			info.text = MINIMAP_TRACKING_TRIVIAL_QUESTS;
+			info.value = "trivialQuests";
+			info.checked = self:IsTrackingFilter(Enum.MinimapTrackingFilter.TrivialQuests);
+			LibDD:UIDropDownMenu_AddButton(info);]]
 		end
 		-- If we aren't on a map with world quests don't show the world quest reward filter options.
 		local mapID = WorldMapFrame:GetMapID()
@@ -363,7 +372,6 @@ local function createTrackingButton()
 	
 	addon.button = f
 	
-	
 	f:SetFrameStrata("HIGH")
 
 --[[	-- Layers
@@ -439,6 +447,7 @@ local function createTrackingButton()
 	
 end
 
+
 function addon:OnInitialize()
 	self.db = AceDB:New(addon.Name.."DB", addon.constants.defaults, true)
 	profile = self.db.profile
@@ -461,7 +470,7 @@ local function rearrangeFilterButtonTexture()
 	FilterButton.Icon:SetTexture(nil)
 	FilterButton.IconOverlay:SetTexture(nil)
 	FilterButton.Border:SetTexture(nil)
-	FilterButton:SetHighlightTexture(nil)
+	--FilterButton:SetHighlightTexture(nil)
 end
 
 function addon:OnEnable()
