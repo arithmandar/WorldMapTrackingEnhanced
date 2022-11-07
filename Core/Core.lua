@@ -9,6 +9,7 @@ local pairs = _G.pairs
 local math = _G.math
 local ceil = math.ceil
 -- Libraries
+local GetProfessions = _G.GetProfessions
 local GameTooltip, GetAddOnInfo, GetAddOnEnableState, UnitName, PlaySound, GetCVarBool, SetCVar = _G.GameTooltip, _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.PlaySound, _G.GetCVarBool, _G.SetCVar
 local WorldMapTrackingOptionsDropDown_OnClick
 local GetBuildInfo = _G.GetBuildInfo
@@ -76,7 +77,68 @@ local function checkAddonStatus(addonName)
 	end
 end
 
-local function onSelection(value, checked)
+WMTEButtonMixin = {}
+
+function WMTEButtonMixin:OnLoad()
+	local function InitializeDropDown(self, level)
+		self:GetParent():InitializeDropDown(self.DropDown, level);
+	end
+	local name = addon.Name.."Button"
+	self.DropDown = LibDD:Create_UIDropDownMenu(name.."DropDown", self)
+	self.DropDown:SetClampedToScreen(true)
+	
+	LibDD:UIDropDownMenu_SetInitializeFunction(self.DropDown, InitializeDropDown);
+	LibDD:UIDropDownMenu_SetDisplayMode(self.DropDown, "MENU");
+end
+
+function WMTEButtonMixin:OnEnter()
+	GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
+	GameTooltip:SetText(TRACKING, 1, 1, 1)
+	GameTooltip:AddLine(MINIMAP_TRACKING_TOOLTIP_NONE, nil, nil, nil, true)
+	GameTooltip:Show()
+end
+
+function WMTEButtonMixin:OnLeave()
+	GameTooltip:Hide()
+end
+
+function WMTEButtonMixin:OnClick()
+	local parent = self:GetParent()
+	local mapID = WorldMapFrame:GetMapID()
+	if not mapID then
+		return
+	end
+	self.DropDown.mapID = mapID or 0
+	LibDD:ToggleDropDownMenu(1, nil, self.DropDown, self, 0, -5)
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+function WMTEButtonMixin:OnMouseDown(button)
+	self.Icon:SetPoint("TOPLEFT", 8, -8)
+	self.IconOverlay:Show()
+end
+
+function WMTEButtonMixin:OnMouseUp()
+	self.Icon:SetPoint("TOPLEFT", 6, -6)
+	self.IconOverlay:Hide()
+end
+
+function WMTEButtonMixin:IsTrackingFilter(filter)
+	return not C_Minimap.IsFilteredOut(filter);
+end
+
+function WMTEButtonMixin:SetTrackingFilter(filter, on)
+	local count = C_Minimap.GetNumTrackingTypes();
+	for id=1, count do
+		local filterInfo = C_Minimap.GetTrackingFilter(id);
+		if filterInfo and filterInfo.filterID == filter then
+			C_Minimap.SetTracking(id, on);
+			return;
+		end
+	end
+end
+
+function WMTEButtonMixin:OnSelection(value, checked)
 	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
 		-- do nothing
 	else
@@ -92,7 +154,7 @@ local function onSelection(value, checked)
 			SetCVar("showDungeonEntrancesOnMap", checked and "1" or "0");
 		elseif (value == "digsites") then
 			SetCVar("digSites", checked and "1" or "0");
-			--self:SetTrackingFilter(Enum.MinimapTrackingFilter.Digsites, checked);
+			self:SetTrackingFilter(Enum.MinimapTrackingFilter.Digsites, checked);
 		elseif (value == "tamers") then
 			SetCVar("showTamers", checked and "1" or "0");
 		elseif (value == "primaryProfessionsFilter" or value == "secondaryProfessionsFilter") then
@@ -103,9 +165,8 @@ local function onSelection(value, checked)
 				value == "worldQuestFilterAnima") then
 			-- World quest reward filter cvars
 			SetCVar(value, checked and "1" or "0")
-			--[[
 		elseif (value == "trivialQuests") then
-			self:SetTrackingFilter(Enum.MinimapTrackingFilter.TrivialQuests, checked);]]
+			self:SetTrackingFilter(Enum.MinimapTrackingFilter.TrivialQuests, checked);
 		end
 		FilterButton:GetParent():RefreshAllDataProviders()
 	end
@@ -114,9 +175,9 @@ end
 -- //////////////////////////////////////////////////////////////////////////
 -- Main function to replace World Map Tracking Option's dropdown menu
 -- //////////////////////////////////////////////////////////////////////////
-local function dropDown_Initialize(self, level)
+function WMTEButtonMixin:InitializeDropDown(frame, level)
 	local function OnSelection(button)
-		onSelection(button.value, button.checked)
+		self:OnSelection(button.value, button.checked)
 	end
 	
 	local function AddSeparator()
@@ -153,11 +214,11 @@ local function dropDown_Initialize(self, level)
 			info.checked = GetCVarBool("showDungeonEntrancesOnMap")
 			LibDD:UIDropDownMenu_AddButton(info)
 
-			local prof1, prof2, arch, fish, cook, firstAid = GetProfessions()
+			local _, _, arch = GetProfessions()
 			if arch then
 				info.text = ARCHAEOLOGY_SHOW_DIG_SITES -- "Show Digsites"
 				info.value = "digsites"
-				info.checked = GetCVarBool("digSites") --and self:IsTrackingFilter(Enum.MinimapTrackingFilter.Digsites);
+				info.checked = GetCVarBool("digSites") and self:IsTrackingFilter(Enum.MinimapTrackingFilter.Digsites);
 				LibDD:UIDropDownMenu_AddButton(info)
 			end
 
@@ -168,11 +229,11 @@ local function dropDown_Initialize(self, level)
 				info.checked = GetCVarBool("showTamers")
 				LibDD:UIDropDownMenu_AddButton(info)
 			end
-			--[[
+
 			info.text = MINIMAP_TRACKING_TRIVIAL_QUESTS;
 			info.value = "trivialQuests";
 			info.checked = self:IsTrackingFilter(Enum.MinimapTrackingFilter.TrivialQuests);
-			LibDD:UIDropDownMenu_AddButton(info);]]
+			LibDD:UIDropDownMenu_AddButton(info);
 		end
 		-- If we aren't on a map with world quests don't show the world quest reward filter options.
 		local mapID = WorldMapFrame:GetMapID()
@@ -202,7 +263,7 @@ local function dropDown_Initialize(self, level)
 				info.keepShownOnClick = true
 				info.func = WorldMapTrackingOptionsDropDown_OnClick
 
-				local prof1, prof2, arch, fish, cook, firstAid = GetProfessions()
+				local prof1, prof2, _, fish, cook, firstAid = GetProfessions()
 				if prof1 or prof2 then
 					info.text = SHOW_PRIMARY_PROFESSION_ON_MAP_TEXT
 					info.value = "primaryProfessionsFilter"
@@ -343,6 +404,8 @@ local function dropDown_Initialize(self, level)
 	end
 end
 
+
+
 local function createTrackingButton()
 	local parent
 	
@@ -354,9 +417,7 @@ local function createTrackingButton()
 		parent:SetFrameStrata("HIGH")
 		parent.BorderFrame:SetFrameStrata("LOW")
 
-		if not f then f = CreateFrame("Button", name, parent) end
-		f:SetWidth(32)
-		f:SetHeight(32)
+		if not f then f = CreateFrame("Button", name, parent, "WMTEButtonTemplate") end
 		f:SetFrameLevel(20)
 		f:SetToplevel(true)
 		f:ClearAllPoints()
@@ -364,87 +425,11 @@ local function createTrackingButton()
 	else
 		parent = FilterButton:GetParent()
 		
-		if not f then f = CreateFrame("Button", name, WorldMapFrame.ScrollContainer) end
-		f:SetWidth(32)
-		f:SetHeight(32)
+		if not f then f = CreateFrame("Button", name, WorldMapFrame.ScrollContainer, "WMTEButtonTemplate") end
 		f:SetPoint("TOPRIGHT", parent:GetCanvasContainer(), -4, -2, "TOPRIGHT")
 	end
 	
 	addon.button = f
-	
-	f:SetFrameStrata("HIGH")
-
---[[	-- Layers
-	f.Shadow = f:CreateTexture(name.."Shadow", "BACKGROUND")
-	f.Shadow:SetAtlas("MapCornerShadow-Right", true)
-	f.Shadow:SetPoint("TOPRIGHT", f, 4, 4)
-	f.Shadow:SetTexCoord(0, 1, 1, 0)
-	f.Shadow:SetDrawLayer("BACKGROUND", -1)
-
-	f.Background = f:CreateTexture(name.."Background", "BACKGROUND")
-	f.Background:SetPoint("TOPLEFT", f, 2, -4)
-	f.Background:SetWidth(25)
-	f.Background:SetHeight(25)
-	f.Background:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
-	f.Background:SetVertexColor(1, 1, 1, 1)
-]]
-	f.Icon = f:CreateTexture(name.."Icon", "ARTWORK")
-	f.Icon:SetHeight(20)
-	f.Icon:SetWidth(20)
-	f.Icon:SetPoint("TOPLEFT", f, 6, -6)
-	f.Icon:SetTexture("Interface\\Minimap\\Tracking\\None")
-	
-	f.IconOverlay = f:CreateTexture(name.."IconOverlay", "OVERLAY")
-	f.IconOverlay:Hide()
-	f.IconOverlay:SetWidth(27)
-	f.IconOverlay:SetHeight(27)
-	f.IconOverlay:SetPoint("TOPLEFT", f.Icon, 0, 0)
-	f.IconOverlay:SetPoint("BOTTOMRIGHT", f.Icon, 0, 0)
-	f.IconOverlay:SetVertexColor(0, 0, 0, 0.5)
-
-	f.Border = f:CreateTexture(name.."Border", "OVERLAY")
-	f.Border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
-	f.Border:SetPoint("TOPLEFT", f, 0, 0)
-	f.Border:SetWidth(54)
-	f.Border:SetHeight(54)
-	f.Border:SetDrawLayer("BACKGROUND", -1)
-
-	f.DropDown = LibDD:Create_UIDropDownMenu(name.."DropDown", f)
-	f.DropDown:SetClampedToScreen(true)
-	f.DropDown:SetScript("OnShow", function(self) 
-		LibDD:UIDropDownMenu_Initialize(self, dropDown_Initialize, "MENU") 
-	end)
-	
-	f:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight", "ADD")
-	
-	f:SetScript("OnEnter", function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
-		GameTooltip:SetText(TRACKING, 1, 1, 1)
-		GameTooltip:AddLine(MINIMAP_TRACKING_TOOLTIP_NONE, nil, nil, nil, true)
-		GameTooltip:Show()
-	end)
-	f:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-	end)
-	f:SetScript("OnClick", function(self)
-		local parent = self:GetParent()
-		local mapID = WorldMapFrame:GetMapID()
-		if not mapID then
-			return
-		end
-		self.DropDown.mapID = mapID or 0
-		LibDD:ToggleDropDownMenu(1, nil, f.DropDown, f, 0, -5)
-		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-	end)
-	f:SetScript("OnMouseDown", function(self)
-		self.Icon:SetPoint("TOPLEFT", 8, -8)
-		self.IconOverlay:Show()
-	end)
-	f:SetScript("OnMouseUp", function(self)
-		self.Icon:SetPoint("TOPLEFT", 6, -6)
-		self.IconOverlay:Hide()
-	end)
-	
 end
 
 

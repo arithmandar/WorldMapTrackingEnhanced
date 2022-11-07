@@ -43,6 +43,7 @@ Libs\Libs.xml
 Locale\Locales.xml
 Core\Constants.lua
 Core\Core.lua
+Core\Templates.xml
 Core\Config.lua
 
 Modules.xml
