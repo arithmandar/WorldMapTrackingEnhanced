@@ -22,6 +22,7 @@ constants.defaults = {
 			['*'] = true,
 		},
 		useSeparator = true,
+		showOnLeft = false,
 	},
 }
 

@@ -404,8 +404,6 @@ function WMTEButtonMixin:InitializeDropDown(frame, level)
 	end
 end
 
-
-
 local function createTrackingButton()
 	local parent
 	
@@ -426,12 +424,15 @@ local function createTrackingButton()
 		parent = FilterButton:GetParent()
 		
 		if not f then f = CreateFrame("Button", name, WorldMapFrame.ScrollContainer, "WMTEButtonTemplate") end
-		f:SetPoint("TOPRIGHT", parent:GetCanvasContainer(), -4, -2, "TOPRIGHT")
+		if (profile.showOnLeft) then
+			f:SetPoint("TOPLEFT", WorldMapFrame.ScrollContainer, 0, 0, "TOPLEFT")
+		else
+			f:SetPoint("TOPRIGHT", parent:GetCanvasContainer(), -4, -2, "TOPRIGHT")
+		end
 	end
 	
 	addon.button = f
 end
-
 
 function addon:OnInitialize()
 	self.db = AceDB:New(addon.Name.."DB", addon.constants.defaults, true)
@@ -451,6 +452,9 @@ end
 
 local function rearrangeFilterButtonTexture()
 	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then return end
+	if (profile.showOnLeft) then
+		return
+	end
 	FilterButton.Background:SetTexture(nil)
 	FilterButton.Icon:SetTexture(nil)
 	FilterButton.IconOverlay:SetTexture(nil)

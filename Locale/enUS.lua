@@ -27,6 +27,8 @@ L["Click to open World Map Tracking Enhanced's config panel"] = "Click to open W
 L["Modules"] = "Modules"
 L["Show %s module's config link in menu."] = "Show %s module's config link in menu."
 L["Show %s module's menu items in second level of menu."] = "Show %s module's menu items in second level of menu."
+L["Icon on left"] = "Icon on left"
+L["Move filter icon on map frame's left side.\nRequires to reload addon to take effect."] = "Move filter icon on map frame's left side.\nRequires to reload addon to take effect."
 
 -- //////////////////////////
 -- Common

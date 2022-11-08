@@ -94,6 +94,12 @@ local function getOptions()
 							name = L["Use Separator"],
 							desc = L["Use separator in menu to separate different type of menu items"],
 						},
+						showOnLeft = {
+							order = 22,
+							type = "toggle",
+							name = L["Icon on left"],
+							desc = L["Move filter icon on map frame's left side.\nRequires to reload addon to take effect."],
+						},
 					},
 				},
 				plugins = {

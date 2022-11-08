@@ -104,6 +104,7 @@ end
 	
 function Module:DropDownMenus()
 	if (enabled > 0 and iPetTracker) then
+	
 		local function checkActiveSpecies()
 			return not PetTracker.sets.hideSpecies
 		end
@@ -124,7 +125,7 @@ function Module:DropDownMenus()
 			--PetTracker.WorldMap:UpdateBlips()
 			PetTracker.MapCanvas:UpdateAll()
 		end
-
+		
 		local menu = {}
 		local menu2 = {}
 		local i = 1
@@ -140,7 +141,7 @@ function Module:DropDownMenus()
 			t[i].func = toggleSpecies
 			t[i].checked = checkActiveSpecies
 			i = i + 1
-
+			
 			t[i] = {}
 			t[i].isNotRadio = true
 			t[i].keepShownOnClick = true

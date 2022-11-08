@@ -3,7 +3,14 @@ $Id$
 Revision History:
 =================
 
-* v4.20 (Nov. 7, 2022)
+* v4.21 (Nov. XX, 2022)
+-----------------------
+- Add toggle to allow filter button to be on the right side of map.
+  By doing so, addon will not hijack WorldMap's filter button. 
+  More like a side effect is that other addon like PetTracker will hijack 
+  the filter button with conflict with this addon.
+
+* v4.20 (Nov. 07, 2022)
 -----------------------
 - Dragonflight implementation
 - Retail ToC update to support WoW 10.0.0
