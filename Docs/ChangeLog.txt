@@ -5,7 +5,7 @@ Revision History:
 
 * v4.21 (Nov. XX, 2022)
 -----------------------
-- Add toggle to allow filter button to be on the right side of map.
+- Add toggle to allow filter button to be on the left side of map.
   By doing so, addon will not hijack WorldMap's filter button. 
   More like a side effect is that other addon like PetTracker will hijack 
   the filter button with conflict with this addon.
