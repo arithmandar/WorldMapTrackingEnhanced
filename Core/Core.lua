@@ -87,6 +87,12 @@ function WMTEButtonMixin:OnLoad()
 	self.DropDown = LibDD:Create_UIDropDownMenu(name.."DropDown", self)
 	self.DropDown:SetClampedToScreen(true)
 	
+	if (WoWRetail) then
+		self:SetFrameStrata("HIGH")
+	else
+		self:SetFrameStrata("TOOLTIP")
+	end
+	
 	LibDD:UIDropDownMenu_SetInitializeFunction(self.DropDown, InitializeDropDown);
 	LibDD:UIDropDownMenu_SetDisplayMode(self.DropDown, "MENU");
 end
