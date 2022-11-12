@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v4.22 (Nov. 12, 2022)
+-----------------------
+- Localization update
+
 * v4.21 (Nov. 12, 2022)
 -----------------------
 - Add toggle to allow filter button to be on the left side of map.

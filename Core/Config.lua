@@ -97,8 +97,8 @@ local function getOptions()
 						independantButton = {
 							order = 22,
 							type = "toggle",
-							name = L["Independant Button"],
-							desc = L["Use an independant filter button and place closed to WorldMap frame's buttons on the top-right corner.\nRequires to reload addon to take effect."],
+							name = L["Independent Button"],
+							desc = L["Use an independent filter button and place closed to WorldMap frame's buttons on the top-right corner.\nRequires to reload addon to take effect."],
 							disabled = function() return addon.db.profile.showOnLeft end,
 						},
 						showOnLeft = {
