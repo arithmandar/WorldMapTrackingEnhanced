@@ -15,6 +15,8 @@ if L then
 -- //////////////////////////
 L["Options"] = "選項"
 L["Config"] = "設定"
+L["Addon Info"] = "插件資訊"
+L["Author"] = "作者"
 L["Addon Configuration"] = "插件設定"
 L["Use Separator"] = "使用分隔線"
 L["Use separator in menu to separate different type of menu items"] = "使用分隔線來分隔不同的選單項目"
@@ -26,6 +28,8 @@ L["Click to open World Map Tracking Enhanced's config panel"] = "點擊以開啟
 L["Modules"] = "模組"
 L["Show %s module's config link in menu."] = "在選單中顯示 %s 模組的設定連結"
 L["Show %s module's menu items in second level of menu."] = "將模組的選單選項顯示在第二層的選單"
+L["Icon on left"] = "圖示在左側"
+L["Move filter icon on map frame's left side.\nRequires to reload addon to take effect."] = "將地圖篩選的圖示移到視窗的左側。\n設定變動將需要重新載入插件。"
 
 -- //////////////////////////
 -- Common

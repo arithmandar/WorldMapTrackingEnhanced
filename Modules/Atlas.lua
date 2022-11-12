@@ -74,14 +74,6 @@ function Module:OnInitialize()
 
 		self:SetEnabledState(addon:GetModuleEnabled(MODNAME))
 		addon:RegisterModuleOptions(MODNAME, options, MODNAME)
-
-		if Atlas.db.profile.options.worldMapButton then
-			local name = addon.Name.."Button"
-			local button = _G[name]
-
-			AtlasToggleFromWorldMap:ClearAllPoints()
-			AtlasToggleFromWorldMap:SetPoint("TOPRIGHT", WorldMapFrame, "TOPRIGHT", -36, -70)
-		end
 	else
 		addon:DisableModule(MODNAME)
 	end
@@ -104,10 +96,16 @@ function Module:DropDownMenus()
 		local i = 1
 		local mode_name = select(2, GetAddOnInfo(MODNAME)) or MODNAME
 		
+		local function buttonOnClick()
+			AT:WorldMapButtonSelectMap()
+			ToggleFrame(WorldMapFrame)
+			AT:Toggle()
+		end
+		
 		menu[i] = {}
 		menu[i].isNotRadio = true
 		menu[i].notCheckable = true
-		--menu[i].keepShownOnClick = true
+		menu[i].keepShownOnClick = false
 		menu[i].hasArrow = nil
 		menu[i].value = MODNAME
 		menu[i].colorCode = "|cFFFFC90E"
@@ -115,7 +113,7 @@ function Module:DropDownMenus()
 		menu[i].tooltipTitle = mode_name
 		menu[i].tooltipText = select(3, GetAddOnInfo(MODNAME)) or nil
 		menu[i].tooltipOnButton = true
-		menu[i].func = AT.WorldMap.Button_OnClick
+		menu[i].func = buttonOnClick
 		menu[i].checked = nil
 		menu[i].icon = "Interface\\WorldMap\\WorldMap-Icon"
 

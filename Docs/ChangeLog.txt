@@ -9,6 +9,7 @@ Revision History:
   By doing so, addon will not hijack WorldMap's filter button. 
   More like a side effect is that other addon like PetTracker will hijack 
   the filter button with conflict with this addon.
+- Atlas integration update
 
 * v4.20 (Nov. 07, 2022)
 -----------------------
