@@ -30,7 +30,8 @@ L["Show %s module's config link in menu."] = "在選單中顯示 %s 模組的設
 L["Show %s module's menu items in second level of menu."] = "將模組的選單選項顯示在第二層的選單"
 L["Icon on left"] = "圖示在左側"
 L["Move filter icon on map frame's left side.\nRequires to reload addon to take effect."] = "將地圖篩選的圖示移到視窗的左側。\n設定變動將需要重新載入插件。"
-
+L["Independent Button"] = "獨立的圖示按鈕"
+L["Use an independent filter button and place closed to WorldMap frame's buttons on the top-right corner.\nRequires to reload addon to take effect."] = "使用獨立的地圖篩選按鈕，與世界地圖的其他按鈕緊鄰放於畫面的右上角。\n設定變動將需要重新載入插件。"
 -- //////////////////////////
 -- Common
 -- //////////////////////////

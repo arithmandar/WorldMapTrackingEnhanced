@@ -29,7 +29,8 @@ L["Show %s module's config link in menu."] = "Show %s module's config link in me
 L["Show %s module's menu items in second level of menu."] = "Show %s module's menu items in second level of menu."
 L["Icon on left"] = "Icon on left"
 L["Move filter icon on map frame's left side.\nRequires to reload addon to take effect."] = "Move filter icon on map frame's left side.\nRequires to reload addon to take effect."
-
+L["Independent Button"] = "Independent Button"
+L["Use an independent filter button and place closed to WorldMap frame's buttons on the top-right corner.\nRequires to reload addon to take effect."] = "Use an independent filter button and place closed to WorldMap frame's buttons on the top-right corner.\nRequires to reload addon to take effect."
 -- //////////////////////////
 -- Common
 -- //////////////////////////

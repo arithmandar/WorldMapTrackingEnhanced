@@ -3,5 +3,6 @@
 
 <!--@no-lib-strip@-->
 <!--@end-no-lib-strip@-->
+<Include file="Krowi_WorldMapButtons\Krowi_WorldMapButtons-1.4.xml"/>
 
 </Ui>

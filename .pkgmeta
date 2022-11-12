@@ -27,6 +27,9 @@ externals:
         url: https://repos.wowace.com/wow/ace3/trunk/AceDBOptions-3.0
     Libs-release/LibUIDropDownMenu: 
         url: https://repos.wowace.com/wow/libuidropdownmenu/trunk/LibUIDropDownMenu
+# Git
+    Libs-release/Krowi_WorldMapButtons: 
+        url: https://github.com/TheKrowi/Krowi_WorldMapButtons
 
 move-folders:
     WorldMapTrackingEnhanced/Libs: WorldMapTrackingEnhanced/Libs-dev

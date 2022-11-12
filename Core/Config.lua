@@ -94,11 +94,19 @@ local function getOptions()
 							name = L["Use Separator"],
 							desc = L["Use separator in menu to separate different type of menu items"],
 						},
-						showOnLeft = {
+						independantButton = {
 							order = 22,
+							type = "toggle",
+							name = L["Independant Button"],
+							desc = L["Use an independant filter button and place closed to WorldMap frame's buttons on the top-right corner.\nRequires to reload addon to take effect."],
+							disabled = function() return addon.db.profile.showOnLeft end,
+						},
+						showOnLeft = {
+							order = 23,
 							type = "toggle",
 							name = L["Icon on left"],
 							desc = L["Move filter icon on map frame's left side.\nRequires to reload addon to take effect."],
+							disabled = function() return addon.db.profile.independantButton end,
 						},
 					},
 				},

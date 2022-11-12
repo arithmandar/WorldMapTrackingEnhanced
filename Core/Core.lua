@@ -404,34 +404,49 @@ function WMTEButtonMixin:InitializeDropDown(frame, level)
 	end
 end
 
-local function createTrackingButton()
-	local parent
-	
-	local name = addon.Name.."Button"
-	local f = _G[name]
-	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
-		parent = WorldMapFrame
-		parent.BlackoutFrame:Hide()
-		parent:SetFrameStrata("HIGH")
-		parent.BorderFrame:SetFrameStrata("LOW")
+function WMTEButtonMixin:Refresh()
 
-		if not f then f = CreateFrame("Button", name, parent, "WMTEButtonTemplate") end
-		f:SetFrameLevel(20)
-		f:SetToplevel(true)
-		f:ClearAllPoints()
-		f:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -8, -70)
-	else
-		parent = FilterButton:GetParent()
+end
+
+local function createTrackingButton()
+	if (profile.independantButton) then
+		local KButtons = LibStub("Krowi_WorldMapButtons-1.4")
+		addon.button = KButtons:Add("WMTEButtonTemplate", "BUTTON")
 		
-		if not f then f = CreateFrame("Button", name, WorldMapFrame.ScrollContainer, "WMTEButtonTemplate") end
-		if (profile.showOnLeft) then
-			f:SetPoint("TOPLEFT", WorldMapFrame.ScrollContainer, 0, 0, "TOPLEFT")
+		return
+	else
+		local parent
+		
+		local name = addon.Name.."Button"
+		local f = _G[name]
+		if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
+			parent = WorldMapFrame
+			parent.BlackoutFrame:Hide()
+			parent:SetFrameStrata("HIGH")
+			parent.BorderFrame:SetFrameStrata("LOW")
+
+			if not f then f = CreateFrame("Button", name, parent, "WMTEButtonTemplate") end
+			f:SetFrameLevel(20)
+			f:SetToplevel(true)
+			f:ClearAllPoints()
+			if (profile.showOnLeft) then
+				f:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, -70)
+			else
+				f:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -8, -70)
+			end
 		else
-			f:SetPoint("TOPRIGHT", parent:GetCanvasContainer(), -4, -2, "TOPRIGHT")
+			parent = FilterButton:GetParent()
+			
+			if not f then f = CreateFrame("Button", name, WorldMapFrame.ScrollContainer, "WMTEButtonTemplate") end
+			if (profile.showOnLeft) then
+				f:SetPoint("TOPLEFT", WorldMapFrame.ScrollContainer, 0, 0, "TOPLEFT")
+			else
+				f:SetPoint("TOPRIGHT", parent:GetCanvasContainer(), -4, -2, "TOPRIGHT")
+			end
 		end
+		
+		addon.button = f
 	end
-	
-	addon.button = f
 end
 
 function addon:OnInitialize()
@@ -452,7 +467,7 @@ end
 
 local function rearrangeFilterButtonTexture()
 	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then return end
-	if (profile.showOnLeft) then
+	if (profile.showOnLeft or profile.independantButton) then
 		return
 	end
 	FilterButton.Background:SetTexture(nil)

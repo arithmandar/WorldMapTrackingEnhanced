@@ -10,6 +10,7 @@ Revision History:
   More like a side effect is that other addon like PetTracker will hijack 
   the filter button with conflict with this addon.
 - Atlas integration update
+- Added feature to use independent filter button by calling Krowi_WorldMapButtons
 
 * v4.20 (Nov. 07, 2022)
 -----------------------

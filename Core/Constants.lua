@@ -23,6 +23,7 @@ constants.defaults = {
 		},
 		useSeparator = true,
 		showOnLeft = false,
+		independantButton = false,
 	},
 }
 
