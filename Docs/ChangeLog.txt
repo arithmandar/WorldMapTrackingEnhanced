@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v4.23 (Nov. 13, 2022)
+-----------------------
+- Remove icon's corner shadow
+
 * v4.22 (Nov. 12, 2022)
 -----------------------
 - Localization update
