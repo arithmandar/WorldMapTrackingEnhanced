@@ -3,6 +3,10 @@ $Id$
 Revision History:
 =================
 
+* v4.24 (Nov. 19, 2022)
+-----------------------
+- Retail ToC update to support WoW 10.0.2
+
 * v4.23 (Nov. 13, 2022)
 -----------------------
 - Remove icon's corner shadow
