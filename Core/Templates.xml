@@ -1,16 +1,14 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
-	<Button name="WMTEButtonTemplate" frameStrata="HIGH" mixin="WMTEButtonMixin" virtual="true">
+	<!--
+		Standalone World Map button. It is a DropdownButton (Blizzard_Menu
+		intrinsic, available on all supported clients) so the menu is generated
+		with the Blizzard Menu API on every click. It is created and positioned
+		by Krowi_WorldMapButtons, see CreateWorldMapButton() in Core.lua.
+	-->
+	<DropdownButton name="WorldMapTrackingEnhancedButtonTemplate" frameStrata="HIGH" mixin="WorldMapTrackingEnhancedButtonMixin" virtual="true">
 		<Size x="32" y="32"/>
 		<Layers>
-			<!--<Layer level="BACKGROUND" textureSubLevel="-1">
-				<Texture atlas="MapCornerShadow-Right" useAtlasSize="true">
-					<Anchors>
-						<Anchor point="TOPRIGHT" x="4" y="1"/>
-					</Anchors>
-					<TexCoords left="0" right="1" top="1" bottom="0"/>
-				</Texture>
-			</Layer>-->
 			<Layer level="BACKGROUND">
 				<Texture parentKey="Background" file="Interface\Minimap\UI-Minimap-Background">
 					<Size x="25" y="25"/>
@@ -51,9 +49,8 @@
 			<OnLoad method="OnLoad"/>
 			<OnEnter method="OnEnter"/>
 			<OnLeave method="OnLeave"/>
-			<OnClick method="OnClick"/>
 			<OnMouseDown method="OnMouseDown"/>
 			<OnMouseUp method="OnMouseUp"/>
 		</Scripts>
-	</Button>
+	</DropdownButton>
 </Ui>

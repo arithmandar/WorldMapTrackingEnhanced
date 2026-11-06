@@ -1,43 +1,53 @@
-$Id$
+# Revision History
 
-Revision History:
-=================
+## v5.0.0 (Nov. 06, 2026)
+- Major rewrite for current World of Warcraft clients
+- The addon no longer replaces or copies the World Map's built-in tracking / filter menu. The built-in filters are left untouched, and World Map Tracking Enhanced now adds its own independent button to the World Map
+- The new button is positioned with Krowi_WorldMapButtons (1.4.12+), so it lines up with Blizzard's and other addons' World Map buttons on every client
+- The menu is now built with Blizzard's Menu API (Blizzard_Menu / MenuUtil); LibUIDropDownMenu is no longer used
+- Single TOC file for all supported clients: Classic Era (1.15.9), WoW Forever (1.60.1), Anniversary (2.5.6), Mists of Pandaria Classic (5.5.4) and Retail (12.1.5 / 12.1.7); client specific handling is done in Lua
+- API update:
+  - C_AddOns.* (IsAddOnLoaded, GetAddOnInfo, GetAddOnMetadata, LoadAddOn)
+  - Settings.OpenToCategory() with the category ID returned by AceConfigDialog
+- Supported addon modules rewritten against their current versions:
+  - HandyNotes: enable / disable HandyNotes, toggle each plugin (with the plugin display names), select all / none
+  - GatherMate2: toggle World Map icons, and choose the display mode of each node type (Mining, Herbalism, Fishing, Gas Clouds, Treasure, Archaeology, Timber)
+  - PetTracker: Species, Stable Masters, Species Icons, Rival Portraits (PetTracker's options are now stored in PetTracker.sets)
+  - RareScanner: show rare NPC / container / event icons and their not discovered icons
+  - AtlasLoot: open AtlasLoot (Retail AtlasLoot and AtlasLootClassic)
+- New options: show / hide the World Map button, show config links in the menu; the second level menu option now applies to all supported addons
+- Added slash commands: /wmte (open options), /wmte show, /wmte hide
+- Removed the World Quest Tracker module (it was already disabled) and the Atlas module (Atlas has its own World Map button through Krowi_WorldMapButtons). Removed the "Icon on left" and "Independent Button" options
+- Removed the CurseForge localization substitution (@debug@ / @non-debug@ / @localization@ sections); all translations are now hard-coded in the Locale folder
+- Translations updated for all supported languages
+- Added Readme.md and Docs/CurseForge-Description.md; the changelog moved to Docs/Revisions.md
 
-* v4.29 (Jan. 30, 2024)
------------------------
+## v4.29 (Jan. 30, 2024)
 - Library update: LibUIDropDownMenu
 
-* v4.28 (Jan. 23, 2024)
------------------------
+## v4.28 (Jan. 23, 2024)
 - Library update: LibUIDropDownMenu
 
-* v4.27 (Jan. 22, 2024)
------------------------
+## v4.27 (Jan. 22, 2024)
 - Toc update to support WoW 10.2.5 / 3.4.3 / 1.15.0
 - Added Tracked Items menu item (WoW Retail's built-in feature)
 
-* v4.26 (Jul. 29, 2023)
------------------------
+## v4.26 (Jul. 29, 2023)
 - Toc update to support WoW 10.1.5 / 3.4.2
 
-* v4.25 (Mar. 20, 2023)
------------------------
+## v4.25 (Mar. 20, 2023)
 - Toc update to support WoW 10.0.7 / 3.4.1
 
-* v4.24 (Nov. 19, 2022)
------------------------
+## v4.24 (Nov. 19, 2022)
 - Retail ToC update to support WoW 10.0.2
 
-* v4.23 (Nov. 13, 2022)
------------------------
+## v4.23 (Nov. 13, 2022)
 - Remove icon's corner shadow
 
-* v4.22 (Nov. 12, 2022)
------------------------
+## v4.22 (Nov. 12, 2022)
 - Localization update
 
-* v4.21 (Nov. 12, 2022)
------------------------
+## v4.21 (Nov. 12, 2022)
 - Add toggle to allow filter button to be on the left side of map.
   By doing so, addon will not hijack WorldMap's filter button. 
   More like a side effect is that other addon like PetTracker will hijack 
@@ -45,99 +55,79 @@ Revision History:
 - Atlas integration update
 - Added feature to use independent filter button by calling Krowi_WorldMapButtons
 
-* v4.20 (Nov. 07, 2022)
------------------------
+## v4.20 (Nov. 07, 2022)
 - Dragonflight implementation
 - Retail ToC update to support WoW 10.0.0
 - Re-wrote filter button function to use Mixin
 - Added support for trivialQuests' tracking (WoW 10.0.0)
 
-* v4.19 (Aug. 21, 2022)
------------------------
+## v4.19 (Aug. 21, 2022)
 - Added support for WOLTKC 3.4.0
 
-* v4.18 (Aug. 17, 2022)
------------------------
+## v4.18 (Aug. 17, 2022)
 - Retail ToC update to support WoW 9.2.7
 
-* v4.17 (Jul. 17, 2022)
------------------------
+## v4.17 (Jul. 17, 2022)
 - Retail ToC update to support WoW 9.2.5
 - Classic ToC update to support WoW 1.14.3
 - Library update: LibUIDropDownMenu
 
-* v4.16 (Mar. 23, 2022)
------------------------
+## v4.16 (Mar. 23, 2022)
 - BCC ToC update to support WoW 2.5.3
 
-* v4.15 (Feb. 28, 2022)
------------------------
+## v4.15 (Feb. 28, 2022)
 - Library update: LibUIDropDownMenu
 
-* v4.14 (Feb. 23, 2022)
------------------------
+## v4.14 (Feb. 23, 2022)
 - Toc update to support WoW 9.2.0
 - Bug fixed:
   - Professions' toggle was missing
   - Quest object's toggle was missing in Classic server
 
-* v4.13 (Feb. 15, 2022)
------------------------
+## v4.13 (Feb. 15, 2022)
 - Added Shadowland maps' filter feature
 
-* v4.12 (Feb. 15, 2022)
------------------------
+## v4.12 (Feb. 15, 2022)
 - Library update: LibUIDropDownMenu
 
-* v4.11 (Feb. 10, 2022)
------------------------
+## v4.11 (Feb. 10, 2022)
 - Library update: LibUIDropDownMenu
 
-* v4.10 (Feb. 9, 2022)
------------------------
+## v4.10 (Feb. 9, 2022)
 - Support multiple ToC
 - BCC ToC update to support WoW 2.5.3
 - Classic ToC update to support WoW 1.14.2
 
-* v4.09 (Jan. 26, 2022)
------------------------
+## v4.09 (Jan. 26, 2022)
 - ToC update to support WoW 9.1.5
 - Library update: LibUIDropDownMenu
 
-* v4.08 (Jun. 30, 2021)
------------------------
+## v4.08 (Jun. 30, 2021)
 - ToC update to support WoW 9.1.0
 - Library update: LibUIDropDownMenu
 
-* v4.07 (May 19, 2021)
------------------------
+## v4.07 (May 19, 2021)
 - ToC update to support WoW 9.0.5
 
-* v4.06 (Dec. 06, 2020)
------------------------
+## v4.06 (Dec. 06, 2020)
 - Fixed addon metadata issue
 
-* v4.05 (Nov. 22, 2020)
------------------------
+## v4.05 (Nov. 22, 2020)
 - Disable no-lib release as the new CurseForge seems to bring-in more torubles for users to download addon
 
-* v4.04 (Nov. 22, 2020)
------------------------
+## v4.04 (Nov. 22, 2020)
 - ToC update to support WoW 9.0.2
 - Library update: LibUIDropDownMenu
 
-* v4.03 (Oct. 20, 2020)
------------------------
+## v4.03 (Oct. 20, 2020)
 - ToC update to support WoW 9.0.1
 
-* v4.02 (Sep. 07, 2020)
------------------------
+## v4.02 (Sep. 07, 2020)
 - Bug fix:
   - Fix the support of PetTracker. Now toggling hide / show Species via WMT will also hide / show the search bar
 - Library update: LibUIDropDownMenu
 
-* v4.01 (Aug. 18, 2020)
------------------------
+## v4.01 (Aug. 18, 2020)
 - Library update: LibUIDropDownMenu
 - Fixes: 
   - Options -> Profiles now can be launched properly
@@ -145,39 +135,32 @@ Revision History:
   - If Atlas is enabled and the icon is also enabled in WorldMap, adjust its position so that it won't conflict with WMTE
   - WoW Classic support
 
-* v4.00 (Mar. 09, 2020)
------------------------
+## v4.00 (Mar. 09, 2020)
 - Better modulize all the moduels and the core functions
 - Update RareScanner's selection menu
 - Support PetTracker's v8.3.6
 - Remove the support of WorldQuestTracker (hopefully temporary)
 
-* v3.07 (Feb. 10, 2020)
------------------------
+## v3.07 (Feb. 10, 2020)
 - Fixed the issue that PetTracker's search box is missing. It's now showing properly.
 - Added feature to toggle the separator to be show on dropdown or not
 
-* v3.06 (Feb. 10, 2020)
------------------------
+## v3.06 (Feb. 10, 2020)
 - Enable RareScanner to have 2nd level of menus
 - Categorize HandyNotes' plugins into sub-menus
 - Fixed PetTracker's config menu item, it will now open PetTracker's configuration correctly
 
-* v3.05 (Jan. 17, 2020)
------------------------
+## v3.05 (Jan. 17, 2020)
 - ToC update to support WoW 8.3.0
 - Added dungeon entrance's toggle
 
-* v3.04 (Sep. 04, 2019)
------------------------
+## v3.04 (Sep. 04, 2019)
 - Fixed AtlasLoot's status checking
 
-* v3.03 (Sep. 03, 2019)
------------------------
+## v3.03 (Sep. 03, 2019)
 - ToC update to support WoW 8.2.0
 
-* v3.02 (Dec. 22, 2018)
------------------------
+## v3.02 (Dec. 22, 2018)
 - ToC update to support WoW 8.1.0
 - Remove LibUIDropDownMenu
   - added workaround for resolving UI taint issue
@@ -186,126 +169,102 @@ Revision History:
   - added missing world quest reward filter for reputation
 - Added Atlas and AtlasLoot support
 
-* v3.01 (Sep. 17, 2018)
------------------------
+## v3.01 (Sep. 17, 2018)
 - Fixed issue the tracking icon will be missing when quest panel is opened.
 
-* v3.00 (Sep. 16, 2018)
------------------------
+## v3.00 (Sep. 16, 2018)
 - ToC update to support WoW 8.0.x
 - Codes updated to reflect new WorldMapFrame's design
 - Update supports for PetTracker and World Quest Tracker
 
-* v2.21 (Apr. 24, 2018)
------------------------
+## v2.21 (Apr. 24, 2018)
 - Lib update: LibUIDropDownMenu
 
-* v2.20 (Apr. 23, 2018)
------------------------
+## v2.20 (Apr. 23, 2018)
 - Fixed the menu of primary and secondary professions were not displayed properly when World Quest Tracker is disabled.
 
-* v2.19 (Apr. 23, 2018)
------------------------
+## v2.19 (Apr. 23, 2018)
 - Remove external
 - Lib Update: LibUIDropDownMenu
 
-* v2.18 (Mar. 30, 2018)
------------------------
+## v2.18 (Mar. 30, 2018)
 - Further integrate GatherMate2's filter feature. Now you can toggle the the GatherMate2 filters easier.
 
-* v2.17 (Mar. 28, 2018)
------------------------
+## v2.17 (Mar. 28, 2018)
 - Further integrate World Quest Tracker's filter feature
   - Sync the filter status between WoW's built-in pet battle status and the one from World Quest Tracker
 
-* v2.16 (Mar. 27, 2018)
------------------------
+## v2.16 (Mar. 27, 2018)
 - Added menu item to toggle GatherMate2's config panel
 - Added HandyNotes config menu item's tooltip
 - Enhanced PetTracker's menu displaying
 
-* v2.15 (Mar. 22, 2018)
------------------------
+## v2.15 (Mar. 22, 2018)
 - Fixed the issue that HandyNotes' toggling will disappear in non Legion maps
 - Fixed the issue to wwrongly detect HandyNotes' enabling status
 
-* v2.14 (Mar. 20, 2018)
------------------------
+## v2.14 (Mar. 20, 2018)
 - Added World Quest Tracker's support
 - Fixed option toggling not working to enable / disable modules showing in menus
 
-* v2.13 (Mar. 07, 2018)
------------------------
+## v2.13 (Mar. 07, 2018)
 - Lib update: 
   - AceConfig
 - Localization update:
   - German (imna1975)
 - Remove SVN External links
 
-* v2.12 (Nov. 09, 2017)
------------------------
+## v2.12 (Nov. 09, 2017)
 - Lib update: AceConfigDialog
 
-* v2.11 (Aug. 31, 2017)
------------------------
+## v2.11 (Aug. 31, 2017)
 - Lib Update: LibUIDropDownMenu
 
-* v2.10 (Aug. 29, 2017)
------------------------
+## v2.10 (Aug. 29, 2017)
 - ToC update to support WoW 7.3.0
 - Lib Update: LibUIDropDownMenu, Ace3
 - Updated PlaySound API's usage method to support WoW 7.3.0
 - Localization update:
   - German (pas06)
 
-* v2.09 (Jun. 10, 2017)
------------------------
+## v2.09 (Jun. 10, 2017)
 - Fixed HandyNotes' context menu won't show while user configure to have 
   context menu and did not have GatherMate2 enabled
 
-* v2.08 (Jun. 04, 2017)
------------------------
+## v2.08 (Jun. 04, 2017)
 - Fixed HandyNotes' 2nd level menu won't show the plugins
 
-* v2.07 (Jun. 04, 2017)
------------------------
+## v2.07 (Jun. 04, 2017)
 - Fixed the issue when modules like GatherMate2 was not fully enabled (enabled
   for some other characters but disabled for current character) and errors 
   will pop-up during module loading.
 
-* v2.06 (Jun. 03, 2017)
------------------------
+## v2.06 (Jun. 03, 2017)
 - Added missing library: CallbackHandler-1.0
 
-* v2.05 (May 31, 2017)
------------------------
+## v2.05 (May 31, 2017)
 - ToC update to add OptionalDeps
 
-* v2.04 (May 24, 2017)
------------------------
+## v2.04 (May 24, 2017)
 - Added AceEvent-3.0
 - Lib update:
   - Replace NoTaint_UIDropDownMenu with LibUIDropDownMenu
 - Enhanced dropdown menu's behavior when world map get closed
 
-* v2.03 (May 20, 2017)
------------------------
+## v2.03 (May 20, 2017)
 - Lib update:
   - NoTaint_UIDropDownMenu
 
-* v2.02 (May 12, 2017)
------------------------
+## v2.02 (May 12, 2017)
 - Fixed issue in localization files
 - Localization update:
   - German (pas06)
 
-* v2.01 (May 12, 2017)
------------------------
+## v2.01 (May 12, 2017)
 - Lib update:
   - NoTaint_UIDropDown
 
-* v2.00 (May 09, 2017)
------------------------
+## v2.00 (May 09, 2017)
 - Added support to PetTracker
 - Added options' toggling
 - Added support to show HandyNotes' plugins in 2nd level of menu
@@ -314,20 +273,17 @@ Revision History:
   - German (pas06)
   - Russian (Blizzatron)
 
-* v1.02 (May 05, 2017)
------------------------
+## v1.02 (May 05, 2017)
 - Added Korean translation (yuk6196)
 - Localization update:
   - Simplified Chinese
 
-* v1.01 (May 02, 2017)
------------------------
+## v1.01 (May 02, 2017)
 - Set libs to be external links
 - Localization update:
   - German (pas06)
   - Russian (Blizzatron)
   - Traditional Chinese
 
-* v1.00 (Apr. 27, 2017)
------------------------
+## v1.00 (Apr. 27, 2017)
 - Initial version which support WoW 7.2.0

@@ -1,216 +1,94 @@
--- $Id$
------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
+-- World Map Tracking Enhanced - RareScanner module
+-- Supports: RareScanner (https://www.curseforge.com/wow/addons/rarescanner)
+--
+-- RareScanner has its own (much more detailed) World Map button; this module
+-- only offers the main show / hide toggles so they can be changed together
+-- with the other supported addons.
+-- ----------------------------------------------------------------------------
 -- Upvalued Lua API.
------------------------------------------------------------------------
--- Functions
+-- ----------------------------------------------------------------------------
 local _G = getfenv(0)
-local select = _G.select
--- Libraries
-local GetAddOnInfo, GetAddOnEnableState, UnitName, ToggleFrame, InterfaceOptionsFrame_OpenToCategory = _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.ToggleFrame, _G.InterfaceOptionsFrame_OpenToCategory
+local ipairs, rawget = _G.ipairs, _G.rawget
+
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
-local FOLDER_NAME, private = ...
+local _, private = ...
+local LibStub = _G.LibStub
+---@type WMTEAddon
+local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 
 local MODNAME = "RareScanner"
+local module = addon:NewTrackingModule(MODNAME, {
+	title = "RareScanner",
+	order = 40,
+	addons = { "RareScanner" },
+})
 
-local LibStub = _G.LibStub
-local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
-local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
-local Module = addon:NewModule(MODNAME)
-local db
-
-local RS, profile, LRS
-
-local iRareScanner = select(4, GetAddOnInfo(MODNAME))
-local enabled = GetAddOnEnableState(UnitName("player"), MODNAME)
-
-local defaults = {
-	profile = {
-		contextMenu = true,
-		showConfig = true,
-	}
-}
-
-local optGetter, optSetter
-do
-	function optGetter(info)
-		local key = info[#info]
-		return Module.db.profile[key]
-	end
-
-	function optSetter(info, value)
-		local key = info[#info]
-		Module.db.profile[key] = value
-		Module:Refresh()
-	end
+-- Use RareScanner's own translations (falling back to the given English text)
+local function RSL(key, fallback)
+	local L = LibStub("AceLocale-3.0"):GetLocale("RareScanner", true)
+	return L and rawget(L, key) or fallback
 end
 
-local options = {
-	type = "group",
-	name = MODNAME,
-	get = optGetter,
-	set = optSetter,
-	args = {
-		config = {
-			order = 10,
-			type = "group",
-			name = L["Config"],
-			inline = true,
-			args = {
-				contextMenu = {
-					order = 11,
-					type = "toggle",
-					name = format(L["Show %s module's menu items in second level of menu."], MODNAME),
-					width = "full",
-				},
-				showConfig = {
-					order = 12, 
-					type = "toggle",
-					name = format(L["Show %s module's config link in menu."], MODNAME),
-					width = "full",
-				},
-			},
-		},
+local function GetRareScanner()
+	return LibStub("AceAddon-3.0"):GetAddon("RareScanner", true)
+end
+
+-- Keys in RareScanner.db.profile.map, see RSConfigDB.lua in RareScanner
+local GROUPS = {
+	{
+		title = { "MAP_MENU_RARE_NPCS", "Rare NPC icons" },
+		{ key = "displayNpcIcons", text = { "MAP_MENU_SHOW_RARE_NPCS", "Show rare NPC icons on map" } },
+		{ key = "displayNotDiscoveredNpcIcons", text = { "MAP_MENU_SHOW_NOT_DISCOVERED_RARE_NPCS", "Show not discovered rare NPC icons on map" }, parent = "displayNpcIcons" },
+	},
+	{
+		title = { "MAP_MENU_CONTAINERS", "Container icons" },
+		{ key = "displayContainerIcons", text = { "MAP_MENU_SHOW_CONTAINERS", "Show container icons on map" } },
+		{ key = "displayNotDiscoveredContainerIcons", text = { "MAP_MENU_SHOW_NOT_DISCOVERED_CONTAINERS", "Show not discovered container icons on map" }, parent = "displayContainerIcons" },
+	},
+	{
+		title = { "MAP_MENU_EVENTS", "Event icons" },
+		{ key = "displayEventIcons", text = { "MAP_MENU_SHOW_EVENTS", "Show event icons on map" } },
+		{ key = "displayNotDiscoveredEventIcons", text = { "MAP_MENU_SHOW_NOT_DISCOVERED_EVENTS", "Show not discovered event icons on map" }, parent = "displayEventIcons" },
 	},
 }
 
-function Module:OnInitialize()
-	if (enabled > 0 and iRareScanner) then 
-		RS = LibStub("AceAddon-3.0"):GetAddon(MODNAME) 
-		profile = RS.db.profile
-		LRS = LibStub("AceLocale-3.0"):GetLocale(MODNAME, false)
+function module:IsAvailable()
+	local RS = GetRareScanner()
+	return RS and RS.db and RS.db.profile and RS.db.profile.map and true or false
+end
 
-		self.db = addon.db:RegisterNamespace(MODNAME, defaults)
-		db = self.db.profile
+function module:BuildMenu(description)
+	local RS = GetRareScanner()
+	local db = RS.db.profile.map
 
-		self:SetEnabledState(addon:GetModuleEnabled(MODNAME))
-		addon:RegisterModuleOptions(MODNAME, options, MODNAME)
-	else
-		addon:DisableModule(MODNAME)
+	local function IsChecked(key)
+		return db[key]
+	end
+	local function Toggle(key)
+		db[key] = not db[key]
+		addon:RefreshWorldMap()
+		return _G.MenuResponse.Refresh
+	end
+
+	for i, group in ipairs(GROUPS) do
+		if i > 1 then
+			description:CreateDivider()
+		end
+		description:CreateTitle(RSL(group.title[1], group.title[2]))
+		for _, option in ipairs(group) do
+			if db[option.key] ~= nil then
+				local checkbox = description:CreateCheckbox(RSL(option.text[1], option.text[2]), IsChecked, Toggle, option.key)
+				if option.parent then
+					checkbox:SetEnabled(function() return db[option.parent] end)
+				end
+			end
+		end
 	end
 end
 
-function Module:OnEnable()
-
-end
-
-function Module:OnDisable()
-
-end
-
-function Module:Refresh()
-	if not self:IsEnabled() then return end
-end
-
-function Module:DropDownMenus()
-	if (enabled > 0 and iRareScanner) then
-		local function toggleRareScanner(key)
-			profile.map[key] = not profile.map[key]
-			WorldMapFrame:RefreshAllDataProviders()
-			if (not profile.map.maxSeenTimeBak) then
-				profile.map.maxSeenTimeBak = profile.map.maxSeenTime
-			end
-			if (profile.map.disableLastSeenFilter) then
-				profile.map.maxSeenTime = 0
-			else
-				profile.map.maxSeenTime = profile.map.maxSeenTimeBak 
-			end
-			if (not profile.map.maxSeenContainerTimeBak) then
-				profile.map.maxSeenContainerTimeBak = profile.map.maxSeenTimeContainer
-			end
-			if (profile.map.disableLastSeenContainerFilter) then
-				profile.map.maxSeenTimeContainer = 0
-			else
-				profile.map.maxSeenTimeContainer = profile.map.maxSeenContainerTimeBak 
-			end
-			if (not profile.map.maxSeenEventTimeBak) then
-				profile.map.maxSeenEventTimeBak = profile.map.maxSeenTimeEvent
-			end
-			if (profile.map.disableLastSeenEventFilter) then
-				profile.map.maxSeenTimeEvent = 0
-			else
-				profile.map.maxSeenTimeEvent = profile.map.maxSeenEventTimeBak 
-			end
-		end
-		
-		local function getMenu(menu, i)
-			local menuitems = {
-				{ text = "MAP_MENU_SHOW_RARE_NPCS", tip = "DISPLAY_NPC_ICONS_DESC", key = "displayNpcIcons" },
-				{ text = "MAP_MENU_SHOW_CONTAINERS", tip = "DISPLAY_CONTAINER_ICONS_DESC", key = "displayContainerIcons" },
-				{ text = "MAP_MENU_SHOW_EVENTS", tip = "DISPLAY_EVENT_ICONS_DESC", key = "displayEventIcons" },
-				{ text = "MAP_MENU_DISABLE_LAST_SEEN_FILTER", key = "disableLastSeenFilter" },
-				{ text = "MAP_MENU_DISABLE_LAST_SEEN_CONTAINER_FILTER", key = "disableLastSeenContainerFilter" },
-				{ text = "MAP_MENU_DISABLE_LAST_SEEN_EVENT_FILTER", key = "disableLastSeenEventFilter" },
-				{ text = "MAP_MENU_SHOW_NOT_DISCOVERED", tip = "DISPLAY_MAP_NOT_DISCOVERED_ICONS_DESC", key = "displayNotDiscoveredMapIcons" },
-				{ text = "MAP_MENU_SHOW_NOT_DISCOVERED_OLD", tip = "DISPLAY_MAP_OLD_NOT_DISCOVERED_ICONS_DESC", key = "displayOldNotDiscoveredMapIcons" },
-			}
-			
-			for j=1, #menuitems do
-				menu[i] = {}
-				menu[i].isNotRadio = true
-				menu[i].keepShownOnClick = true
-				menu[i].text = LRS[menuitems[j].text]
-				menu[i].tooltipTitle = menuitems[j].tip and MODNAME
-				menu[i].tooltipText = menuitems[j].tip and LRS[menuitems[j].tip] or nil
-				menu[i].tooltipOnButton = menuitems[j].tip and true or nil
-				menu[i].value = menuitems[j].key
-				menu[i].func = (function(self)
-					toggleRareScanner(self.value)
-				end)
-				menu[i].checked = profile.map[menuitems[j].key]
-				i = i + 1
-			end
-
-			return menu, i
-		end
-
-		local menu = {}
-		local menu2 = {}
-		local i = 1
-		local mode_name = select(2, GetAddOnInfo(MODNAME)) or MODNAME
-		
-		menu[i] = {}
-		menu[i].isNotRadio = true
-		menu[i].notCheckable = true
-		--menu[i].keepShownOnClick = true
-		menu[i].value = MODNAME
-		menu[i].colorCode = "|cFFFFC90E"
-		menu[i].text = mode_name
-		menu[i].tooltipTitle = mode_name
-		menu[i].tooltipText = select(3, GetAddOnInfo(MODNAME)) or nil
-		menu[i].tooltipOnButton = true
-		--menu[i].func = toggleRareScanner
-		menu[i].checked = nil
-		if (db.contextMenu) then
-			menu[i].hasArrow = true
-			i = i + 1
-			menu2 = getMenu(menu2, 1)
-		else
-			menu[i].hasArrow = nil
-			i = i + 1
-			menu, i = getMenu(menu, i)
-		end
-		
-		if (db.showConfig) then
-			menu[i] = {}
-			menu[i].isNotRadio = true
-			menu[i].notCheckable = true
-			menu[i].text = L["RareScanner Config"]
-			menu[i].colorCode = "|cFFB5E61D"
-			menu[i].tooltipTitle = mode_name
-			menu[i].tooltipText = L["Click to open RareScanner's config panel"]
-			menu[i].tooltipOnButton = true
-			menu[i].func = (function(self)
-				ToggleFrame(WorldMapFrame)
-				InterfaceOptionsFrame_OpenToCategory("RareScanner")
-				InterfaceOptionsFrame_OpenToCategory("RareScanner")
-				InterfaceOptionsFrame_OpenToCategory(LRS["MAP_OPTIONS"])
-			end)
-		end
-		
-		return menu, menu2
-	else
-		return nil
-	end
+function module:OpenConfig()
+	addon:OpenSettingsCategory("RareScanner")
 end
