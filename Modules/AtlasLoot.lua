@@ -10,21 +10,23 @@ local type, format, unpack = _G.type, _G.string.format, _G.unpack
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
-local _, private = ...
+---@class WMTENamespace
+local private = select(2, ...)
 local LibStub = _G.LibStub
----@type WMTEAddon
-local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
+local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name) --[[@as WMTEAddon]]
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 
 local MODNAME = "AtlasLoot"
+---@class WMTE.AtlasLootModule : WMTETrackingModule
 local module = addon:NewTrackingModule(MODNAME, {
 	title = "AtlasLoot",
 	order = 60,
 	addons = { "AtlasLoot", "AtlasLootClassic" },
 })
 
+---@return WMTE.AtlasLoot?
 local function GetAtlasLoot()
-	local AtlasLoot = _G.AtlasLoot
+	local AtlasLoot = _G.AtlasLoot --[[@as WMTE.AtlasLoot?]]
 	if type(AtlasLoot) == "table" then
 		return AtlasLoot
 	end

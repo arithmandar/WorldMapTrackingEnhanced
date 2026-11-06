@@ -26,31 +26,28 @@ local HideUIPanel = _G.HideUIPanel
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
-local FOLDER_NAME, private = ...
+local FOLDER_NAME = ...
+---@class WMTENamespace
+local private = select(2, ...)
 local LibStub = _G.LibStub
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local AceDB = LibStub("AceDB-3.0")
 local Client = private.Client
 
----@class WMTEAddon : AceAddon-3.0, AceEvent-3.0, AceConsole-3.0
----@field constants table
----@field Client table
----@field Name string
----@field LocName string
----@field Notes string
+---@class WMTEAddon : AceAddon, AceEvent-3.0, AceConsole-3.0
+---@field db WMTEDatabase
+---@field constants WMTEConstants
+---@field Client WMTEClient
+---@field Name string Folder name of the addon
+---@field LocName string Localized title from the TOC
+---@field Notes string Localized notes from the TOC
 ---@field Version string
 ---@field UpdateDate string
 ---@field Author string
----@field trackingModules table
----@field OpenSettingsCategory fun(self: WMTEAddon, categoryNameOrID: string|number, fallback: fun()): boolean
----@field IsAnyAddOnLoaded fun(self: WMTEAddon, ...: string): boolean
----@field CloseWorldMap fun(self: WMTEAddon)
----@field RefreshWorldMap fun(self: WMTEAddon)
----@field SetDefaultModulePrototype fun(self: WMTEAddon, prototype: table)
----@field SetDefaultModuleState fun(self: WMTEAddon, state: boolean)
----@field SetupOptions fun(self: WMTEAddon)
----@field OpenOptions fun(self: WMTEAddon)
-local addon = LibStub("AceAddon-3.0"):NewAddon(private.addon_name, "AceEvent-3.0", "AceConsole-3.0")
+---@field trackingModules WMTETrackingModule[] Registered tracking modules, sorted by order
+---@field button? WorldMapTrackingEnhancedButtonMixin The World Map button
+---@field optionsCategoryID? number|string Our category in the game's Settings panel
+local addon = LibStub("AceAddon-3.0"):NewAddon(private.addon_name, "AceEvent-3.0", "AceConsole-3.0") --[[@as WMTEAddon]]
 addon.constants = private.constants
 addon.constants.addon_name = private.addon_name
 addon.Client = Client
@@ -68,6 +65,7 @@ addon.Author = GetAddOnMetadata(addon.Name, "Author") or ""
 -- addon:NewTrackingModule() below. They are kept in this list for ordering.
 addon.trackingModules = {}
 
+---@type WMTEProfile
 local profile
 
 -- ----------------------------------------------------------------------------
@@ -75,6 +73,8 @@ local profile
 -- ----------------------------------------------------------------------------
 
 -- Returns true when any of the given addons is loaded
+---@param ... string AddOn names
+---@return boolean
 function addon:IsAnyAddOnLoaded(...)
 	for i = 1, select("#", ...) do
 		local name = select(i, ...)
@@ -105,6 +105,9 @@ end
 -- categoryNameOrID: the category ID, or the top level category name which was
 --   used with AceConfigDialog:AddToBlizOptions()
 -- fallback: optional function called if the category can not be opened
+---@param categoryNameOrID string|number
+---@param fallback? fun()
+---@return boolean opened
 function addon:OpenSettingsCategory(categoryNameOrID, fallback)
 	if InCombatLockdown() then
 		self:Print(L["Cannot open the settings panel while in combat."])
@@ -133,9 +136,15 @@ end
 -- ----------------------------------------------------------------------------
 -- Tracking modules
 -- ----------------------------------------------------------------------------
+---@class WMTETrackingModule : AceModule
+---@field title string|fun(module: WMTETrackingModule): string
+---@field order number
+---@field addons string[]?
+---@field OpenConfig? fun(self: WMTETrackingModule) Optional: opens the supported addon's config; a config link is added to the menu when it exists
 local ModulePrototype = {}
 
 -- Display name of the module, used for sub menu and config link texts
+---@return string
 function ModulePrototype:GetTitle()
 	local title = self.title
 	if type(title) == "function" then
@@ -145,6 +154,7 @@ function ModulePrototype:GetTitle()
 end
 
 -- Whether the supported addon is loaded. Modules can override this.
+---@return boolean
 function ModulePrototype:IsAvailable()
 	if self.addons then
 		return addon:IsAnyAddOnLoaded(unpack(self.addons))
@@ -154,6 +164,8 @@ end
 
 -- Must be implemented by modules: add the module's entries into the given menu
 -- description (either the root menu or a sub menu, depending on user settings).
+---@param description WMTEMenuDescription
+---@param mapID number? The map currently shown on the World Map
 function ModulePrototype:BuildMenu(description, mapID)
 end
 
@@ -165,8 +177,12 @@ addon:SetDefaultModuleState(true)
 -- Create a tracking module.
 --   name    : unique module name, also used as key of the enable/disable option
 --   info    : { title = string|function, order = number, addons = { "AddOnName", ... } }
+---@param name string
+---@param info WMTETrackingModuleInfo?
+---@param ... string Ace3 libraries to embed into the module
+---@return WMTETrackingModule
 function addon:NewTrackingModule(name, info, ...)
-	local module = self:NewModule(name, ...)
+	local module = self:NewModule(name, ...) --[[@as WMTETrackingModule]]
 	info = info or {}
 	module.title = info.title or name
 	module.order = info.order or 100
@@ -181,6 +197,8 @@ function addon:NewTrackingModule(name, info, ...)
 	return module
 end
 
+---@param module WMTETrackingModule
+---@return boolean
 function addon:IsTrackingModuleEnabled(module)
 	return profile and profile.enableModules[module:GetName()] and true or false
 end
@@ -188,6 +206,9 @@ end
 -- ----------------------------------------------------------------------------
 -- Menu generator
 -- ----------------------------------------------------------------------------
+---@param description WMTEMenuDescription
+---@param module WMTETrackingModule
+---@param title string
 local function AddConfigLink(description, module, title)
 	local button = description:CreateButton(format(L["%s Config"], title), function()
 		module:OpenConfig()
@@ -198,10 +219,15 @@ local function AddConfigLink(description, module, title)
 	end)
 end
 
+---@param module WMTETrackingModule
+---@param description WMTEMenuDescription
+---@param mapID number?
 local function BuildModuleMenu(module, description, mapID)
 	module:BuildMenu(description, mapID)
 end
 
+---@param owner WorldMapTrackingEnhancedButtonMixin
+---@param rootDescription RootMenuDescriptionProxy
 local function GenerateMenu(owner, rootDescription)
 	rootDescription:SetTag("MENU_WORLD_MAP_TRACKING_ENHANCED")
 	rootDescription:CreateTitle(addon.LocName)
@@ -255,6 +281,9 @@ addon.GenerateMenu = GenerateMenu
 -- ----------------------------------------------------------------------------
 -- World Map button (DropdownButton, see Core\Templates.xml)
 -- ----------------------------------------------------------------------------
+---@class WorldMapTrackingEnhancedButtonMixin : DropdownButton
+---@field Icon Texture
+---@field IconOverlay Texture
 WorldMapTrackingEnhancedButtonMixin = {}
 
 function WorldMapTrackingEnhancedButtonMixin:OnLoad()
@@ -298,6 +327,7 @@ function WorldMapTrackingEnhancedButtonMixin:Refresh()
 	self:SetShown(profile and profile.showButton)
 end
 
+---@return WorldMapTrackingEnhancedButtonMixin
 local function CreateWorldMapButton()
 	if addon.button then
 		return addon.button
@@ -333,12 +363,13 @@ function addon:OnProfileChanged()
 end
 
 function addon:OnInitialize()
-	self.db = AceDB:New("WorldMapTrackingEnhancedDB", self.constants.defaults, true)
+	self.db = AceDB:New("WorldMapTrackingEnhancedDB", self.constants.defaults, true) --[[@as WMTEDatabase]]
 	profile = self.db.profile
 
 	-- Drop settings which are no longer used since v5.0
-	profile.independantButton = nil
-	profile.showOnLeft = nil
+	local legacy = profile --[[@as table]]
+	legacy.independantButton = nil
+	legacy.showOnLeft = nil
 	-- (per-module namespaces of v4.x are simply no longer read)
 
 	self.db.RegisterCallback(self, "OnProfileChanged", "OnProfileChanged")
@@ -365,6 +396,7 @@ function addon:OnEnable()
 	end
 end
 
+---@param input string?
 function addon:ChatCommand(input)
 	input = input and input:trim():lower() or ""
 	if input == "show" then

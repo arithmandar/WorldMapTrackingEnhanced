@@ -6,6 +6,7 @@
   - Toggle "Show hidden routes"
   - Show or hide each route on the map currently displayed on the World Map
   - Open Routes' config window from the menu
+- Added type annotations for lua-language-server / VS Code (WoW API extension)
 
 ## v5.0.0 (Nov. 06, 2026)
 - Major rewrite for current World of Warcraft clients

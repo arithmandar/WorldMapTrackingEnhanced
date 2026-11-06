@@ -59,12 +59,14 @@ Each module can also show a link to the addon's own config panel.
 
 ## For Addon Developers
 
-Each supported addon is a module. To add a new module, create a Lua file under `Modules/` and add it to `Modules.xml`:
+Each supported addon is a module. To add a new module, create a Lua file under `Modules/` and add it to `Modules/Modules.xml`:
 
 ```lua
-local addonName, private = ...
-local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
+---@class WMTENamespace
+local private = select(2, ...)
+local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name) --[[@as WMTEAddon]]
 
+---@class WMTE.MyAddonModule : WMTETrackingModule
 local module = addon:NewTrackingModule("MyAddon", {
 	title = "My Addon",      -- shown in the menu and options
 	order = 100,             -- menu position
@@ -80,6 +82,13 @@ end
 function module:OpenConfig() end   -- adds a config link to the menu
 function module:IsAvailable() end  -- overrides the default loaded-addon check
 ```
+
+### VS Code / Type Annotations
+
+The code is annotated for [lua-language-server](https://github.com/LuaLS/lua-language-server), as used by the [WoW API extension for VS Code](https://github.com/Ketho/vscode-wow-api):
+
+- Every file starts with `---@class WMTENamespace` / `local private = select(2, ...)`, so the shared addon namespace has one type across all files.
+- Shared types (`WMTEAddon`, `WMTETrackingModule`, the saved variables profile, and the parts of third-party addons we use) are declared in `Core/Annotations.lua`. This file is a `---@meta` definition file only: it is not listed in the TOC, so the game never loads it, and it is excluded from packaged releases via `.pkgmeta`.
 
 ## Libraries
 

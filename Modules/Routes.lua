@@ -15,13 +15,14 @@ local sort, tinsert = _G.table.sort, _G.table.insert
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
-local _, private = ...
+---@class WMTENamespace
+local private = select(2, ...)
 local LibStub = _G.LibStub
----@type WMTEAddon
-local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
+local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name) --[[@as WMTEAddon]]
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 
 local MODNAME = "Routes"
+---@class WMTE.RoutesModule : WMTETrackingModule
 local module = addon:NewTrackingModule(MODNAME, {
 	title = "Routes",
 	order = 25,
@@ -35,8 +36,9 @@ local function RL(key, fallback)
 	return type(text) == "string" and text or fallback or key
 end
 
+---@return WMTE.Routes?
 local function GetRoutes()
-	local Routes = LibStub("AceAddon-3.0"):GetAddon("Routes", true)
+	local Routes = LibStub("AceAddon-3.0"):GetAddon("Routes", true) --[[@as WMTE.Routes?]]
 	if Routes and Routes.db and Routes.db.global and Routes.db.global.defaults then
 		return Routes
 	end
@@ -96,6 +98,9 @@ end
 
 function module:BuildMenu(description, mapID)
 	local Routes = GetRoutes()
+	if not Routes then
+		return
+	end
 	local db = Routes.db.global
 	local defaults = db.defaults
 
