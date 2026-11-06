@@ -1,7 +1,7 @@
 <!--
 CurseForge project page text for World Map Tracking Enhanced (project ID 266238).
 Summary field (short description):
-  Adds a World Map button to control map addons such as HandyNotes, GatherMate2, PetTracker and RareScanner. Supports Retail, MoP Classic, Anniversary, Classic Era and WoW Forever.
+  Adds a World Map button to control map addons such as HandyNotes, GatherMate2, Routes, PetTracker and RareScanner. Supports Retail, MoP Classic, Anniversary, Classic Era and WoW Forever.
 Paste everything below the line into the CurseForge description editor (Markdown mode).
 -->
 
@@ -35,6 +35,7 @@ World Map Tracking Enhanced adds a tracking button to the World Map. Use it to t
 |---|---|
 | **HandyNotes** | Enable or disable HandyNotes, toggle each plugin, Select All / Select None |
 | **GatherMate2** | Toggle World Map icons, set each node type to Always / With Profession / Active / Never |
+| **Routes** | Toggle route drawing on the World Map, Minimap and Zone Map, show hidden routes, show or hide each route on the current map |
 | **PetTracker** | Species, Stable Masters, Species Icons, Rival Portraits |
 | **RareScanner** | Rare NPC, container and event icons, plus their "not discovered" icons |
 | **AtlasLoot / AtlasLootClassic** | Open AtlasLoot |

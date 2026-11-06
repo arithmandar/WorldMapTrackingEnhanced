@@ -14,12 +14,13 @@ local LoadAddOn = C_AddOns and C_AddOns.LoadAddOn or _G.LoadAddOn
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
-local _, private = ...
+---@class WMTENamespace
+local private = select(2, ...)
 local LibStub = _G.LibStub
----@type WMTEAddon
-local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
+local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name) --[[@as WMTEAddon]]
 
 local MODNAME = "PetTracker"
+---@class WMTE.PetTrackerModule : WMTETrackingModule
 local module = addon:NewTrackingModule(MODNAME, {
 	title = "PetTracker",
 	order = 30,
@@ -32,8 +33,9 @@ local function PTL(key, fallback)
 	return L and rawget(L, key) or fallback
 end
 
+---@return WMTE.PetTracker?
 local function GetPetTracker()
-	local PT = _G.PetTracker
+	local PT = _G.PetTracker --[[@as WMTE.PetTracker?]]
 	if type(PT) == "table" and PT.sets and PT.GetOption and PT.ToggleOption then
 		return PT
 	end
@@ -53,6 +55,9 @@ end
 
 function module:BuildMenu(description)
 	local PT = GetPetTracker()
+	if not PT then
+		return
+	end
 
 	local function IsChecked(key)
 		return PT.GetOption(key)

@@ -12,7 +12,7 @@ body:
 
         Please search existing issues before submitting.
 
-        If you are unsure whether the problem comes from World Map Tracking Enhanced or from a supported addon (HandyNotes, GatherMate2, PetTracker, RareScanner, AtlasLoot), describe what you observed here.
+        If you are unsure whether the problem comes from World Map Tracking Enhanced or from a supported addon (HandyNotes, GatherMate2, Routes, PetTracker, RareScanner, AtlasLoot), describe what you observed here.
         You do not need to diagnose the cause yourself.
 
   - type: dropdown
@@ -64,6 +64,7 @@ body:
         - Menu in general
         - HandyNotes items
         - GatherMate2 items
+        - Routes items
         - PetTracker items
         - RareScanner items
         - AtlasLoot / AtlasLootClassic items
@@ -78,7 +79,7 @@ body:
     attributes:
       label: Related addon versions
       description: |
-        List the supported addons involved and their versions, for example HandyNotes and its plugins, GatherMate2, PetTracker, RareScanner, AtlasLoot.
+        List the supported addons involved and their versions, for example HandyNotes and its plugins, GatherMate2, Routes, PetTracker, RareScanner, AtlasLoot.
         Also list other addons that add World Map buttons, if any.
       placeholder: |
         HandyNotes v...

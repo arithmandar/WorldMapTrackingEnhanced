@@ -1,6 +1,6 @@
 ## About World Map Tracking Enhanced
 
-**World Map Tracking Enhanced** is a World of Warcraft addon that adds a tracking button to the World Map. Use the button to control the map icons and options of popular map addons, such as HandyNotes, GatherMate2, PetTracker and RareScanner, without opening each addon's settings panel.
+**World Map Tracking Enhanced** is a World of Warcraft addon that adds a tracking button to the World Map. Use the button to control the map icons and options of popular map addons, such as HandyNotes, GatherMate2, Routes, PetTracker and RareScanner, without opening each addon's settings panel.
 
 From v5.0.0 the addon no longer replaces or copies the World Map's built-in tracking / filter menu. Blizzard's own filters are left untouched. World Map Tracking Enhanced adds its own independent button next to the other World Map buttons.
 
@@ -24,6 +24,7 @@ A module is available only when its addon is installed and loaded on your client
 | --- | --- |
 | HandyNotes | Enable / disable HandyNotes, toggle each HandyNotes plugin, Select All / Select None |
 | GatherMate2 | Toggle World Map icons, and set the display mode of each node type (Always / With Profession / Active / Never) |
+| Routes | Toggle route drawing on the World Map, Minimap and Zone Map, show hidden routes, and show or hide each route on the current map |
 | PetTracker | Species, Stable Masters, Species Icons, Rival Portraits |
 | RareScanner | Rare NPC, container and event icons, plus their "not discovered" icons |
 | AtlasLoot / AtlasLootClassic | Open AtlasLoot |
@@ -58,12 +59,14 @@ Each module can also show a link to the addon's own config panel.
 
 ## For Addon Developers
 
-Each supported addon is a module. To add a new module, create a Lua file under `Modules/` and add it to `Modules.xml`:
+Each supported addon is a module. To add a new module, create a Lua file under `Modules/` and add it to `Modules/Modules.xml`:
 
 ```lua
-local addonName, private = ...
-local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
+---@class WMTENamespace
+local private = select(2, ...)
+local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name) --[[@as WMTEAddon]]
 
+---@class WMTE.MyAddonModule : WMTETrackingModule
 local module = addon:NewTrackingModule("MyAddon", {
 	title = "My Addon",      -- shown in the menu and options
 	order = 100,             -- menu position
@@ -79,6 +82,13 @@ end
 function module:OpenConfig() end   -- adds a config link to the menu
 function module:IsAvailable() end  -- overrides the default loaded-addon check
 ```
+
+### VS Code / Type Annotations
+
+The code is annotated for [lua-language-server](https://github.com/LuaLS/lua-language-server), as used by the [WoW API extension for VS Code](https://github.com/Ketho/vscode-wow-api):
+
+- Every file starts with `---@class WMTENamespace` / `local private = select(2, ...)`, so the shared addon namespace has one type across all files.
+- Shared types (`WMTEAddon`, `WMTETrackingModule`, the saved variables profile, and the parts of third-party addons we use) are declared in `Core/Annotations.lua`. This file is a `---@meta` definition file only: it is not listed in the TOC, so the game never loads it, and it is excluded from packaged releases via `.pkgmeta`.
 
 ## Libraries
 

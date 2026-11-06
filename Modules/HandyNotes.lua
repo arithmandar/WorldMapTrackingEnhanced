@@ -10,21 +10,23 @@ local pairs, ipairs, type, tinsert, sort = _G.pairs, _G.ipairs, _G.type, _G.tabl
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
-local _, private = ...
+---@class WMTENamespace
+local private = select(2, ...)
 local LibStub = _G.LibStub
----@type WMTEAddon
-local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
+local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name) --[[@as WMTEAddon]]
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 
 local MODNAME = "HandyNotes"
+---@class WMTE.HandyNotesModule : WMTETrackingModule
 local module = addon:NewTrackingModule(MODNAME, {
 	title = "HandyNotes",
 	order = 10,
 	addons = { "HandyNotes" },
 })
 
+---@return WMTE.HandyNotes?
 local function GetHandyNotes()
-	return LibStub("AceAddon-3.0"):GetAddon("HandyNotes", true)
+	return LibStub("AceAddon-3.0"):GetAddon("HandyNotes", true) --[[@as WMTE.HandyNotes?]]
 end
 
 -- HandyNotes keeps the display names of its plugins in its options table.
@@ -72,6 +74,9 @@ end
 
 function module:BuildMenu(description)
 	local HN = GetHandyNotes()
+	if not HN then
+		return
+	end
 	local db = HN.db.profile
 
 	description:CreateCheckbox(L["Enable HandyNotes"], function()

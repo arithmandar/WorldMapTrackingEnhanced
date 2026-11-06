@@ -1,5 +1,13 @@
 # Revision History
 
+## v5.0.1 (Nov. 06, 2026)
+- Added Routes support:
+  - Toggle route drawing on the World Map, Minimap, Zone Map, and Minimap when indoors
+  - Toggle "Show hidden routes"
+  - Show or hide each route on the map currently displayed on the World Map
+  - Open Routes' config window from the menu
+- Added type annotations for lua-language-server / VS Code (WoW API extension)
+
 ## v5.0.0 (Nov. 06, 2026)
 - Major rewrite for current World of Warcraft clients
 - The addon no longer replaces or copies the World Map's built-in tracking / filter menu. The built-in filters are left untouched, and World Map Tracking Enhanced now adds its own independent button to the World Map
