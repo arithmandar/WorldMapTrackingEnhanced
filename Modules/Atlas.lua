@@ -1,124 +1,82 @@
--- $Id$
------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
+-- World Map Tracking Enhanced - Atlas module
+-- Supports: Atlas (https://www.curseforge.com/wow/addons/atlas)
+-- ----------------------------------------------------------------------------
 -- Upvalued Lua API.
------------------------------------------------------------------------
--- Functions
+-- ----------------------------------------------------------------------------
 local _G = getfenv(0)
-local select = _G.select
--- Libraries
-local GetAddOnInfo, GetAddOnEnableState, UnitName, ToggleFrame, InterfaceOptionsFrame_OpenToCategory = _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.ToggleFrame, _G.InterfaceOptionsFrame_OpenToCategory
+local type, rawget, format = _G.type, _G.rawget, _G.string.format
+
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
-local FOLDER_NAME, private = ...
-
-local MODNAME = "Atlas"
-
+local _, private = ...
 local LibStub = _G.LibStub
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
-local Module = addon:NewModule(MODNAME)
-local db
 
-local AT, profile, WorldMap
+local MODNAME = "Atlas"
+local module = addon:NewTrackingModule(MODNAME, {
+	title = "Atlas",
+	order = 50,
+	addons = { "Atlas" },
+})
 
-local iAtlas = select(4, GetAddOnInfo(MODNAME))
-local enabled = GetAddOnEnableState(UnitName("player"), MODNAME)
+-- Use Atlas' own translations (falling back to the given English text)
+local function AL(key, fallback)
+	local ALocale = LibStub("AceLocale-3.0"):GetLocale("Atlas", true)
+	return ALocale and rawget(ALocale, key) or fallback
+end
 
-local defaults = {
-	profile = {
-		contextMenu = true,
-	}
-}
-
-local optGetter, optSetter
-do
-	function optGetter(info)
-		local key = info[#info]
-		return Module.db.profile[key]
-	end
-
-	function optSetter(info, value)
-		local key = info[#info]
-		Module.db.profile[key] = value
-		Module:Refresh()
+local function GetAtlas()
+	local Atlas = _G.Atlas
+	if type(Atlas) == "table" and Atlas.db and Atlas.Toggle then
+		return Atlas
 	end
 end
 
-local options = {
-	type = "group",
-	name = MODNAME,
-	get = optGetter,
-	set = optSetter,
-	args = {
---[[		intro = {
-			order = 1,
-			type = "description",
-			name = L["Atlas Config"],
-		},
-		contextMenu = {
-			order = 2,
-			type = "toggle",
-			name = L["Show Atlas menu items in second level menu."],
-		},]]
-	},
-}
-
-function Module:OnInitialize()
-	if (enabled > 0 and iAtlas) then 
-		AT = LibStub("AceAddon-3.0"):GetAddon(MODNAME) 
-		profile = AT.db.profile
-		
-		self.db = addon.db:RegisterNamespace(MODNAME, defaults)
-		db = self.db.profile
-
-		self:SetEnabledState(addon:GetModuleEnabled(MODNAME))
-		addon:RegisterModuleOptions(MODNAME, options, MODNAME)
-	else
-		addon:DisableModule(MODNAME)
-	end
+function module:IsAvailable()
+	return GetAtlas() and true or false
 end
 
-function Module:OnEnable()
-end
+function module:BuildMenu(description)
+	local Atlas = GetAtlas()
 
-function Module:OnDisable()
-
-end
-
-function Module:Refresh()
-	if not self:IsEnabled() then return end
-end
-
-function Module:DropDownMenus()
-	if (enabled > 0 and iAtlas) then
-		local menu = {}
-		local i = 1
-		local mode_name = select(2, GetAddOnInfo(MODNAME)) or MODNAME
-		
-		local function buttonOnClick()
-			AT:WorldMapButtonSelectMap()
-			ToggleFrame(WorldMapFrame)
-			AT:Toggle()
+	local open = description:CreateButton(format(L["Open %s"], "Atlas"), function()
+		-- Select the Atlas map which matches the current World Map, if any
+		if Atlas.WorldMapButtonSelectMap then
+			Atlas:WorldMapButtonSelectMap()
 		end
-		
-		menu[i] = {}
-		menu[i].isNotRadio = true
-		menu[i].notCheckable = true
-		menu[i].keepShownOnClick = false
-		menu[i].hasArrow = nil
-		menu[i].value = MODNAME
-		menu[i].colorCode = "|cFFFFC90E"
-		menu[i].text = mode_name
-		menu[i].tooltipTitle = mode_name
-		menu[i].tooltipText = select(3, GetAddOnInfo(MODNAME)) or nil
-		menu[i].tooltipOnButton = true
-		menu[i].func = buttonOnClick
-		menu[i].checked = nil
-		menu[i].icon = "Interface\\WorldMap\\WorldMap-Icon"
+		addon:CloseWorldMap()
+		Atlas:Toggle()
+	end)
+	open:SetTooltip(function(tooltip)
+		_G.GameTooltip_SetTitle(tooltip, "Atlas")
+		_G.GameTooltip_AddNormalLine(tooltip, AL("ATLAS_CLICK_TO_OPEN", "Click to open Atlas map window."))
+	end)
 
-		return menu
+	local options = Atlas.db.profile and Atlas.db.profile.options
+	if options and options.worldMapButton ~= nil and Atlas.ToggleWorldMapButton then
+		description:CreateCheckbox(AL("ATLAS_OPTIONS_SHOWWMBUT", "Show Button on World Map window."), function()
+			return options.worldMapButton
+		end, function()
+			options.worldMapButton = not options.worldMapButton
+			Atlas:ToggleWorldMapButton()
+			local KButtons = LibStub("Krowi_WorldMapButtons-1.4", true)
+			if KButtons then
+				KButtons.SetPoints()
+			end
+			return _G.MenuResponse.Refresh
+		end)
+	end
+end
+
+function module:OpenConfig()
+	local Atlas = GetAtlas()
+	addon:CloseWorldMap()
+	if Atlas and Atlas.OpenOptions then
+		Atlas:OpenOptions()
 	else
-		return nil
+		addon:OpenSettingsCategory("Atlas")
 	end
 end
