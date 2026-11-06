@@ -1,6 +1,6 @@
 ## About World Map Tracking Enhanced
 
-**World Map Tracking Enhanced** is a World of Warcraft addon that adds a tracking button to the World Map. Use the button to control the map icons and options of popular map addons, such as HandyNotes, GatherMate2, PetTracker and RareScanner, without opening each addon's settings panel.
+**World Map Tracking Enhanced** is a World of Warcraft addon that adds a tracking button to the World Map. Use the button to control the map icons and options of popular map addons, such as HandyNotes, GatherMate2, Routes, PetTracker and RareScanner, without opening each addon's settings panel.
 
 From v5.0.0 the addon no longer replaces or copies the World Map's built-in tracking / filter menu. Blizzard's own filters are left untouched. World Map Tracking Enhanced adds its own independent button next to the other World Map buttons.
 
@@ -24,6 +24,7 @@ A module is available only when its addon is installed and loaded on your client
 | --- | --- |
 | HandyNotes | Enable / disable HandyNotes, toggle each HandyNotes plugin, Select All / Select None |
 | GatherMate2 | Toggle World Map icons, and set the display mode of each node type (Always / With Profession / Active / Never) |
+| Routes | Toggle route drawing on the World Map, Minimap and Zone Map, show hidden routes, and show or hide each route on the current map |
 | PetTracker | Species, Stable Masters, Species Icons, Rival Portraits |
 | RareScanner | Rare NPC, container and event icons, plus their "not discovered" icons |
 | AtlasLoot / AtlasLootClassic | Open AtlasLoot |
