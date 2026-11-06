@@ -37,7 +37,6 @@ World Map Tracking Enhanced adds a tracking button to the World Map. Use it to t
 | **GatherMate2** | Toggle World Map icons, set each node type to Always / With Profession / Active / Never |
 | **PetTracker** | Species, Stable Masters, Species Icons, Rival Portraits |
 | **RareScanner** | Rare NPC, container and event icons, plus their "not discovered" icons |
-| **Atlas** | Open Atlas on the map matching the World Map |
 | **AtlasLoot / AtlasLootClassic** | Open AtlasLoot |
 
 A supported addon appears in the menu only when it is installed and loaded. The menu can also link to each addon's own config panel.

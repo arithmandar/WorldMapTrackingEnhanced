@@ -4,6 +4,5 @@
 	<Script file="Modules\GatherMate2.lua"/>
 	<Script file="Modules\PetTracker.lua"/>
 	<Script file="Modules\RareScanner.lua"/>
-	<Script file="Modules\Atlas.lua"/>
 	<Script file="Modules\AtlasLoot.lua"/>
 </Ui>
