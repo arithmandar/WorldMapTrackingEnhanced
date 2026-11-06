@@ -1,0 +1,91 @@
+name: Enhancement request
+description: Request a new feature, support for another map addon, or an improvement to an existing feature.
+title: "[Enhancement]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping World Map Tracking Enhanced grow!
+
+        Use this form to request a specific change, such as support for another map addon, new menu items for a supported addon, or new options for the World Map button or menu.
+
+        Please search existing issues before submitting.
+        You do not need to provide a technical implementation.
+
+        If something that already exists is not working, please use the Bug report form instead.
+        For general ideas or feedback without a specific request, please use the Suggestion form.
+
+  - type: dropdown
+    id: request-type
+    attributes:
+      label: Type of request
+      options:
+        - Support for another map addon
+        - New menu items for a supported addon
+        - World Map button or menu behavior
+        - Options or slash commands
+        - Support for another game client
+        - Localization
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: target-addon
+    attributes:
+      label: Related addon or feature
+      description: |
+        Name the addon or feature this request is about.
+        For a new addon, include a link to its CurseForge, Wago, or GitHub page.
+        If the request applies to World Map Tracking Enhanced in general, enter "General".
+      placeholder: "Addon name and link, or feature name"
+    validations:
+      required: true
+
+  - type: textarea
+    id: need
+    attributes:
+      label: What would this improve?
+      description: |
+        Describe the need or use case behind your request.
+        Explain what you are trying to accomplish.
+      placeholder: "When using the World Map, I would like to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Requested change
+      description: |
+        Describe what you would like to see added or changed.
+        For addon support, list the settings you would like to control from the World Map menu.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: game-flavor
+    attributes:
+      label: Relevant game flavors
+      description: Select all that apply.
+      multiple: true
+      options:
+        - Retail (Mainline)
+        - Mists of Pandaria Classic
+        - Classic Anniversary (TBC)
+        - Classic Era
+        - Forever
+        - All
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives or workarounds
+      description: Describe any existing workarounds or other approaches you have considered.
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: References and additional context
+      description: Add screenshots, mockups, reference links, or examples that help explain the request.

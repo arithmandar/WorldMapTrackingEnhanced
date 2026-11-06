@@ -1,0 +1,141 @@
+name: Bug report
+description: Report a problem with World Map Tracking Enhanced.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve World Map Tracking Enhanced!
+
+        Use this form to report a problem with World Map Tracking Enhanced, such as a missing or misplaced World Map button, menu items that are missing or do not work, options that do not apply, display problems, or Lua errors.
+
+        Please search existing issues before submitting.
+
+        If you are unsure whether the problem comes from World Map Tracking Enhanced or from a supported addon (HandyNotes, GatherMate2, PetTracker, RareScanner, AtlasLoot), describe what you observed here.
+        You do not need to diagnose the cause yourself.
+
+  - type: dropdown
+    id: game-flavor
+    attributes:
+      label: WoW game flavor
+      description: Which version of World of Warcraft are you using?
+      options:
+        - Retail (Mainline)
+        - Retail PTR / Beta
+        - Mists of Pandaria Classic
+        - Classic Anniversary (TBC)
+        - Classic Era
+        - Forever
+        - Other — specify in the game version field
+    validations:
+      required: true
+
+  - type: input
+    id: game-version
+    attributes:
+      label: WoW version and build
+      description: |
+        Enter the game version and build, if available.
+        For Classic or other variants, also specify the release or mode.
+      placeholder: "For example: 12.1.5.70783"
+    validations:
+      required: true
+
+  - type: input
+    id: addon-version
+    attributes:
+      label: World Map Tracking Enhanced version
+      description: |
+        Enter the addon version shown in the options panel or the addon list.
+        If testing a Git checkout, include the commit ID.
+      placeholder: "Addon version or commit ID"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected-area
+    attributes:
+      label: Affected area
+      description: Select all that apply.
+      multiple: true
+      options:
+        - World Map button (position, visibility, appearance)
+        - Menu in general
+        - HandyNotes items
+        - GatherMate2 items
+        - PetTracker items
+        - RareScanner items
+        - AtlasLoot / AtlasLootClassic items
+        - Options panel or slash commands
+        - Text or translation
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: related-addons
+    attributes:
+      label: Related addon versions
+      description: |
+        List the supported addons involved and their versions, for example HandyNotes and its plugins, GatherMate2, PetTracker, RareScanner, AtlasLoot.
+        Also list other addons that add World Map buttons, if any.
+      placeholder: |
+        HandyNotes v...
+        GatherMate2 v...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: What happened?
+      description: Describe what is incorrect, missing, or not working.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: |
+        Explain how to observe the problem.
+        If it happens only sometimes, describe the conditions.
+      placeholder: |
+        1. Open the World Map in...
+        2. Click the World Map Tracking Enhanced button
+        3. Click...
+        4. Observe...
+    validations:
+      required: true
+
+  - type: input
+    id: client-language
+    attributes:
+      label: WoW client language
+      description: Especially helpful for text, font, or translation problems.
+      placeholder: "For example: enUS, zhTW, deDE"
+
+  - type: textarea
+    id: lua-errors
+    attributes:
+      label: Lua errors
+      description: |
+        Paste the full Lua error, if one appears.
+        To show errors, use BugSack or run /console scriptErrors 1.
+      render: text
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Screenshots and additional context
+      description: |
+        Add screenshots or other information that may help.
+        If you tested with unrelated addons disabled, include the result.

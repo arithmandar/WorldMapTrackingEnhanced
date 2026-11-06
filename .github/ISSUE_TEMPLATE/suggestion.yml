@@ -1,0 +1,57 @@
+name: Suggestion
+description: Share an idea, feedback, or a general suggestion about World Map Tracking Enhanced.
+title: "[Suggestion]: "
+labels: ["suggestion"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for sharing your ideas!
+
+        Use this form for general ideas and feedback, such as usability, appearance, wording, translations, or documentation.
+
+        Please search existing issues before submitting.
+
+        If you have a specific feature or addon support in mind, please use the Enhancement request form.
+        If something is not working, please use the Bug report form.
+
+  - type: dropdown
+    id: suggestion-type
+    attributes:
+      label: Type of suggestion
+      options:
+        - Usability or accessibility
+        - Appearance or layout
+        - Wording or translation
+        - Documentation or project page
+        - General feedback
+        - Other or not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Your suggestion
+      description: Describe your idea or feedback.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: Why would this help?
+      description: Explain the problem, limitation, or experience behind your suggestion, if any.
+
+  - type: input
+    id: client-language
+    attributes:
+      label: WoW client language
+      description: Helpful for wording or translation suggestions.
+      placeholder: "For example: enUS, zhTW, deDE"
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Screenshots and additional context
+      description: Add screenshots, mockups, or reference links, if any.
