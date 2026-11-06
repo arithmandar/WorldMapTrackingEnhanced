@@ -1,529 +1,361 @@
--- $Id$
------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
+-- World Map Tracking Enhanced - Core
+--
+-- Since v5.0 the addon no longer replaces or copies the World Map's built-in
+-- tracking / filter menu. Instead it adds its own independent World Map button
+-- (positioned by Krowi_WorldMapButtons) which opens a menu built with the
+-- Blizzard Menu API (Blizzard_Menu / MenuUtil). Each supported map addon is a
+-- module that adds its own entries to that menu.
+-- ----------------------------------------------------------------------------
 -- Upvalued Lua API.
------------------------------------------------------------------------
--- Functions
+-- ----------------------------------------------------------------------------
 local _G = getfenv(0)
-local select = _G.select
-local pairs = _G.pairs
-local math = _G.math
-local ceil = math.ceil
--- Libraries
-local GetProfessions = _G.GetProfessions
-local GameTooltip, GetAddOnInfo, GetAddOnEnableState, UnitName, PlaySound, GetCVarBool, SetCVar = _G.GameTooltip, _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.PlaySound, _G.GetCVarBool, _G.SetCVar
-local WorldMapTrackingOptionsDropDown_OnClick
-local GetBuildInfo = _G.GetBuildInfo
+local ipairs, type, select, unpack = _G.ipairs, _G.type, _G.select, _G.unpack
+local tinsert, sort = _G.table.insert, _G.table.sort
+local format = _G.string.format
+local xpcall, geterrorhandler = _G.xpcall, _G.geterrorhandler
 
-
--- Determine WoW TOC Version
-local WoWClassicEra, WoWClassicTBC, WoWWOTLKC, WoWRetail
-local wowversion  = select(4, GetBuildInfo())
-if wowversion < 20000 then
-	WoWClassicEra = true
-elseif wowversion < 30000 then 
-	WoWClassicTBC = true
-elseif wowversion < 40000 then 
-	WoWWOTLKC = true
-elseif wowversion > 90000 then
-	WoWRetail = true
-else
-	-- n/a
-end
-
-if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
-	-- do nothing
-else
-	WorldMapTrackingOptionsDropDown_OnClick = _G.WorldMapTrackingOptionsDropDown_OnClick
-end
+-- WoW API
+local C_AddOns = _G.C_AddOns
+local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or _G.GetAddOnMetadata
+local IsAddOnLoaded = C_AddOns and C_AddOns.IsAddOnLoaded or _G.IsAddOnLoaded
+local GetAddOnInfo = C_AddOns and C_AddOns.GetAddOnInfo or _G.GetAddOnInfo
+local InCombatLockdown = _G.InCombatLockdown
+local HideUIPanel = _G.HideUIPanel
 
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
 local FOLDER_NAME, private = ...
-
 local LibStub = _G.LibStub
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local AceDB = LibStub("AceDB-3.0")
--- UIDropDownMenu
-local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
+local Client = private.Client
 
-local addon = LibStub("AceAddon-3.0"):NewAddon(private.addon_name, "AceEvent-3.0")
+local addon = LibStub("AceAddon-3.0"):NewAddon(private.addon_name, "AceEvent-3.0", "AceConsole-3.0")
 addon.constants = private.constants
 addon.constants.addon_name = private.addon_name
+addon.Client = Client
 addon.Name = FOLDER_NAME
-local _
-_, addon.LocName, addon.Notes = GetAddOnInfo(addon.Name)
--- ToC Metadata
-addon.Version 		= GetAddOnMetadata(addon.Name, "Version")
-addon.UpdateDate 	= GetAddOnMetadata(addon.Name, "X-Date")
-addon.Author 		= GetAddOnMetadata(addon.Name, "Author")
---addon.LocName = select(2, GetAddOnInfo(addon.Name))
---addon.Notes = select(3, GetAddOnInfo(addon.Name))
-
-addon.plugins = {}
+addon.LocName = select(2, GetAddOnInfo(addon.Name)) or "World Map Tracking Enhanced"
+addon.Notes = select(3, GetAddOnInfo(addon.Name)) or ""
 _G.WorldMapTrackingEnhanced = addon
-local profile
-local FilterButton -- WorldMapFrame.overlayFrames[2]
-local iMaxMenu = 20 -- Maximum number of dropdown menu item
 
-local function checkAddonStatus(addonName)
-	if not addonName then return nil end
-	local loadable = select(4, GetAddOnInfo(addonName))
-	local enabled = GetAddOnEnableState(UnitName("player"), addonName)
-	if (enabled > 0 and loadable) then
-		return true
-	else
+-- ToC Metadata
+addon.Version = GetAddOnMetadata(addon.Name, "Version") or ""
+addon.UpdateDate = GetAddOnMetadata(addon.Name, "X-Date") or ""
+addon.Author = GetAddOnMetadata(addon.Name, "Author") or ""
+
+-- The tracking modules are AceAddon modules with a few extra fields, see
+-- addon:NewTrackingModule() below. They are kept in this list for ordering.
+addon.trackingModules = {}
+
+local profile
+
+-- ----------------------------------------------------------------------------
+-- Helpers
+-- ----------------------------------------------------------------------------
+
+-- Returns true when any of the given addons is loaded
+function addon:IsAnyAddOnLoaded(...)
+	for i = 1, select("#", ...) do
+		local name = select(i, ...)
+		if name and IsAddOnLoaded(name) then
+			return true
+		end
+	end
+	return false
+end
+
+-- Close the World Map if it is shown; used before opening another addon's UI
+function addon:CloseWorldMap()
+	local WorldMapFrame = _G.WorldMapFrame
+	if WorldMapFrame and WorldMapFrame:IsShown() then
+		HideUIPanel(WorldMapFrame)
+	end
+end
+
+-- Refresh the World Map pins after changing another addon's settings
+function addon:RefreshWorldMap()
+	local WorldMapFrame = _G.WorldMapFrame
+	if WorldMapFrame and WorldMapFrame.RefreshAllDataProviders and WorldMapFrame:IsShown() then
+		WorldMapFrame:RefreshAllDataProviders()
+	end
+end
+
+-- Open a category of the game's Settings panel.
+-- categoryNameOrID: the category ID, or the top level category name which was
+--   used with AceConfigDialog:AddToBlizOptions()
+-- fallback: optional function called if the category can not be opened
+function addon:OpenSettingsCategory(categoryNameOrID, fallback)
+	if InCombatLockdown() then
+		self:Print(L["Cannot open the settings panel while in combat."])
 		return false
 	end
+	self:CloseWorldMap()
+
+	local categoryID = categoryNameOrID
+	local AceConfigDialog = LibStub("AceConfigDialog-3.0", true)
+	if type(categoryNameOrID) == "string" and AceConfigDialog and AceConfigDialog.BlizOptionsIDMap then
+		categoryID = AceConfigDialog.BlizOptionsIDMap[categoryNameOrID] or categoryNameOrID
+	end
+
+	local Settings = _G.Settings
+	if categoryID and Settings and Settings.OpenToCategory and (not Settings.GetCategory or Settings.GetCategory(categoryID)) then
+		Settings.OpenToCategory(categoryID)
+		return true
+	end
+	if fallback then
+		fallback()
+		return true
+	end
+	return false
 end
 
-WMTEButtonMixin = {}
+-- ----------------------------------------------------------------------------
+-- Tracking modules
+-- ----------------------------------------------------------------------------
+local ModulePrototype = {}
 
-function WMTEButtonMixin:OnLoad()
-	local function InitializeDropDown(self, level)
-		self:GetParent():InitializeDropDown(self.DropDown, level);
+-- Display name of the module, used for sub menu and config link texts
+function ModulePrototype:GetTitle()
+	local title = self.title
+	if type(title) == "function" then
+		title = title(self)
 	end
-	local name = addon.Name.."Button"
-	self.DropDown = LibDD:Create_UIDropDownMenu(name.."DropDown", self)
-	self.DropDown:SetClampedToScreen(true)
-	
-	if (WoWRetail) then
-		self:SetFrameStrata("HIGH")
+	return title or self.moduleName or self:GetName()
+end
+
+-- Whether the supported addon is loaded. Modules can override this.
+function ModulePrototype:IsAvailable()
+	if self.addons then
+		return addon:IsAnyAddOnLoaded(unpack(self.addons))
+	end
+	return true
+end
+
+-- Must be implemented by modules: add the module's entries into the given menu
+-- description (either the root menu or a sub menu, depending on user settings).
+function ModulePrototype:BuildMenu(description, mapID)
+end
+
+-- Optional: modules may implement :OpenConfig() to have a config link added.
+
+addon:SetDefaultModulePrototype(ModulePrototype)
+addon:SetDefaultModuleState(true)
+
+-- Create a tracking module.
+--   name    : unique module name, also used as key of the enable/disable option
+--   info    : { title = string|function, order = number, addons = { "AddOnName", ... } }
+function addon:NewTrackingModule(name, info, ...)
+	local module = self:NewModule(name, ...)
+	info = info or {}
+	module.title = info.title or name
+	module.order = info.order or 100
+	module.addons = info.addons
+	tinsert(self.trackingModules, module)
+	sort(self.trackingModules, function(a, b)
+		if a.order == b.order then
+			return a:GetName() < b:GetName()
+		end
+		return a.order < b.order
+	end)
+	return module
+end
+
+function addon:IsTrackingModuleEnabled(module)
+	return profile and profile.enableModules[module:GetName()] and true or false
+end
+
+-- ----------------------------------------------------------------------------
+-- Menu generator
+-- ----------------------------------------------------------------------------
+local function AddConfigLink(description, module, title)
+	local button = description:CreateButton(format(L["%s Config"], title), function()
+		module:OpenConfig()
+	end)
+	button:SetTooltip(function(tooltip)
+		_G.GameTooltip_SetTitle(tooltip, title)
+		_G.GameTooltip_AddNormalLine(tooltip, format(L["Click to open %s's config panel"], title))
+	end)
+end
+
+local function BuildModuleMenu(module, description, mapID)
+	module:BuildMenu(description, mapID)
+end
+
+local function GenerateMenu(owner, rootDescription)
+	rootDescription:SetTag("MENU_WORLD_MAP_TRACKING_ENHANCED")
+	rootDescription:CreateTitle(addon.LocName)
+
+	local WorldMapFrame = _G.WorldMapFrame
+	local mapID = WorldMapFrame and WorldMapFrame:GetMapID()
+	local count = 0
+
+	for _, module in ipairs(addon.trackingModules) do
+		if addon:IsTrackingModuleEnabled(module) and module:IsAvailable() then
+			local title = module:GetTitle()
+			local description
+			if profile.useSubmenus then
+				description = rootDescription:CreateButton(title)
+			else
+				if profile.useSeparator then
+					rootDescription:CreateDivider()
+				end
+				rootDescription:CreateTitle(title)
+				description = rootDescription
+			end
+
+			-- A broken module should not break the whole menu
+			xpcall(BuildModuleMenu, geterrorhandler(), module, description, mapID)
+
+			if profile.showConfigLinks and module.OpenConfig then
+				if profile.useSubmenus then
+					description:CreateDivider()
+				end
+				AddConfigLink(description, module, title)
+			end
+			count = count + 1
+		end
+	end
+
+	if count == 0 then
+		rootDescription:CreateTitle(_G.GRAY_FONT_COLOR:WrapTextInColorCode(L["No supported addons are loaded."]))
+	end
+
+	rootDescription:CreateDivider()
+	local config = rootDescription:CreateButton(_G.GREEN_FONT_COLOR:WrapTextInColorCode(L["World Map Tracking Enhanced Config"]), function()
+		addon:OpenOptions()
+	end)
+	config:SetTooltip(function(tooltip)
+		_G.GameTooltip_SetTitle(tooltip, addon.LocName)
+		_G.GameTooltip_AddNormalLine(tooltip, L["Click to open World Map Tracking Enhanced's config panel"])
+	end)
+end
+addon.GenerateMenu = GenerateMenu
+
+-- ----------------------------------------------------------------------------
+-- World Map button (DropdownButton, see Core\Templates.xml)
+-- ----------------------------------------------------------------------------
+WorldMapTrackingEnhancedButtonMixin = {}
+
+function WorldMapTrackingEnhancedButtonMixin:OnLoad()
+	-- Krowi_WorldMapButtons anchors buttons on the right side of the map on
+	-- Retail / Forever / Mists Classic and on the left side on Classic Era and
+	-- Anniversary realms; open the menu towards the inside of the map.
+	local KButtons = LibStub("Krowi_WorldMapButtons-1.4", true)
+	if KButtons and KButtons.AnchorPoint == "TOPRIGHT" then
+		self:SetMenuAnchor(_G.AnchorUtil.CreateAnchor("TOPRIGHT", self, "BOTTOMRIGHT", 0, 0))
 	else
-		self:SetFrameStrata("TOOLTIP")
+		self:SetMenuAnchor(_G.AnchorUtil.CreateAnchor("TOPLEFT", self, "BOTTOMLEFT", 0, 0))
 	end
-	
-	LibDD:UIDropDownMenu_SetInitializeFunction(self.DropDown, InitializeDropDown);
-	LibDD:UIDropDownMenu_SetDisplayMode(self.DropDown, "MENU");
+	self:SetupMenu(GenerateMenu)
 end
 
-function WMTEButtonMixin:OnEnter()
-	GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
-	GameTooltip:SetText(TRACKING, 1, 1, 1)
-	GameTooltip:AddLine(MINIMAP_TRACKING_TOOLTIP_NONE, nil, nil, nil, true)
+function WorldMapTrackingEnhancedButtonMixin:OnEnter()
+	local GameTooltip = _G.GameTooltip
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+	_G.GameTooltip_SetTitle(GameTooltip, addon.LocName)
+	_G.GameTooltip_AddNormalLine(GameTooltip, L["Click to show the menu of supported map addons."])
 	GameTooltip:Show()
 end
 
-function WMTEButtonMixin:OnLeave()
-	GameTooltip:Hide()
+function WorldMapTrackingEnhancedButtonMixin:OnLeave()
+	_G.GameTooltip:Hide()
 end
 
-function WMTEButtonMixin:OnClick()
-	local parent = self:GetParent()
-	local mapID = WorldMapFrame:GetMapID()
-	if not mapID then
-		return
-	end
-	self.DropDown.mapID = mapID or 0
-	LibDD:ToggleDropDownMenu(1, nil, self.DropDown, self, 0, -5)
-	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-end
-
-function WMTEButtonMixin:OnMouseDown(button)
+function WorldMapTrackingEnhancedButtonMixin:OnMouseDown()
+	_G.GameTooltip:Hide()
 	self.Icon:SetPoint("TOPLEFT", 8, -8)
 	self.IconOverlay:Show()
 end
 
-function WMTEButtonMixin:OnMouseUp()
+function WorldMapTrackingEnhancedButtonMixin:OnMouseUp()
 	self.Icon:SetPoint("TOPLEFT", 6, -6)
 	self.IconOverlay:Hide()
 end
 
-function WMTEButtonMixin:IsTrackingFilter(filter)
-	return not C_Minimap.IsFilteredOut(filter);
+-- Called by Krowi_WorldMapButtons whenever the World Map changes map
+function WorldMapTrackingEnhancedButtonMixin:Refresh()
+	self:SetShown(profile and profile.showButton)
 end
 
-function WMTEButtonMixin:SetTrackingFilter(filter, on)
-	local count = C_Minimap.GetNumTrackingTypes();
-	for id=1, count do
-		local filterInfo = C_Minimap.GetTrackingFilter(id);
-		if filterInfo and filterInfo.filterID == filter then
-			C_Minimap.SetTracking(id, on);
-			return;
-		end
+local function CreateWorldMapButton()
+	if addon.button then
+		return addon.button
 	end
+	local KButtons = LibStub("Krowi_WorldMapButtons-1.4")
+	addon.button = KButtons:Add("WorldMapTrackingEnhancedButtonTemplate", "DropdownButton")
+	addon.button:Refresh()
+	KButtons.SetPoints()
+	return addon.button
 end
 
-function WMTEButtonMixin:OnSelection(value, checked)
-	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
-		-- do nothing
-	else
-		if (checked) then
-			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-		else
-			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
-		end
-
-		if (value == "quests") then
-			SetCVar("questPOI", checked and "1" or "0");
-		elseif (value == "dungeon entrances") then
-			SetCVar("showDungeonEntrancesOnMap", checked and "1" or "0");
-		elseif (value == "digsites") then
-			SetCVar("digSites", checked and "1" or "0");
-			self:SetTrackingFilter(Enum.MinimapTrackingFilter.Digsites, checked);
-		elseif (value == "tamers") then
-			SetCVar("showTamers", checked and "1" or "0");
-		elseif (value == "primaryProfessionsFilter" or value == "secondaryProfessionsFilter") then
-			SetCVar(value, checked and "1" or "0")
-		elseif (value == "worldQuestFilterResources" or value == "worldQuestFilterArtifactPower" or
-				value == "worldQuestFilterProfessionMaterials" or value == "worldQuestFilterGold" or
-				value == "worldQuestFilterEquipment" or value == "worldQuestFilterReputation" or
-				value == "worldQuestFilterAnima") then
-			-- World quest reward filter cvars
-			SetCVar(value, checked and "1" or "0")
-		elseif (value == "trivialQuests") then
-			self:SetTrackingFilter(Enum.MinimapTrackingFilter.TrivialQuests, checked);
-		end
-		FilterButton:GetParent():RefreshAllDataProviders()
-	end
-end
-
--- //////////////////////////////////////////////////////////////////////////
--- Main function to replace World Map Tracking Option's dropdown menu
--- //////////////////////////////////////////////////////////////////////////
-function WMTEButtonMixin:InitializeDropDown(frame, level)
-	local function OnSelection(button)
-		self:OnSelection(button.value, button.checked)
-	end
-	
-	local function AddSeparator()
-		if (profile.useSeparator) then
-			LibDD:UIDropDownMenu_AddSeparator(1)
-		end
-	end
-
-	if not level then level = 1 end
-	local info = LibDD:UIDropDownMenu_CreateInfo()
-
-	if (level == 1) then
-		info.isTitle = true
-		info.notCheckable = true
-		info.text = WORLD_MAP_FILTER_TITLE -- which is "Show:"
-		LibDD:UIDropDownMenu_AddButton(info)
-
-		info.isTitle = nil
-		info.disabled = nil
-		info.notCheckable = nil
-		info.isNotRadio = true
-		info.keepShownOnClick = true
-		info.func = OnSelection
-
-		info.text = SHOW_QUEST_OBJECTIVES_ON_MAP_TEXT
-		info.value = "quests"
-		info.checked = GetCVarBool("questPOI")
-		LibDD:UIDropDownMenu_AddButton(info)
-
-		-- currently it looks like below three features are only available in Retail server
-		if (WoWRetail) then
-			info.text = SHOW_DUNGEON_ENTRACES_ON_MAP_TEXT
-			info.value = "dungeon entrances"
-			info.checked = GetCVarBool("showDungeonEntrancesOnMap")
-			LibDD:UIDropDownMenu_AddButton(info)
-
-			local _, _, arch = GetProfessions()
-			if arch then
-				info.text = ARCHAEOLOGY_SHOW_DIG_SITES -- "Show Digsites"
-				info.value = "digsites"
-				info.checked = GetCVarBool("digSites") and self:IsTrackingFilter(Enum.MinimapTrackingFilter.Digsites);
-				LibDD:UIDropDownMenu_AddButton(info)
-			end
-
-			-- BZ's Pet Battle
-			if C_Minimap.CanTrackBattlePets() then
-				info.text = SHOW_PET_BATTLES_ON_MAP_TEXT
-				info.value = "tamers"
-				info.checked = GetCVarBool("showTamers")
-				LibDD:UIDropDownMenu_AddButton(info)
-			end
-
-			info.text = MINIMAP_TRACKING_TRIVIAL_QUESTS;
-			info.value = "trivialQuests";
-			info.checked = self:IsTrackingFilter(Enum.MinimapTrackingFilter.TrivialQuests);
-			LibDD:UIDropDownMenu_AddButton(info);
-
-			info.text = CONTENT_TRACKING_MAP_TOGGLE;
-			info.value = "contentTrackingFilter";
-			info.checked = GetCVarBool("contentTrackingFilter");
-			LibDD:UIDropDownMenu_AddButton(info);
-		end
-		-- If we aren't on a map with world quests don't show the world quest reward filter options.
-		local mapID = WorldMapFrame:GetMapID()
-		if mapID and MapUtil.MapHasEmissaries(mapID) then
-			-- Adding World Quest Tracker menus;
---[[			if (checkAddonStatus("WorldQuestTracker") and profile.enable_WorldQuestTracker) then
-				AddSeparator()
-				local WQT = addon:GetModule("WorldQuestTracker", true)
-				local menu = WQT:DropDownMenus()
-
-				if (profile.worldQuestTracker_contextMenu) then
-					LibDD:UIDropDownMenu_AddButton(menu[1])
-				else
-					for i = 1, #menu do
-						LibDD:UIDropDownMenu_AddButton(menu[i])
-					end
-				end
-			-- With World Quest Tracker enabled, actually the WoW built-in World Quest menu filters will not work. 
-			else]]
-				-- Clear out the info from the separator wholesale.
-				info = LibDD:UIDropDownMenu_CreateInfo()
-
-				info.isTitle = nil
-				info.disabled = nil
-				info.notCheckable = nil
-				info.isNotRadio = true
-				info.keepShownOnClick = true
-				info.func = WorldMapTrackingOptionsDropDown_OnClick
-
-				local prof1, prof2, _, fish, cook, firstAid = GetProfessions()
-				if prof1 or prof2 then
-					info.text = SHOW_PRIMARY_PROFESSION_ON_MAP_TEXT
-					info.value = "primaryProfessionsFilter"
-					info.checked = GetCVarBool("primaryProfessionsFilter")
-					info.func = OnSelection
-					LibDD:UIDropDownMenu_AddButton(info)
-				end
-
-				if fish or cook or firstAid then
-					info.text = SHOW_SECONDARY_PROFESSION_ON_MAP_TEXT
-					info.value = "secondaryProfessionsFilter"
-					info.checked = GetCVarBool("secondaryProfessionsFilter")
-					info.func = OnSelection
-					LibDD:UIDropDownMenu_AddButton(info)
-				end
-				
-				AddSeparator()
-
-				-- Clear out the info from the separator wholesale.
-				info = LibDD:UIDropDownMenu_CreateInfo()
-
-				info.isTitle = true
-				info.notCheckable = true
-				info.text = WORLD_QUEST_REWARD_FILTERS_TITLE
-				LibDD:UIDropDownMenu_AddButton(info)
-				info.text = nil
-
-				info.isTitle = nil
-				info.disabled = nil
-				info.notCheckable = nil
-				info.isNotRadio = true
-				info.keepShownOnClick = true
-				info.func = OnSelection
-
-				if MapUtil.IsShadowlandsZoneMap(mapID) then
-					info.text = WORLD_QUEST_REWARD_FILTERS_ANIMA
-					info.value = "worldQuestFilterAnima"
-					info.checked = GetCVarBool("worldQuestFilterAnima")
-					LibDD:UIDropDownMenu_AddButton(info)
-				else
-					info.text = WORLD_QUEST_REWARD_FILTERS_RESOURCES
-					info.value = "worldQuestFilterResources"
-					info.checked = GetCVarBool("worldQuestFilterResources")
-					LibDD:UIDropDownMenu_AddButton(info)
-
-					info.text = WORLD_QUEST_REWARD_FILTERS_ARTIFACT_POWER
-					info.value = "worldQuestFilterArtifactPower"
-					info.checked = GetCVarBool("worldQuestFilterArtifactPower")
-					LibDD:UIDropDownMenu_AddButton(info)
-				end
-
-				info.text = WORLD_QUEST_REWARD_FILTERS_PROFESSION_MATERIALS
-				info.value = "worldQuestFilterProfessionMaterials"
-				info.checked = GetCVarBool("worldQuestFilterProfessionMaterials")
-				LibDD:UIDropDownMenu_AddButton(info)
-
-				info.text = WORLD_QUEST_REWARD_FILTERS_GOLD
-				info.value = "worldQuestFilterGold"
-				info.checked = GetCVarBool("worldQuestFilterGold")
-				LibDD:UIDropDownMenu_AddButton(info)
-				
-				info.text = WORLD_QUEST_REWARD_FILTERS_EQUIPMENT
-				info.value = "worldQuestFilterEquipment"
-				info.checked = GetCVarBool("worldQuestFilterEquipment")
-				LibDD:UIDropDownMenu_AddButton(info)
-				
-				info.text = WORLD_QUEST_REWARD_FILTERS_REPUTATION
-				info.value = "worldQuestFilterReputation"
-				info.checked = GetCVarBool("worldQuestFilterReputation")
-				LibDD:UIDropDownMenu_AddButton(info)
-			--end
-		end
-		for k, v in pairs(addon.plugins) do
-			if (v and profile.enableModules[k]) then
-				if (k == "WorldQuestTracker") then
-					-- do nothing
-				else
-					local Module = addon:GetModule(k, true)
-					local menu = Module:DropDownMenus()
-					
-					AddSeparator()
-					for i = 1, #menu do
-						LibDD:UIDropDownMenu_AddButton(menu[i])
-					end
-				end
-			end
-		end
-		-- Adding WorldMapTrackingEnhanced's Config link
-		AddSeparator()
-		info = LibDD:UIDropDownMenu_CreateInfo()
-		info.isNotRadio = true
-		info.notCheckable = true
-		info.text = L["World Map Tracking Enhanced Config"]
-		info.colorCode = "|cFFB5E61D"
-		info.tooltipTitle = addon.LocName
-		info.tooltipText = L["Click to open World Map Tracking Enhanced's config panel"]
-		info.tooltipOnButton = true
-		info.func = (function(self)
-			ToggleFrame(WorldMapFrame)
-			InterfaceOptionsFrame_OpenToCategory(addon.LocName)
-			InterfaceOptionsFrame_OpenToCategory(addon.LocName)
-		end)
-		LibDD:UIDropDownMenu_AddButton(info)
-	-- Handling level 2 menus
-	elseif (level == 2) then
-		for k, v in pairs(addon.plugins) do
-			if (v and profile.enableModules[k] and L_UIDROPDOWNMENU_MENU_VALUE == k) then
-				local Module = addon:GetModule(k, true)
-				local _, menu2 = Module:DropDownMenus()
-				
-				if (menu2) then
-					for i = 1, #menu2 do
-						LibDD:UIDropDownMenu_AddButton(menu2[i], 2)
-					end
-				end
-			end
-		end
-	elseif (level == 3) then
-		for k, v in pairs(addon.plugins) do
-			if (v and profile.enableModules[k]) then
-				local Module = addon:GetModule(k, true)
-				local _, menu2 = Module:DropDownMenus()
-				
-				if (menu2) then
-					for i = 1, #menu2 do
-						if (L_UIDROPDOWNMENU_MENU_VALUE == k..i) then
-							local t = menu2[i].menuTable
-							if (t) then
-								for j = 1, #t do
-									LibDD:UIDropDownMenu_AddButton(t[j], 3)
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-	end
-end
-
-function WMTEButtonMixin:Refresh()
-
-end
-
-local function createTrackingButton()
-	if (profile.independantButton) then
-		local KButtons = LibStub("Krowi_WorldMapButtons-1.4")
-		addon.button = KButtons:Add("WMTEButtonTemplate", "BUTTON")
-		
+function addon:UpdateButton()
+	if not self.button then
 		return
-	else
-		local parent
-		
-		local name = addon.Name.."Button"
-		local f = _G[name]
-		if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
-			parent = WorldMapFrame
-			parent.BlackoutFrame:Hide()
-			parent:SetFrameStrata("HIGH")
-			parent.BorderFrame:SetFrameStrata("LOW")
-
-			if not f then f = CreateFrame("Button", name, parent, "WMTEButtonTemplate") end
-			f:SetFrameLevel(20)
-			f:SetToplevel(true)
-			f:ClearAllPoints()
-			if (profile.showOnLeft) then
-				f:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, -70)
-			else
-				f:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -8, -70)
-			end
-		else
-			parent = FilterButton:GetParent()
-			
-			if not f then f = CreateFrame("Button", name, WorldMapFrame.ScrollContainer, "WMTEButtonTemplate") end
-			if (profile.showOnLeft) then
-				f:SetPoint("TOPLEFT", WorldMapFrame.ScrollContainer, 0, 0, "TOPLEFT")
-			else
-				f:SetPoint("TOPRIGHT", parent:GetCanvasContainer(), -4, -2, "TOPRIGHT")
-			end
-		end
-		
-		addon.button = f
 	end
+	self.button:Refresh()
+	local KButtons = LibStub("Krowi_WorldMapButtons-1.4", true)
+	if KButtons then
+		KButtons.SetPoints()
+	end
+end
+
+-- ----------------------------------------------------------------------------
+-- AddOn life cycle
+-- ----------------------------------------------------------------------------
+function addon:Refresh()
+	profile = self.db.profile
+	self:UpdateButton()
+end
+
+function addon:OnProfileChanged()
+	self:Refresh()
 end
 
 function addon:OnInitialize()
-	self.db = AceDB:New(addon.Name.."DB", addon.constants.defaults, true)
+	self.db = AceDB:New("WorldMapTrackingEnhancedDB", self.constants.defaults, true)
 	profile = self.db.profile
 
-	self.db.RegisterCallback(self, "OnProfileChanged", "Refresh")
-	self.db.RegisterCallback(self, "OnProfileCopied", "Refresh")
-	self.db.RegisterCallback(self, "OnProfileReset", "Refresh")
+	-- Drop settings which are no longer used since v5.0
+	profile.independantButton = nil
+	profile.showOnLeft = nil
+	-- (per-module namespaces of v4.x are simply no longer read)
+
+	self.db.RegisterCallback(self, "OnProfileChanged", "OnProfileChanged")
+	self.db.RegisterCallback(self, "OnProfileCopied", "OnProfileChanged")
+	self.db.RegisterCallback(self, "OnProfileReset", "OnProfileChanged")
 
 	self:SetupOptions()
-	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
-		-- do nothing
-	else
-		FilterButton = WorldMapFrame.overlayFrames[2]
-	end
-end
 
-local function rearrangeFilterButtonTexture()
-	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then return end
-	if (profile.showOnLeft or profile.independantButton) then
-		return
-	end
-	FilterButton.Background:SetTexture(nil)
-	FilterButton.Icon:SetTexture(nil)
-	FilterButton.IconOverlay:SetTexture(nil)
-	FilterButton.Border:SetTexture(nil)
-	--FilterButton:SetHighlightTexture(nil)
+	self:RegisterChatCommand("wmte", "ChatCommand")
+	self:RegisterChatCommand("worldmaptrackingenhanced", "ChatCommand")
 end
 
 function addon:OnEnable()
-	for key, value in pairs( addon.constants.events ) do
-		self:RegisterEvent( value )
-	end
-	createTrackingButton()
-	rearrangeFilterButtonTexture()
---	FilterButton:Hide()
-end
-
-function addon:Refresh()
-	profile = self.db.profile
-
-	for k,v in self:IterateModules() do
-		if self:GetModuleEnabled(k) and not v:IsEnabled() then
-			self:EnableModule(k)
-		elseif not self:GetModuleEnabled(k) and v:IsEnabled() then
-			self:DisableModule(k)
-		end
-		if (v.Refresh) and (type(v.Refresh) == "function") then
-			v:Refresh()
-		end
+	if _G.WorldMapFrame then
+		CreateWorldMapButton()
+	else
+		-- Blizzard_WorldMap should already be loaded at this point; just in case
+		self:RegisterEvent("ADDON_LOADED", function(_, name)
+			if name == "Blizzard_WorldMap" then
+				self:UnregisterEvent("ADDON_LOADED")
+				CreateWorldMapButton()
+			end
+		end)
 	end
 end
 
-function addon:GetModuleEnabled(module)
-	return profile.enableModules[module]
-end
-
-function addon:SetModuleEnabled(module, value)
-	local old = profile.enableModules[module]
-	profile.enableModules[module] = value
-	if old ~= value then
-		if value then
-			self:EnableModule(module)
-		else
-			self:DisableModule(module)
-		end
+function addon:ChatCommand(input)
+	input = input and input:trim():lower() or ""
+	if input == "show" then
+		profile.showButton = true
+		self:UpdateButton()
+	elseif input == "hide" then
+		profile.showButton = false
+		self:UpdateButton()
+	else
+		self:OpenOptions()
 	end
 end

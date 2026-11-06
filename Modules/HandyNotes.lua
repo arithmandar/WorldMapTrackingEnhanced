@@ -1,245 +1,122 @@
--- $Id$
------------------------------------------------------------------------
+-- ----------------------------------------------------------------------------
+-- World Map Tracking Enhanced - HandyNotes module
+-- Supports: HandyNotes (https://www.curseforge.com/wow/addons/handynotes)
+-- ----------------------------------------------------------------------------
 -- Upvalued Lua API.
------------------------------------------------------------------------
--- Functions
+-- ----------------------------------------------------------------------------
 local _G = getfenv(0)
-local select, pairs = _G.select, _G.pairs
-local math = _G.math
-local ceil = math.ceil
-local string = _G.string
-local format = string.format
--- Libraries
-local GetAddOnInfo, GetAddOnEnableState, UnitName, ToggleFrame, InterfaceOptionsFrame_OpenToCategory = _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitName, _G.ToggleFrame, _G.InterfaceOptionsFrame_OpenToCategory
+local pairs, ipairs, type, tinsert, sort = _G.pairs, _G.ipairs, _G.type, _G.table.insert, _G.table.sort
+
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
-local FOLDER_NAME, private = ...
-
-local MODNAME = "HandyNotes"
-
+local _, private = ...
 local LibStub = _G.LibStub
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
-local Module = addon:NewModule(MODNAME)
-local db
 
-local HN, LH
-local iHandyNotes = select(4, GetAddOnInfo(MODNAME))
-local enabled = GetAddOnEnableState(UnitName("player"), MODNAME)
-local iMaxMenu = 20
+local MODNAME = "HandyNotes"
+local module = addon:NewTrackingModule(MODNAME, {
+	title = "HandyNotes",
+	order = 10,
+	addons = { "HandyNotes" },
+})
 
-local defaults = {
-	profile = {
-		contextMenu = true,
-		showConfig = true,
-	}
-}
-
-local optGetter, optSetter
-do
-	function optGetter(info)
-		local key = info[#info]
-		return Module.db.profile[key]
-	end
-
-	function optSetter(info, value)
-		local key = info[#info]
-		Module.db.profile[key] = value
-		Module:Refresh()
-	end
+local function GetHandyNotes()
+	return LibStub("AceAddon-3.0"):GetAddon("HandyNotes", true)
 end
 
-local options = {
-	type = "group",
-	name = MODNAME,
-	get = optGetter,
-	set = optSetter,
-	args = {
-		config = {
-			order = 10,
-			type = "group",
-			name = L["Config"],
-			inline = true,
-			args = {
-				contextMenu = {
-					order = 11,
-					type = "toggle",
-					name = L["Show HandyNotes plugins in second level menu."],
-					desc = L["Second level menu will be forced to be created when there are more than 20 of HandyNotes plugins."],
-					width = "full",
-				},
-				showConfig = {
-					order = 12, 
-					type = "toggle",
-					name = format(L["Show %s module's config link in menu."], MODNAME),
-					width = "full",
-				},
-			},
-		},
-	},
-}
+-- HandyNotes keeps the display names of its plugins in its options table
+local function GetPluginDisplayNames()
+	local AceConfigRegistry = LibStub("AceConfigRegistry-3.0", true)
+	local options = AceConfigRegistry and AceConfigRegistry:GetOptionsTable("HandyNotes", "dialog", private.addon_name.."-1.0")
+	local showPlugins = options and options.args and options.args.plugins and options.args.plugins.args and options.args.plugins.args.show_plugins
+	local values = showPlugins and showPlugins.values
+	return type(values) == "table" and values or nil
+end
 
-function Module:OnInitialize()
-	if (enabled > 0 and iHandyNotes) then 
-		HN = LibStub("AceAddon-3.0"):GetAddon(MODNAME) 
-		LH = LibStub("AceLocale-3.0"):GetLocale(MODNAME, false)
-		self.db = addon.db:RegisterNamespace(MODNAME, defaults)
-		db = self.db.profile
+local function GetSortedPlugins(HN)
+	local names = GetPluginDisplayNames()
+	local list = {}
+	for pluginName in pairs(HN.plugins) do
+		local text = names and names[pluginName]
+		if type(text) ~= "string" or text == "" then
+			text = pluginName
+		end
+		tinsert(list, { key = pluginName, text = text, sortText = text:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):lower() })
+	end
+	sort(list, function(a, b) return a.sortText < b.sortText end)
+	return list
+end
 
-		self:SetEnabledState(addon:GetModuleEnabled(MODNAME))
-		addon:RegisterModuleOptions(MODNAME, options, MODNAME)
-	else
-		addon:DisableModule(MODNAME)
+local function SetAllPlugins(HN, value)
+	local db = HN.db.profile
+	for pluginName in pairs(HN.plugins) do
+		db.enabledPlugins[pluginName] = value
+		HN:UpdatePluginMap(nil, pluginName)
 	end
 end
 
-function Module:OnEnable()
-
+function module:IsAvailable()
+	local HN = GetHandyNotes()
+	return HN and HN.db and HN.plugins and true or false
 end
 
-function Module:OnDisable()
+function module:BuildMenu(description)
+	local HN = GetHandyNotes()
+	local db = HN.db.profile
 
-end
-
-function Module:Refresh()
-	if not self:IsEnabled() then return end
-end
-	
-function Module:DropDownMenus()
-	if (enabled > 0 and iHandyNotes) then
-		local function toggleHandyNotes()
-			HN.db.profile.enabled = not HN.db.profile.enabled
-			if (HN.db.profile.enabled) then
-				HN:Enable()
-			else
-				HN:Disable()
-			end
-		end
-
-		local function checkHandyNotesStatus()
-			return HN.db.profile.enabled or nil
-		end
-
-		local function getPlugins()
-			local plugins = HN.plugins
-			local i = 0
-			for k,v in pairs(plugins) do
-				i = i + 1
-			end
-			return plugins, i
-		end
-
-		local function checkPluginStatus(pluginName)
-			return HN.db.profile.enabledPlugins[pluginName] and true or false
-		end
-
-		local function togglePlugin(pluginName)
-			HN.db.profile.enabledPlugins[pluginName] = not HN.db.profile.enabledPlugins[pluginName]
-			HN:UpdatePluginMap(nil, pluginName)
-		end
-
-		local plugins, n_plugins = getPlugins()
-		
-		local function getPluginMenu(t, i)
-			for k, v in pairs(plugins) do
-				t[i] = {}
-				t[i].isNotRadio = true
-				t[i].keepShownOnClick = true
-				t[i].text = k
-				if (not checkHandyNotesStatus()) then
-					t[i].disabled = true
-				else
-					t[i].disabled = nil
-				end
-				t[i].checked = checkPluginStatus(k)
-				t[i].func = (function(self)
-					togglePlugin(k)
-				end)
-				t[i].num = i
-				i = i + 1
-			end
-			return t, i
-		end
-
-		local menu = {}
-		local menu2 = {}
-		local i = 1
-
-		-- Clear out the info from the separator wholesale.
-		menu[i] = {}
-		menu[i].text = LH["HandyNotes"]
-		menu[i].isNotRadio = true
-		if (db.contextMenu or n_plugins > iMaxMenu) then
-			menu[i].hasArrow = true
+	description:CreateCheckbox(L["Enable HandyNotes"], function()
+		return db.enabled
+	end, function()
+		db.enabled = not db.enabled
+		if db.enabled then
+			HN:Enable()
 		else
-			menu[i].hasArrow = nil
+			HN:Disable()
 		end
-		menu[i].value = "HandyNotes"
-		menu[i].colorCode = "|cFFFFC90E"
-		menu[i].tooltipTitle = LH["HandyNotes"]
-		menu[i].tooltipText = LH["Enable or disable HandyNotes"]
-		menu[i].tooltipOnButton = true
-		menu[i].checked = checkHandyNotesStatus
-		menu[i].func = toggleHandyNotes
-		menu[i].num = i
-		i = i + 1
-		
-		-- Now create HandyNotes' plugins dropdown
-		if (db.contextMenu or n_plugins > iMaxMenu) then
-			if (n_plugins > iMaxMenu) then
-				local menu3 = {}
-				menu3 = getPluginMenu(menu3, 1)
-				local n = ceil(n_plugins / iMaxMenu)
-				for j = 1, n do
-					menu2[j] = {}
-					menu2[j].isNotRadio = true
-					menu2[j].notCheckable = true
-					menu2[j].keepShownOnClick = true
-					menu2[j].hasArrow = true
-					menu2[j].text = format("HandyNotes - %s/%s", j, n)
-					menu2[j].value = "HandyNotes"..j
+		return _G.MenuResponse.Refresh
+	end)
 
-					local t = {}
-					local i_st, i_en
-					-- calculate the start and end number, for example, 1 - 20; 21 - 40
-					i_st = 1 + (iMaxMenu * (j-1))
-					if (j == n) then 
-						i_en = #menu3
-					else
-						i_en = (iMaxMenu*j)
-					end
-					for k = i_st, i_en do
-						t[k - (iMaxMenu * (j-1))] = menu3[k]
-					end
-					menu2[j].menuTable = t
-				end
-			else
-				menu2 = getPluginMenu(menu2, 1)
-			end		
-		else
-			menu, i = getPluginMenu(menu, i)
-		end
-		
-		-- Last menu item for config option
-		if (db.showConfig) then
-			menu[i] = {}
-			menu[i].isNotRadio = true
-			menu[i].notCheckable = true
-			menu[i].text = L["HandyNotes Config"]
-			menu[i].colorCode = "|cFFB5E61D"
-			menu[i].tooltipTitle = LH["HandyNotes"]
-			menu[i].tooltipText = L["Click to open HandyNotes' config panel"]
-			menu[i].tooltipOnButton = true
-			menu[i].func = (function(self)
-				ToggleFrame(WorldMapFrame)
-				InterfaceOptionsFrame_OpenToCategory("HandyNotes")
-				InterfaceOptionsFrame_OpenToCategory("HandyNotes")
-			end)
-		end
-		
-		return menu, menu2
-	else
-		return nil
+	local plugins = GetSortedPlugins(HN)
+	if #plugins == 0 then
+		return
 	end
+
+	description:CreateDivider()
+	description:CreateTitle(L["Plugins"])
+
+	local function IsPluginEnabled(pluginName)
+		return db.enabledPlugins[pluginName]
+	end
+	local function TogglePlugin(pluginName)
+		db.enabledPlugins[pluginName] = not db.enabledPlugins[pluginName]
+		HN:UpdatePluginMap(nil, pluginName)
+		return _G.MenuResponse.Refresh
+	end
+
+	for _, plugin in ipairs(plugins) do
+		local checkbox = description:CreateCheckbox(plugin.text, IsPluginEnabled, TogglePlugin, plugin.key)
+		checkbox:SetEnabled(function() return db.enabled end)
+	end
+
+	if #plugins > 1 then
+		description:CreateDivider()
+		local all = description:CreateButton(L["Select All"], function()
+			SetAllPlugins(HN, true)
+			return _G.MenuResponse.Refresh
+		end)
+		all:SetEnabled(function() return db.enabled end)
+		local none = description:CreateButton(L["Select None"], function()
+			SetAllPlugins(HN, false)
+			return _G.MenuResponse.Refresh
+		end)
+		none:SetEnabled(function() return db.enabled end)
+	end
+end
+
+function module:OpenConfig()
+	addon:OpenSettingsCategory("HandyNotes", function()
+		LibStub("AceConfigDialog-3.0"):Open("HandyNotes")
+	end)
 end
