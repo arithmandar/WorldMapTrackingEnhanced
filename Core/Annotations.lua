@@ -6,9 +6,9 @@
 -- VS Code (https://github.com/Ketho/vscode-wow-api). This file is NOT loaded
 -- by the game (it is not listed in the TOC) and is excluded from packaging.
 --
--- Classes which have methods (WMTEAddon, WMTETrackingModule, the button mixin)
--- are declared where they are defined, in Core\Core.lua. This file only holds
--- data shapes and the parts of the supported addons that our modules use.
+-- All shared types are declared here. The source files only keep a one line
+-- `---@class X` on the local where the object is created (so that methods
+-- defined there are attached to the class) plus @param / @return on functions.
 -- ----------------------------------------------------------------------------
 
 -- ----------------------------------------------------------------------------
@@ -57,8 +57,37 @@
 ---@field profile WMTEProfile
 
 -- ----------------------------------------------------------------------------
+-- Addon object (Core\Core.lua, methods are defined there and in Config.lua)
+-- ----------------------------------------------------------------------------
+
+---@class WMTEAddon : AceAddon, AceEvent-3.0, AceConsole-3.0
+---@field db WMTEDatabase
+---@field constants WMTEConstants
+---@field Client WMTEClient
+---@field Name string Folder name of the addon
+---@field LocName string Localized title from the TOC
+---@field Notes string Localized notes from the TOC
+---@field Version string
+---@field UpdateDate string
+---@field Author string
+---@field trackingModules WMTETrackingModule[] Registered tracking modules, sorted by order
+---@field button? WorldMapTrackingEnhancedButtonMixin The World Map button
+---@field optionsCategoryID? number|string Our category in the game's Settings panel
+
+-- The World Map button, see Core\Templates.xml
+---@class WorldMapTrackingEnhancedButtonMixin : DropdownButton
+---@field Icon Texture
+---@field IconOverlay Texture
+
+-- ----------------------------------------------------------------------------
 -- Tracking modules
 -- ----------------------------------------------------------------------------
+
+---@class WMTETrackingModule : AceModule
+---@field title string|fun(module: WMTETrackingModule): string
+---@field order number
+---@field addons string[]?
+---@field OpenConfig? fun(self: WMTETrackingModule) Optional: opens the supported addon's config; a config link is added to the menu when it exists
 
 -- The menu description a module adds its entries to: the root menu (flat
 -- layout) or the module's own sub menu button.

@@ -34,19 +34,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local AceDB = LibStub("AceDB-3.0")
 local Client = private.Client
 
----@class WMTEAddon : AceAddon, AceEvent-3.0, AceConsole-3.0
----@field db WMTEDatabase
----@field constants WMTEConstants
----@field Client WMTEClient
----@field Name string Folder name of the addon
----@field LocName string Localized title from the TOC
----@field Notes string Localized notes from the TOC
----@field Version string
----@field UpdateDate string
----@field Author string
----@field trackingModules WMTETrackingModule[] Registered tracking modules, sorted by order
----@field button? WorldMapTrackingEnhancedButtonMixin The World Map button
----@field optionsCategoryID? number|string Our category in the game's Settings panel
+---@class WMTEAddon
 local addon = LibStub("AceAddon-3.0"):NewAddon(private.addon_name, "AceEvent-3.0", "AceConsole-3.0") --[[@as WMTEAddon]]
 addon.constants = private.constants
 addon.constants.addon_name = private.addon_name
@@ -136,11 +124,7 @@ end
 -- ----------------------------------------------------------------------------
 -- Tracking modules
 -- ----------------------------------------------------------------------------
----@class WMTETrackingModule : AceModule
----@field title string|fun(module: WMTETrackingModule): string
----@field order number
----@field addons string[]?
----@field OpenConfig? fun(self: WMTETrackingModule) Optional: opens the supported addon's config; a config link is added to the menu when it exists
+---@class WMTETrackingModule
 local ModulePrototype = {}
 
 -- Display name of the module, used for sub menu and config link texts
@@ -281,9 +265,7 @@ addon.GenerateMenu = GenerateMenu
 -- ----------------------------------------------------------------------------
 -- World Map button (DropdownButton, see Core\Templates.xml)
 -- ----------------------------------------------------------------------------
----@class WorldMapTrackingEnhancedButtonMixin : DropdownButton
----@field Icon Texture
----@field IconOverlay Texture
+---@class WorldMapTrackingEnhancedButtonMixin
 WorldMapTrackingEnhancedButtonMixin = {}
 
 function WorldMapTrackingEnhancedButtonMixin:OnLoad()
