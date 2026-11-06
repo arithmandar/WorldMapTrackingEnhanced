@@ -54,21 +54,6 @@ function module:BuildMenu(description)
 		_G.GameTooltip_SetTitle(tooltip, "Atlas")
 		_G.GameTooltip_AddNormalLine(tooltip, AL("ATLAS_CLICK_TO_OPEN", "Click to open Atlas map window."))
 	end)
-
-	local options = Atlas.db.profile and Atlas.db.profile.options
-	if options and options.worldMapButton ~= nil and Atlas.ToggleWorldMapButton then
-		description:CreateCheckbox(AL("ATLAS_OPTIONS_SHOWWMBUT", "Show Button on World Map window."), function()
-			return options.worldMapButton
-		end, function()
-			options.worldMapButton = not options.worldMapButton
-			Atlas:ToggleWorldMapButton()
-			local KButtons = LibStub("Krowi_WorldMapButtons-1.4", true)
-			if KButtons then
-				KButtons.SetPoints()
-			end
-			return _G.MenuResponse.Refresh
-		end)
-	end
 end
 
 function module:OpenConfig()

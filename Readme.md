@@ -26,7 +26,7 @@ A module is available only when its addon is installed and loaded on your client
 | GatherMate2 | Toggle World Map icons, and set the display mode of each node type (Always / With Profession / Active / Never) |
 | PetTracker | Species, Stable Masters, Species Icons, Rival Portraits |
 | RareScanner | Rare NPC, container and event icons, plus their "not discovered" icons |
-| Atlas | Open Atlas on the map that matches the World Map, toggle Atlas' own World Map button |
+| Atlas | Open Atlas on the map that matches the World Map |
 | AtlasLoot / AtlasLootClassic | Open AtlasLoot |
 
 Each module can also show a link to the addon's own config panel.
