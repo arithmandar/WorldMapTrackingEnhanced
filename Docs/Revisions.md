@@ -14,7 +14,7 @@
   - GatherMate2: toggle World Map icons, and choose the display mode of each node type (Mining, Herbalism, Fishing, Gas Clouds, Treasure, Archaeology, Timber)
   - PetTracker: Species, Stable Masters, Species Icons, Rival Portraits (PetTracker's options are now stored in PetTracker.sets)
   - RareScanner: show rare NPC / container / event icons and their not discovered icons
-  - Atlas: open Atlas on the map matching the World Map, toggle Atlas' own World Map button
+  - Atlas: open Atlas on the map matching the World Map (Atlas now adds its own World Map button through Krowi_WorldMapButtons, so the old Atlas button option was removed)
   - AtlasLoot: open AtlasLoot (Retail AtlasLoot and AtlasLootClassic)
 - New options: show / hide the World Map button, show config links in the menu; the second level menu option now applies to all supported addons
 - Added slash commands: /wmte (open options), /wmte show, /wmte hide

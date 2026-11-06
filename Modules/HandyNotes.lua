@@ -26,17 +26,24 @@ local function GetHandyNotes()
 	return LibStub("AceAddon-3.0"):GetAddon("HandyNotes", true)
 end
 
--- HandyNotes keeps the display names of its plugins in its options table
+-- HandyNotes keeps the display names of its plugins in its options table.
+-- AceConfigRegistry validates the whole table (including every plugin's
+-- options) the first time it is fetched; an invalid plugin table raises an
+-- error, so the caller wraps this in pcall() and falls back to plugin keys.
 local function GetPluginDisplayNames()
 	local AceConfigRegistry = LibStub("AceConfigRegistry-3.0", true)
 	local options = AceConfigRegistry and AceConfigRegistry:GetOptionsTable("HandyNotes", "dialog", private.addon_name.."-1.0")
-	local showPlugins = options and options.args and options.args.plugins and options.args.plugins.args and options.args.plugins.args.show_plugins
-	local values = showPlugins and showPlugins.values
+	local plugins = type(options) == "table" and type(options.args) == "table" and options.args.plugins
+	local showPlugins = type(plugins) == "table" and type(plugins.args) == "table" and plugins.args.show_plugins
+	local values = type(showPlugins) == "table" and showPlugins.values
 	return type(values) == "table" and values or nil
 end
 
 local function GetSortedPlugins(HN)
-	local names = GetPluginDisplayNames()
+	local ok, names = pcall(GetPluginDisplayNames)
+	if not ok then
+		names = nil
+	end
 	local list = {}
 	for pluginName in pairs(HN.plugins) do
 		local text = names and names[pluginName]
