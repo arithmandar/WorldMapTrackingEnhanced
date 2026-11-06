@@ -16,6 +16,7 @@ local LoadAddOn = C_AddOns and C_AddOns.LoadAddOn or _G.LoadAddOn
 -- ----------------------------------------------------------------------------
 local _, private = ...
 local LibStub = _G.LibStub
+---@type WMTEAddon
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 
 local MODNAME = "PetTracker"

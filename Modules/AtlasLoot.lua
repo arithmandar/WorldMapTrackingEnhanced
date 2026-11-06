@@ -12,6 +12,7 @@ local type, format, unpack = _G.type, _G.string.format, _G.unpack
 -- ----------------------------------------------------------------------------
 local _, private = ...
 local LibStub = _G.LibStub
+---@type WMTEAddon
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 

@@ -32,6 +32,24 @@ local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local AceDB = LibStub("AceDB-3.0")
 local Client = private.Client
 
+---@class WMTEAddon : AceAddon-3.0, AceEvent-3.0, AceConsole-3.0
+---@field constants table
+---@field Client table
+---@field Name string
+---@field LocName string
+---@field Notes string
+---@field Version string
+---@field UpdateDate string
+---@field Author string
+---@field trackingModules table
+---@field OpenSettingsCategory fun(self: WMTEAddon, categoryNameOrID: string|number, fallback: fun()): boolean
+---@field IsAnyAddOnLoaded fun(self: WMTEAddon, ...: string): boolean
+---@field CloseWorldMap fun(self: WMTEAddon)
+---@field RefreshWorldMap fun(self: WMTEAddon)
+---@field SetDefaultModulePrototype fun(self: WMTEAddon, prototype: table)
+---@field SetDefaultModuleState fun(self: WMTEAddon, state: boolean)
+---@field SetupOptions fun(self: WMTEAddon)
+---@field OpenOptions fun(self: WMTEAddon)
 local addon = LibStub("AceAddon-3.0"):NewAddon(private.addon_name, "AceEvent-3.0", "AceConsole-3.0")
 addon.constants = private.constants
 addon.constants.addon_name = private.addon_name

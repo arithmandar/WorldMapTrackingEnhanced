@@ -1,17 +1,13 @@
 -- ----------------------------------------------------------------------------
 -- World Map Tracking Enhanced - Config
 -- ----------------------------------------------------------------------------
--- Upvalued Lua API.
--- ----------------------------------------------------------------------------
 local _G = getfenv(0)
 local ipairs = _G.ipairs
 local format = _G.string.format
 
--- ----------------------------------------------------------------------------
--- AddOn namespace.
--- ----------------------------------------------------------------------------
 local _, private = ...
 local LibStub = _G.LibStub
+---@type WMTEAddon
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local AceConfig = LibStub("AceConfig-3.0")

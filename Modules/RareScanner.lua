@@ -16,6 +16,7 @@ local ipairs, rawget = _G.ipairs, _G.rawget
 -- ----------------------------------------------------------------------------
 local _, private = ...
 local LibStub = _G.LibStub
+---@type WMTEAddon
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 
 local MODNAME = "RareScanner"

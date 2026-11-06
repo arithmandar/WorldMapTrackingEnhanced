@@ -12,6 +12,7 @@ local pairs, ipairs, type, tinsert, sort = _G.pairs, _G.ipairs, _G.type, _G.tabl
 -- ----------------------------------------------------------------------------
 local _, private = ...
 local LibStub = _G.LibStub
+---@type WMTEAddon
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 

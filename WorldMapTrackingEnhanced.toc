@@ -35,6 +35,7 @@
 ## X-License: GPLv2
 ## X-Localizations: enUS, deDE, esES, esMX, frFR, itIT, koKR, ptBR, ruRU, zhCN, zhTW
 ## X-Curse-Project-ID: 266238
+## X-WoWI-ID: 24402
 
 Libs\Libs.xml
 Locale\Locales.xml
@@ -43,4 +44,4 @@ Core\Core.lua
 Core\Templates.xml
 Core\Config.lua
 
-Modules.xml
+Modules\Modules.xml
