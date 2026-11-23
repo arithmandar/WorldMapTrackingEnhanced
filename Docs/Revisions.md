@@ -1,6 +1,6 @@
 # Revision History
 
-## v5.0.1 (Nov. 06, 2026)
+## v5.0.1 (Nov. 23, 2026)
 - Added Routes support:
   - Toggle route drawing on the World Map, Minimap, Zone Map, and Minimap when indoors
   - Toggle "Show hidden routes"
