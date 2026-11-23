@@ -14,12 +14,13 @@ local ipairs, rawget = _G.ipairs, _G.rawget
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
-local _, private = ...
+---@class WMTENamespace
+local private = select(2, ...)
 local LibStub = _G.LibStub
----@type WMTEAddon
-local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
+local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name) --[[@as WMTEAddon]]
 
 local MODNAME = "RareScanner"
+---@class WMTE.RareScannerModule : WMTETrackingModule
 local module = addon:NewTrackingModule(MODNAME, {
 	title = "RareScanner",
 	order = 40,
@@ -32,8 +33,9 @@ local function RSL(key, fallback)
 	return L and rawget(L, key) or fallback
 end
 
+---@return WMTE.RareScanner?
 local function GetRareScanner()
-	return LibStub("AceAddon-3.0"):GetAddon("RareScanner", true)
+	return LibStub("AceAddon-3.0"):GetAddon("RareScanner", true) --[[@as WMTE.RareScanner?]]
 end
 
 -- Keys in RareScanner.db.profile.map, see RSConfigDB.lua in RareScanner
@@ -62,6 +64,9 @@ end
 
 function module:BuildMenu(description)
 	local RS = GetRareScanner()
+	if not RS then
+		return
+	end
 	local db = RS.db.profile.map
 
 	local function IsChecked(key)

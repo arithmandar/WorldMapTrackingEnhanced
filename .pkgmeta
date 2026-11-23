@@ -36,3 +36,4 @@ ignore:
     - README.md
     - Readme.md
     - Docs/CurseForge-Description.md
+    - Core/Annotations.lua

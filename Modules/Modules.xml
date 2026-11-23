@@ -2,6 +2,7 @@
 ..\FrameXML\UI.xsd">
 	<Script file="HandyNotes.lua"/>
 	<Script file="GatherMate2.lua"/>
+	<Script file="Routes.lua"/>
 	<Script file="PetTracker.lua"/>
 	<Script file="RareScanner.lua"/>
 	<Script file="AtlasLoot.lua"/>

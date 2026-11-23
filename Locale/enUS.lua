@@ -38,3 +38,4 @@ L["Select All"] = true
 L["Select None"] = true
 L["Open %s"] = true
 L["Click to open %s's main window"] = true
+L["No routes on this map."] = true

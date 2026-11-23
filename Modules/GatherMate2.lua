@@ -10,13 +10,14 @@ local ipairs, rawget = _G.ipairs, _G.rawget
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
-local _, private = ...
+---@class WMTENamespace
+local private = select(2, ...)
 local LibStub = _G.LibStub
----@type WMTEAddon
-local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
+local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name) --[[@as WMTEAddon]]
 local Client = private.Client
 
 local MODNAME = "GatherMate2"
+---@class WMTE.GatherMate2Module : WMTETrackingModule
 local module = addon:NewTrackingModule(MODNAME, {
 	title = "GatherMate2",
 	order = 20,
@@ -47,8 +48,9 @@ local NODE_TYPES = {
 	{ key = "Logging", text = "Show Timber Nodes", values = { SHOW_ALWAYS, SHOW_TRACKING, SHOW_NEVER }, notOnForever = true },
 }
 
+---@return WMTE.GatherMate2?
 local function GetGatherMate()
-	return LibStub("AceAddon-3.0"):GetAddon("GatherMate2", true)
+	return LibStub("AceAddon-3.0"):GetAddon("GatherMate2", true) --[[@as WMTE.GatherMate2?]]
 end
 
 local function UpdateGatherMate(GM)
@@ -67,6 +69,9 @@ end
 
 function module:BuildMenu(description)
 	local GM = GetGatherMate()
+	if not GM then
+		return
+	end
 	local db = GM.db.profile
 
 	description:CreateCheckbox(GML("Show World Map Icons"), function()

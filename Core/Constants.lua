@@ -3,9 +3,11 @@
 -- ----------------------------------------------------------------------------
 local _G = getfenv(0)
 
-local _, private = ...
+---@class WMTENamespace
+local private = select(2, ...)
 private.addon_name = "WorldMapTrackingEnhanced"
 
+---@class WMTEConstants
 local constants = {}
 private.constants = constants
 
@@ -20,6 +22,7 @@ local function IsProject(id)
 	return id ~= nil and projectID == id
 end
 
+---@class WMTEClient
 local Client = {
 	projectID = projectID,
 	interface = select(4, _G.GetBuildInfo()),

@@ -5,15 +5,17 @@ local _G = getfenv(0)
 local ipairs = _G.ipairs
 local format = _G.string.format
 
-local _, private = ...
+---@class WMTENamespace
+local private = select(2, ...)
 local LibStub = _G.LibStub
----@type WMTEAddon
+---@class WMTEAddon
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceDBOptions = LibStub("AceDBOptions-3.0")
 
+---@type AceConfig.OptionsTable?
 local options
 
 local function GetOptions()
